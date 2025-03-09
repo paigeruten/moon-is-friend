@@ -16,7 +16,7 @@ local reduceFlashing = pd.getReduceFlashing()
 local earth = {
   pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
   radius = 12,
-  mass = 1,
+  mass = 0.6,
   health = 5,
   maxHealth = 5,
 }
@@ -27,7 +27,7 @@ local moon = {
   distanceFromEarth = moonDistanceFromEarth,
   radius = 6,
   gravityRadius = 50,
-  mass = 3,
+  mass = 2,
 }
 
 local asteroids = {}
@@ -45,10 +45,10 @@ local function spawnAsteroid()
     id = id,
     pos = pos,
     vel = -pd.geometry.vector2D.newPolar(
-      math.random() + 1,                -- magnitude between 1.0 and 2.0
+      (math.random() / 2) + 0.5,        -- magnitude between 0.5 and 1.0
       angle + (math.random() * 20 - 10) -- vary angle from -10 to +10
     ),
-    radius = 3,
+    radius = math.random(2, 4),
     state = 'entering',
   }
   return id
@@ -112,6 +112,7 @@ local heartSolid <const> = {
   0x00, --  ▓▓▓▓▓▓▓▓
 }
 
+pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
 
 local frameCount = 0
@@ -144,7 +145,7 @@ function pd.update()
     return
   end
 
-  if frameCount % 60 == 0 then -- 2 seconds
+  if frameCount % 100 == 0 then -- 2 seconds
     spawnAsteroid()
   end
 
@@ -256,6 +257,8 @@ function pd.update()
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
   gfx.drawTextAligned("Score: " .. score, screenWidth - 10, 10, kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  pd.drawFPS(5, screenHeight - 15)
 
   frameCount += 1
 end
