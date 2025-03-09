@@ -30,6 +30,82 @@ local moon = {
   mass = 2,
 }
 
+local rocketNorthImage = gfx.image.new("images/rocket_orth")
+local rocketEastImage = rocketNorthImage:rotatedImage(90)
+local rocketNorthEastImage = gfx.image.new("images/rocket_diag")
+
+local rocketDirectionInfo = {
+  north = {
+    image = rocketNorthImage,
+    angle = 0,
+    anchor = { x = 0.5, y = 1 },
+    flip = gfx.kImageUnflipped,
+  },
+  northeast = {
+    image = rocketNorthEastImage,
+    angle = 45,
+    anchor = { x = 0, y = 1 },
+    flip = gfx.kImageUnflipped,
+  },
+  east = {
+    image = rocketEastImage,
+    angle = 90,
+    anchor = { x = 0, y = 0.5 },
+    flip = gfx.kImageUnflipped,
+  },
+  southeast = {
+    image = rocketNorthEastImage,
+    angle = 135,
+    anchor = { x = 0, y = 0 },
+    flip = gfx.kImageFlippedY,
+  },
+  south = {
+    image = rocketNorthImage,
+    angle = 180,
+    anchor = { x = 0.5, y = 0 },
+    flip = gfx.kImageFlippedY,
+  },
+  southwest = {
+    image = rocketNorthEastImage,
+    angle = 225,
+    anchor = { x = 1, y = 0 },
+    flip = gfx.kImageFlippedXY,
+  },
+  west = {
+    image = rocketEastImage,
+    angle = 270,
+    anchor = { x = 1, y = 0.5 },
+    flip = gfx.kImageFlippedX,
+  },
+  northwest = {
+    image = rocketNorthEastImage,
+    angle = 315,
+    anchor = { x = 1, y = 1 },
+    flip = gfx.kImageFlippedX,
+  },
+}
+local rocketDirections = {}
+for direction, _ in pairs(rocketDirectionInfo) do
+  table.insert(rocketDirections, direction)
+end
+
+local rocket = nil
+local lastRocketAt = 0
+
+local function spawnRocket()
+  local direction = rocketDirections[math.random(#rocketDirections)]
+  local directionInfo = rocketDirectionInfo[direction]
+  local pos = earth.pos + pd.geometry.vector2D.newPolar(earth.radius + 1, directionInfo.angle)
+  rocket = {
+    frame = 0,
+    pos = pos,
+    vel = pd.geometry.vector2D.new(0, 0),
+    acc = pd.geometry.vector2D.new(0, 0),
+    direction = direction,
+    info = directionInfo
+  }
+end
+
 local asteroids = {}
 local curAsteroidId = 0
 local function nextAsteroidId()
@@ -56,6 +132,11 @@ end
 
 local function isAsteroidOnScreen(asteroid)
   local x, y, r = asteroid.pos.x, asteroid.pos.y, asteroid.radius
+  return x + r >= 0 and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
+end
+
+local function isRocketOnScreen(rocket)
+  local x, y, r = rocket.pos.x, rocket.pos.y, 3
   return x + r >= 0 and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
 end
 
@@ -177,6 +258,25 @@ function pd.update()
     asteroids[id] = nil
   end
 
+  -- Update rocket
+  if rocket then
+    if rocket.frame == 100 then
+      -- Liftoff!
+      rocket.acc = pd.geometry.vector2D.newPolar(0.005, rocket.info.angle)
+    end
+    rocket.vel += rocket.acc
+    rocket.pos += rocket.vel
+
+    rocket.frame += 1
+
+    if not isRocketOnScreen(rocket) then
+      rocket = nil
+      lastRocketAt = frameCount
+    end
+  elseif (frameCount - lastRocketAt) > 150 and math.random(500) == 1 then -- every 3 + ~10 seconds
+    spawnRocket()
+  end
+
   -- Collisions
   idsToRemove = {}
   for id, asteroid in pairs(asteroids) do
@@ -229,6 +329,14 @@ function pd.update()
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.45, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(earth.pos, earth.radius)
+
+  -- Rocket
+  if rocket then
+    if rocket.frame >= 100 or (rocket.frame // 5) % 2 == 0 then
+      rocket.info.image:drawAnchored(rocket.pos.x, rocket.pos.y, rocket.info.anchor.x, rocket.info.anchor.y,
+        rocket.info.flip)
+    end
+  end
 
   -- Moon
   gfx.setColor(gfx.kColorWhite)
