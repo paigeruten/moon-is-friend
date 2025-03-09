@@ -132,6 +132,20 @@ local function spawnAsteroid()
   return id
 end
 
+local function closestAsteroidDirection()
+  local direction = pd.geometry.vector2D.new(0, 0)
+  local minDistance = nil
+  for _, asteroid in pairs(asteroids) do
+    local earthVec = asteroid.pos - earth.pos
+    local distance = earthVec:magnitudeSquared()
+    if minDistance == nil or distance < minDistance then
+      minDistance = distance
+      direction = earthVec:normalized()
+    end
+  end
+  return direction
+end
+
 local function isAsteroidOnScreen(asteroid)
   local x, y, r = asteroid.pos.x, asteroid.pos.y, asteroid.radius
   return x + r >= 0 and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
@@ -368,6 +382,17 @@ function pd.update()
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.45, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(earth.pos, earth.radius)
+
+  -- Earth eyes
+  local leftEye = pd.geometry.point.new(earth.pos.x - 4, earth.pos.y - 4)
+  local rightEye = pd.geometry.point.new(earth.pos.x + 4, earth.pos.y - 4)
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillCircleAtPoint(leftEye, 3)
+  gfx.fillCircleAtPoint(rightEye, 3)
+  local lookAt = closestAsteroidDirection()
+  gfx.setColor(gfx.kColorBlack)
+  gfx.fillCircleAtPoint(leftEye + lookAt, 1)
+  gfx.fillCircleAtPoint(rightEye + lookAt, 1)
 
   -- Rocket
   if curRocket then
