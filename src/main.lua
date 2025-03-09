@@ -10,6 +10,7 @@ local screenWidth, screenHeight = pd.display.getSize()
 math.randomseed(pd.getSecondsSinceEpoch())
 
 local score = 0
+local reduceFlashing = pd.getReduceFlashing()
 
 local earth = {
   pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
@@ -35,11 +36,15 @@ end
 
 local function spawnAsteroid()
   local id = nextAsteroidId()
-  local pos = earth.pos + pd.geometry.vector2D.newPolar(250, math.random() * 360)
+  local angle = math.random() * 360
+  local pos = earth.pos + pd.geometry.vector2D.newPolar(250, angle)
   asteroids[id] = {
     id = id,
     pos = pos,
-    vel = (earth.pos - pos):normalized():scaledBy(math.random() + 1),
+    vel = -pd.geometry.vector2D.newPolar(
+      math.random() + 1,                -- magnitude between 1.0 and 2.0
+      angle + (math.random() * 20 - 10) -- vary angle from -10 to +10
+    ),
     radius = 3,
     state = 'entering',
   }
@@ -57,6 +62,10 @@ local function areCirclesColliding(centerA, radiusA, centerB, radiusB)
 end
 
 local function screenShake(shakeTime, shakeMagnitude)
+  if reduceFlashing then
+    return
+  end
+
   local shakeTimer = pd.timer.new(shakeTime, shakeMagnitude, 0)
 
   shakeTimer.updateCallback = function(timer)
