@@ -439,14 +439,27 @@ function pd.update()
         curRocket = nil
         lastRocketAt = frameCount
       elseif isRocketCollidingWithCircle(curRocket, moon.pos, moon.radius) then
-        if earth.health < earth.maxHealth then
+        local powerups = { 'bomb' }
+        if earth.health <= earth.maxHealth then
+          table.insert(powerups, 'health')
+        end
+        if not moon.hasShield then
+          table.insert(powerups, 'shield')
+        end
+
+        local powerup = powerups[math.random(#powerups)]
+
+        if powerup == 'health' then
           earth.health += 1
-          flashMessage('+1 HP!')
+          flashMessage('+1 Health!')
           powerupSound:play()
-        elseif not moon.hasShield then
+        elseif powerup == 'shield' then
           moon.hasShield = true
           flashMessage('You got a shield!')
           shieldUpSound:play()
+        elseif powerup == 'bomb' then
+          flashMessage('+1 Bomb!')
+          powerupSound:play()
         end
 
         curRocket = nil
@@ -613,5 +626,5 @@ function pd.update()
     end
   end
 
-  pd.drawFPS(5, screenHeight - 15)
+  --pd.drawFPS(5, screenHeight - 15)
 end
