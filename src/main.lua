@@ -44,9 +44,9 @@ local moon = {
   hasShield = false,
 }
 
-local rocketNorthImage = gfx.image.new("images/rocket_orth")
+local rocketNorthImage = gfx.image.new("images/rocket-orth")
 local rocketEastImage = rocketNorthImage:rotatedImage(90)
-local rocketNorthEastImage = gfx.image.new("images/rocket_diag")
+local rocketNorthEastImage = gfx.image.new("images/rocket-diag")
 
 local rocketDirectionInfo = {
   north = {
@@ -117,6 +117,20 @@ local function spawnRocket()
     acc = pd.geometry.vector2D.new(0, 0),
     direction = direction,
     info = directionInfo
+  }
+end
+
+local explosionImageTable = gfx.imagetable.new("images/explosion")
+local explosions = {}
+local curExplosionId = 0
+
+local function spawnExplosion(pos)
+  curExplosionId += 1
+  local id = curExplosionId
+  explosions[id] = {
+    pos = pos,
+    frame = 0,
+    dir = -1,
   }
 end
 
@@ -380,6 +394,7 @@ function pd.update()
         earth.health -= 1
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
+        spawnExplosion(asteroid.pos)
         screenShake(500, 5)
         boomSound:play()
       elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
@@ -388,6 +403,7 @@ function pd.update()
           shieldDownSound:play()
         else
           earth.health -= 1
+          spawnExplosion(asteroid.pos)
           screenShake(500, 5)
           boomSound:play()
         end
@@ -402,6 +418,14 @@ function pd.update()
             asteroid2.state = 'dead'
             score += 5
             flashMessage('2 asteroids collided! +5 points')
+            spawnExplosion(
+              pd.geometry.lineSegment.new(
+                asteroid.pos.x,
+                asteroid.pos.y,
+                asteroid2.pos.x,
+                asteroid2.pos.y
+              ):midPoint()
+            )
             goodBoomSound:play()
             break
           end
@@ -471,6 +495,21 @@ function pd.update()
     if isAsteroidOnScreen(asteroid) then
       gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
     end
+  end
+
+  -- Explosions
+  local idsToRemove = {}
+  for id, explosion in pairs(explosions) do
+    local animFrame = explosion.frame // 5 + 1
+    if animFrame <= #explosionImageTable then
+      explosionImageTable:getImage(animFrame):drawAnchored(explosion.pos.x, explosion.pos.y, 0.5, 0.5)
+      explosion.frame += 1
+    else
+      table.insert(idsToRemove, id)
+    end
+  end
+  for _, id in ipairs(idsToRemove) do
+    explosions[id] = nil
   end
 
   -- Hearts
