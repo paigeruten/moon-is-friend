@@ -9,6 +9,7 @@ local screenWidth, screenHeight = pd.display.getSize()
 
 math.randomseed(pd.getSecondsSinceEpoch())
 
+local frameCount = 0
 local score = 0
 local scene = 'title'
 local reduceFlashing = pd.getReduceFlashing()
@@ -27,7 +28,8 @@ local moon = {
   distanceFromEarth = moonDistanceFromEarth,
   radius = 6,
   gravityRadius = 50,
-  mass = 2,
+  mass = 1.75,
+  hasShield = false,
 }
 
 local rocketNorthImage = gfx.image.new("images/rocket_orth")
@@ -89,14 +91,14 @@ for direction, _ in pairs(rocketDirectionInfo) do
   table.insert(rocketDirections, direction)
 end
 
-local rocket = nil
+local curRocket = nil
 local lastRocketAt = 0
 
 local function spawnRocket()
   local direction = rocketDirections[math.random(#rocketDirections)]
   local directionInfo = rocketDirectionInfo[direction]
   local pos = earth.pos + pd.geometry.vector2D.newPolar(earth.radius + 1, directionInfo.angle)
-  rocket = {
+  curRocket = {
     frame = 0,
     pos = pos,
     vel = pd.geometry.vector2D.new(0, 0),
@@ -145,9 +147,29 @@ local function areCirclesColliding(centerA, radiusA, centerB, radiusB)
   return distance <= radiusA + radiusB
 end
 
+local function isRocketCollidingWithCircle(rocket, center, radius)
+  local direction = pd.geometry.vector2D.newPolar(1, rocket.info.angle)
+  -- Collision zone consists of three small circles along the length of the rocket
+  for section = 0, 2 do
+    local pos = rocket.pos + direction:scaledBy(section * 2)
+    if areCirclesColliding(pos, 1.5, center, radius) then
+      return true
+    end
+  end
+  return false
+end
+
 local stars = {}
 for _ = 1, 100 do
   table.insert(stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
+end
+
+local curMessage = nil
+local curMessageAt = nil
+
+local function flashMessage(message)
+  curMessage = message
+  curMessageAt = frameCount
 end
 
 local function screenShake(shakeTime, shakeMagnitude)
@@ -196,7 +218,6 @@ local heartSolid <const> = {
 pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
 
-local frameCount = 0
 function pd.update()
   pd.timer.updateTimers()
 
@@ -211,10 +232,6 @@ function pd.update()
     end
     return
   elseif scene == 'gameover' then
-    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawTextAligned("Game Over", screenWidth // 2, screenHeight - screenHeight // 3, kTextAlignment.center)
-    gfx.setImageDrawMode(gfx.kDrawModeCopy)
-
     if pd.buttonJustReleased(pd.kButtonA) then
       scene = 'game'
       frameCount = 0
@@ -222,6 +239,9 @@ function pd.update()
       asteroids = {}
       earth.maxHealth = 5
       earth.health = earth.maxHealth
+      curRocket = nil
+      lastRocketAt = 0
+      curMessage = nil
     end
     return
   end
@@ -259,22 +279,34 @@ function pd.update()
   end
 
   -- Update rocket
-  if rocket then
-    if rocket.frame == 100 then
+  if curRocket then
+    if curRocket.frame == 100 then
       -- Liftoff!
-      rocket.acc = pd.geometry.vector2D.newPolar(0.005, rocket.info.angle)
+      curRocket.acc = pd.geometry.vector2D.newPolar(0.005, curRocket.info.angle)
     end
-    rocket.vel += rocket.acc
-    rocket.pos += rocket.vel
+    curRocket.vel += curRocket.acc
+    curRocket.pos += curRocket.vel
 
-    rocket.frame += 1
+    curRocket.frame += 1
 
-    if not isRocketOnScreen(rocket) then
-      rocket = nil
+    if not isRocketOnScreen(curRocket) then
+      curRocket = nil
+      lastRocketAt = frameCount
+    elseif isRocketCollidingWithCircle(curRocket, moon.pos, moon.radius) then
+      if earth.health < earth.maxHealth then
+        earth.health += 1
+        flashMessage('+1 HP!')
+      elseif not moon.hasShield then
+        moon.hasShield = true
+        flashMessage('You got a shield!')
+      end
+
+      curRocket = nil
       lastRocketAt = frameCount
     end
   elseif (frameCount - lastRocketAt) > 150 and math.random(500) == 1 then -- every 3 + ~10 seconds
     spawnRocket()
+    flashMessage('Supplies incoming!')
   end
 
   -- Collisions
@@ -289,14 +321,20 @@ function pd.update()
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
       screenShake(500, 5)
-    elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius) then
-      earth.health -= 1
+    elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
+      if moon.hasShield then
+        moon.hasShield = false
+      else
+        earth.health -= 1
+        screenShake(500, 5)
+      end
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
-      screenShake(500, 5)
     else
       for id2, asteroid2 in pairs(asteroids) do
         if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
+          score += 5
+          flashMessage('Asteroids collided! +5 points')
           table.insert(idsToRemove, id)
           table.insert(idsToRemove, id2)
           asteroid.state = 'dead'
@@ -314,6 +352,7 @@ function pd.update()
   -- Check for game over
   if earth.health <= 0 then
     scene = 'gameover'
+    flashMessage('Game Over')
   end
 
   -- Update screen
@@ -331,10 +370,10 @@ function pd.update()
   gfx.fillCircleAtPoint(earth.pos, earth.radius)
 
   -- Rocket
-  if rocket then
-    if rocket.frame >= 100 or (rocket.frame // 5) % 2 == 0 then
-      rocket.info.image:drawAnchored(rocket.pos.x, rocket.pos.y, rocket.info.anchor.x, rocket.info.anchor.y,
-        rocket.info.flip)
+  if curRocket then
+    if curRocket.frame >= 100 or (curRocket.frame // 5) % 2 == 0 then
+      curRocket.info.image:drawAnchored(curRocket.pos.x, curRocket.pos.y, curRocket.info.anchor.x,
+        curRocket.info.anchor.y, curRocket.info.flip)
     end
   end
 
@@ -342,6 +381,11 @@ function pd.update()
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(moon.pos, moon.radius)
+  if moon.hasShield then
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.drawCircleAtPoint(moon.pos, moon.radius + 3)
+  end
 
   -- Asteroids
   gfx.setColor(gfx.kColorXOR)
@@ -365,6 +409,16 @@ function pd.update()
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
   gfx.drawTextAligned("Score: " .. score, screenWidth - 10, 10, kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  if curMessage then
+    if frameCount - curMessageAt > 100 then
+      curMessage = nil
+    else
+      gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+      gfx.drawTextAligned(curMessage, screenWidth // 2, screenHeight - 24, kTextAlignment.center)
+      gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    end
+  end
 
   pd.drawFPS(5, screenHeight - 15)
 
