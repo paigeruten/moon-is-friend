@@ -305,120 +305,121 @@ function pd.update()
     return
   end
 
-  if frameCount % 100 == 0 then -- 2 seconds
-    spawnAsteroid()
-  end
-
-  -- Handle input
   if not pd.isCrankDocked() then
     moon.pos = earth.pos + pd.geometry.vector2D.newPolar(moon.distanceFromEarth, pd.getCrankPosition())
-  end
 
-  -- Update physics
-  local idsToRemove = {}
-  for id, asteroid in pairs(asteroids) do
-    local earthVec = earth.pos - asteroid.pos
-    local acc = earthVec:scaledBy(earth.mass / earthVec:magnitudeSquared())
-    local moonVec = moon.pos - asteroid.pos
-    if moonVec:magnitude() <= moon.gravityRadius then
-      acc += moonVec:scaledBy(moon.mass / moonVec:magnitudeSquared())
+    if frameCount % 100 == 0 then -- 2 seconds
+      spawnAsteroid()
     end
-    asteroid.vel += acc
-    asteroid.pos += asteroid.vel
 
-    if asteroid.state == 'entering' and isAsteroidOnScreen(asteroid) then
-      asteroid.state = 'active'
-    elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
-      table.insert(idsToRemove, id)
-      score += 1
-      pointSound:play()
+    -- Update physics
+    local idsToRemove = {}
+    for id, asteroid in pairs(asteroids) do
+      local earthVec = earth.pos - asteroid.pos
+      local acc = earthVec:scaledBy(earth.mass / earthVec:magnitudeSquared())
+      local moonVec = moon.pos - asteroid.pos
+      if moonVec:magnitude() <= moon.gravityRadius then
+        acc += moonVec:scaledBy(moon.mass / moonVec:magnitudeSquared())
+      end
+      asteroid.vel += acc
+      asteroid.pos += asteroid.vel
+
+      if asteroid.state == 'entering' and isAsteroidOnScreen(asteroid) then
+        asteroid.state = 'active'
+      elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
+        table.insert(idsToRemove, id)
+        score += 1
+        pointSound:play()
+      end
     end
-  end
-  for _, id in ipairs(idsToRemove) do
-    asteroids[id] = nil
-  end
-
-  -- Update rocket
-  if curRocket then
-    if curRocket.frame == 100 then
-      -- Liftoff!
-      curRocket.acc = pd.geometry.vector2D.newPolar(0.005, curRocket.info.angle)
+    for _, id in ipairs(idsToRemove) do
+      asteroids[id] = nil
     end
-    curRocket.vel += curRocket.acc
-    curRocket.pos += curRocket.vel
 
-    curRocket.frame += 1
+    -- Update rocket
+    if curRocket then
+      if curRocket.frame == 100 then
+        -- Liftoff!
+        curRocket.acc = pd.geometry.vector2D.newPolar(0.005, curRocket.info.angle)
+      end
+      curRocket.vel += curRocket.acc
+      curRocket.pos += curRocket.vel
 
-    if not isRocketOnScreen(curRocket) then
-      curRocket = nil
-      lastRocketAt = frameCount
-    elseif isRocketCollidingWithCircle(curRocket, moon.pos, moon.radius) then
-      if earth.health < earth.maxHealth then
-        earth.health += 1
-        flashMessage('+1 HP!')
-        powerupSound:play()
-      elseif not moon.hasShield then
-        moon.hasShield = true
-        flashMessage('You got a shield!')
-        shieldUpSound:play()
+      curRocket.frame += 1
+
+      if not isRocketOnScreen(curRocket) then
+        curRocket = nil
+        lastRocketAt = frameCount
+      elseif isRocketCollidingWithCircle(curRocket, moon.pos, moon.radius) then
+        if earth.health < earth.maxHealth then
+          earth.health += 1
+          flashMessage('+1 HP!')
+          powerupSound:play()
+        elseif not moon.hasShield then
+          moon.hasShield = true
+          flashMessage('You got a shield!')
+          shieldUpSound:play()
+        end
+
+        curRocket = nil
+        lastRocketAt = frameCount
+      end
+    elseif (frameCount - lastRocketAt) > 150 and math.random(500) == 1 then -- every 3 + ~10 seconds
+      spawnRocket()
+      flashMessage('Supplies incoming!')
+    end
+
+    -- Collisions
+    idsToRemove = {}
+    for id, asteroid in pairs(asteroids) do
+      if asteroid.state ~= 'active' then
+        goto continue
       end
 
-      curRocket = nil
-      lastRocketAt = frameCount
-    end
-  elseif (frameCount - lastRocketAt) > 150 and math.random(500) == 1 then -- every 3 + ~10 seconds
-    spawnRocket()
-    flashMessage('Supplies incoming!')
-  end
-
-  -- Collisions
-  idsToRemove = {}
-  for id, asteroid in pairs(asteroids) do
-    if asteroid.state ~= 'active' then
-      goto continue
-    end
-
-    if areCirclesColliding(asteroid.pos, asteroid.radius, earth.pos, earth.radius) then
-      earth.health -= 1
-      table.insert(idsToRemove, id)
-      asteroid.state = 'dead'
-      screenShake(500, 5)
-      boomSound:play()
-    elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
-      if moon.hasShield then
-        moon.hasShield = false
-        shieldDownSound:play()
-      else
+      if areCirclesColliding(asteroid.pos, asteroid.radius, earth.pos, earth.radius) then
         earth.health -= 1
+        table.insert(idsToRemove, id)
+        asteroid.state = 'dead'
         screenShake(500, 5)
         boomSound:play()
-      end
-      table.insert(idsToRemove, id)
-      asteroid.state = 'dead'
-    else
-      for id2, asteroid2 in pairs(asteroids) do
-        if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
-          table.insert(idsToRemove, id)
-          table.insert(idsToRemove, id2)
-          asteroid.state = 'dead'
-          asteroid2.state = 'dead'
-          score += 5
-          flashMessage('2 asteroids collided! +5 points')
-          goodBoomSound:play()
-          break
+      elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
+        if moon.hasShield then
+          moon.hasShield = false
+          shieldDownSound:play()
+        else
+          earth.health -= 1
+          screenShake(500, 5)
+          boomSound:play()
+        end
+        table.insert(idsToRemove, id)
+        asteroid.state = 'dead'
+      else
+        for id2, asteroid2 in pairs(asteroids) do
+          if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
+            table.insert(idsToRemove, id)
+            table.insert(idsToRemove, id2)
+            asteroid.state = 'dead'
+            asteroid2.state = 'dead'
+            score += 5
+            flashMessage('2 asteroids collided! +5 points')
+            goodBoomSound:play()
+            break
+          end
         end
       end
+      ::continue::
     end
-    ::continue::
-  end
-  for _, id in ipairs(idsToRemove) do
-    asteroids[id] = nil
-  end
+    for _, id in ipairs(idsToRemove) do
+      asteroids[id] = nil
+    end
 
-  -- Check for game over
-  if earth.health <= 0 then
-    scene = 'gameover'
-    flashMessage('Game Over')
+    -- Check for game over
+    if earth.health <= 0 then
+      scene = 'gameover'
+      flashMessage('Game Over')
+    end
+
+    frameCount += 1
   end
 
   -- Update screen
@@ -500,6 +501,4 @@ function pd.update()
   end
 
   pd.drawFPS(5, screenHeight - 15)
-
-  frameCount += 1
 end

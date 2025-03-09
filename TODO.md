@@ -13,6 +13,8 @@
     * [ ] Rocket taking off particles
     * [ ] Asteroid tail (like a comet?) animation/particles
 * [x] Proper title screen
+* [ ] Bombs
+* [ ] Don't start the game until the crank is undocked
 * [ ] Tutorial/story
 * [ ] Bigger hearts
 * [ ] Increase difficulty (more frequent asteroids)
