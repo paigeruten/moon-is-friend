@@ -21,13 +21,14 @@
 * [ ] Bigger hearts
 * [ ] Launcher card
 * [ ] Screenshots / GIFs for itch and github
-* [ ] Bombs
+* [ ] Pause menu (Restart / Title Screen)
+* [x] Bombs
 * [ ] Powerups
     * [x] +1 HP
     * [x] Moon shield
     * [ ] Slow motion in moon's orbit
     * [ ] Max health up? (rare)
-    * [ ] +1 Bomb
+    * [x] +1 Bomb
 * [x] Sound effects
     * [x] Asteroid goes off screen
     * [x] Asteroids collide with each other

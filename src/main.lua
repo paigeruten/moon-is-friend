@@ -32,6 +32,7 @@ local earth = {
   mass = 0.6,
   health = 5,
   maxHealth = 5,
+  bombs = 0,
 }
 
 local moonDistanceFromEarth = 60
@@ -200,9 +201,13 @@ local function isRocketCollidingWithCircle(rocket, center, radius)
 end
 
 local stars = {}
-for _ = 1, 100 do
-  table.insert(stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
+local function regenerateStars()
+  stars = {}
+  for _ = 1, 100 do
+    table.insert(stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
+  end
 end
+regenerateStars()
 
 local curMessage = nil
 local curMessageAt = nil
@@ -233,27 +238,9 @@ local function screenShake(shakeTime, shakeMagnitude)
   end
 end
 
--- From 8x8.me
-local heartOutline <const> = {
-  0x00, --  ▓▓▓▓▓▓▓▓
-  0x6C, --  ▓░░▓░░▓▓
-  0x92, --  ░▓▓░▓▓░▓
-  0x82, --  ░▓▓▓▓▓░▓
-  0x44, --  ▓░▓▓▓░▓▓
-  0x28, --  ▓▓░▓░▓▓▓
-  0x10, --  ▓▓▓░▓▓▓▓
-  0x00, --  ▓▓▓▓▓▓▓▓
-}
-local heartSolid <const> = {
-  0x00, --  ▓▓▓▓▓▓▓▓
-  0x6C, --  ▓░░▓░░▓▓
-  0xFE, --  ░░░░░░░▓
-  0xFE, --  ░░░░░░░▓
-  0x7C, --  ▓░░░░░▓▓
-  0x38, --  ▓▓░░░▓▓▓
-  0x10, --  ▓▓▓░▓▓▓▓
-  0x00, --  ▓▓▓▓▓▓▓▓
-}
+local heartImage = gfx.image.new("images/heart")
+local heartEmptyImage = gfx.image.new("images/empty-heart")
+local bombImage = gfx.image.new("images/bomb")
 
 pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
@@ -386,9 +373,13 @@ function pd.update()
       asteroids = {}
       earth.maxHealth = 5
       earth.health = earth.maxHealth
+      earth.bombs = 0
+      moon.hasShield = false
       curRocket = nil
       lastRocketAt = 0
       curMessage = nil
+      explosions = {}
+      regenerateStars()
     end
     return
   end
@@ -458,7 +449,8 @@ function pd.update()
           flashMessage('You got a shield!')
           shieldUpSound:play()
         elseif powerup == 'bomb' then
-          flashMessage('+1 Bomb!')
+          earth.bombs += 1
+          flashMessage('+1 Bomb! (Ⓑ to use)')
           powerupSound:play()
         end
 
@@ -522,6 +514,18 @@ function pd.update()
     end
     for _, id in ipairs(idsToRemove) do
       asteroids[id] = nil
+    end
+
+    if pd.buttonJustPressed(pd.kButtonB) and earth.bombs > 0 then
+      earth.bombs -= 1
+      for _, asteroid in pairs(asteroids) do
+        if isAsteroidOnScreen(asteroid) then
+          spawnExplosion(asteroid.pos)
+        end
+      end
+      goodBoomSound:play()
+      screenShake(500, 5)
+      asteroids = {}
     end
 
     -- Check for game over
@@ -601,8 +605,12 @@ function pd.update()
 
   -- Hearts
   for i = 1, earth.maxHealth do
-    gfx.setPattern(earth.health >= i and heartSolid or heartOutline)
-    gfx.fillRect(0, (i - 1) * 8, 8, 8)
+    (earth.health >= i and heartImage or heartEmptyImage):draw(4, 4 + (i - 1) * 15)
+  end
+
+  -- Bombs
+  for i = 1, earth.bombs do
+    bombImage:draw(20, 4 + (i - 1) * 15)
   end
 
   -- UI
