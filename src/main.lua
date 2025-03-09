@@ -1,5 +1,6 @@
 import "CoreLibs/graphics"
 import "CoreLibs/object"
+import "CoreLibs/timer"
 import "CoreLibs/ui"
 
 local pd = playdate
@@ -50,10 +51,34 @@ local function isAsteroidOnScreen(asteroid)
   return x + r >= 0 and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
 end
 
+local function areCirclesColliding(centerA, radiusA, centerB, radiusB)
+  local distance = (centerB - centerA):magnitude()
+  return distance <= radiusA + radiusB
+end
+
+local function screenShake(shakeTime, shakeMagnitude)
+  local shakeTimer = pd.timer.new(shakeTime, shakeMagnitude, 0)
+
+  shakeTimer.updateCallback = function(timer)
+    -- Using the timer value, so the shaking magnitude
+    -- gradually decreases over time
+    local magnitude = math.floor(timer.value)
+    local shakeX = math.random(-magnitude, magnitude)
+    local shakeY = math.random(-magnitude, magnitude)
+    pd.display.setOffset(shakeX, shakeY)
+  end
+
+  shakeTimer.timerEndedCallback = function()
+    pd.display.setOffset(0, 0)
+  end
+end
+
 gfx.setBackgroundColor(gfx.kColorBlack)
 
 local frameCount = 0
 function pd.update()
+  pd.timer.updateTimers()
+
   if frameCount % 60 == 0 then -- 2 seconds
     spawnAsteroid()
   end
@@ -80,6 +105,21 @@ function pd.update()
     elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
       table.insert(idsToRemove, id)
       score += 1
+    end
+  end
+  for _, id in ipairs(idsToRemove) do
+    asteroids[id] = nil
+  end
+
+  -- Collisions
+  idsToRemove = {}
+  for id, asteroid in pairs(asteroids) do
+    if areCirclesColliding(asteroid.pos, asteroid.radius, earth.pos, earth.radius) then
+      table.insert(idsToRemove, id)
+      screenShake(500, 5)
+    elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius) then
+      table.insert(idsToRemove, id)
+      screenShake(500, 5)
     end
   end
   for _, id in ipairs(idsToRemove) do
