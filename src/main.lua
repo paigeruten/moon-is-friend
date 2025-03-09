@@ -52,9 +52,12 @@ end
 
 gfx.setBackgroundColor(gfx.kColorBlack)
 
-spawnAsteroid()
-
+local frameCount = 0
 function pd.update()
+  if frameCount % 150 == 0 then -- 5 seconds
+    spawnAsteroid()
+  end
+
   -- Handle input
   if not pd.isCrankDocked() then
     moon.pos = earth.pos + pd.geometry.vector2D.newPolar(moon.distanceFromEarth, pd.getCrankPosition())
@@ -77,7 +80,6 @@ function pd.update()
     elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
       table.insert(idsToRemove, id)
       score += 1
-      spawnAsteroid()
     end
   end
   for _, id in ipairs(idsToRemove) do
@@ -111,4 +113,6 @@ function pd.update()
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
   gfx.drawTextAligned("Score: " .. score, screenWidth - 10, 10, kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  frameCount += 1
 end
