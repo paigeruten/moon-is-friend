@@ -483,9 +483,9 @@ function pd.update()
     pd.ui.crankIndicator:draw()
   end
 
-  gfx.setFont(largeFont)
+  gfx.setFont(smallFont)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned("Score: " .. score, screenWidth - 10, 10, kTextAlignment.right)
+  gfx.drawTextAligned("Score " .. score, screenWidth - 10, 10, kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   if curMessage then
