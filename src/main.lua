@@ -10,13 +10,15 @@ local screenWidth, screenHeight = pd.display.getSize()
 math.randomseed(pd.getSecondsSinceEpoch())
 
 local score = 0
+local scene = 'title'
 local reduceFlashing = pd.getReduceFlashing()
 
 local earth = {
   pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
   radius = 12,
-  mass = 0.5,
-  health = 100,
+  mass = 1,
+  health = 5,
+  maxHealth = 5,
 }
 
 local moonDistanceFromEarth = 60
@@ -26,7 +28,6 @@ local moon = {
   radius = 6,
   gravityRadius = 50,
   mass = 3,
-  health = 3,
 }
 
 local asteroids = {}
@@ -63,6 +64,11 @@ local function areCirclesColliding(centerA, radiusA, centerB, radiusB)
   return distance <= radiusA + radiusB
 end
 
+local stars = {}
+for _ = 1, 100 do
+  table.insert(stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
+end
+
 local function screenShake(shakeTime, shakeMagnitude)
   if reduceFlashing then
     return
@@ -84,20 +90,62 @@ local function screenShake(shakeTime, shakeMagnitude)
   end
 end
 
+-- From 8x8.me
+local heartOutline <const> = {
+  0x00, --  ▓▓▓▓▓▓▓▓
+  0x6C, --  ▓░░▓░░▓▓
+  0x92, --  ░▓▓░▓▓░▓
+  0x82, --  ░▓▓▓▓▓░▓
+  0x44, --  ▓░▓▓▓░▓▓
+  0x28, --  ▓▓░▓░▓▓▓
+  0x10, --  ▓▓▓░▓▓▓▓
+  0x00, --  ▓▓▓▓▓▓▓▓
+}
+local heartSolid <const> = {
+  0x00, --  ▓▓▓▓▓▓▓▓
+  0x6C, --  ▓░░▓░░▓▓
+  0xFE, --  ░░░░░░░▓
+  0xFE, --  ░░░░░░░▓
+  0x7C, --  ▓░░░░░▓▓
+  0x38, --  ▓▓░░░▓▓▓
+  0x10, --  ▓▓▓░▓▓▓▓
+  0x00, --  ▓▓▓▓▓▓▓▓
+}
+
 gfx.setBackgroundColor(gfx.kColorBlack)
 
 local frameCount = 0
 function pd.update()
   pd.timer.updateTimers()
 
-  if frameCount % 60 == 0 then -- 2 seconds
-    spawnAsteroid()
+  if scene == 'title' then
+    gfx.clear()
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight // 2, kTextAlignment.center)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+    if pd.buttonJustReleased(pd.kButtonA) then
+      scene = 'game'
+    end
+    return
+  elseif scene == 'gameover' then
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.drawTextAligned("Game Over", screenWidth // 2, screenHeight - screenHeight // 3, kTextAlignment.center)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+    if pd.buttonJustReleased(pd.kButtonA) then
+      scene = 'game'
+      frameCount = 0
+      score = 0
+      asteroids = {}
+      earth.maxHealth = 5
+      earth.health = earth.maxHealth
+    end
+    return
   end
 
-  if frameCount % 20 == 0 then
-    if earth.health < 100 then
-      earth.health += 1
-    end
+  if frameCount % 60 == 0 then -- 2 seconds
+    spawnAsteroid()
   end
 
   -- Handle input
@@ -136,12 +184,12 @@ function pd.update()
     end
 
     if areCirclesColliding(asteroid.pos, asteroid.radius, earth.pos, earth.radius) then
-      earth.health -= 30
+      earth.health -= 1
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
       screenShake(500, 5)
     elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius) then
-      moon.health -= 1
+      earth.health -= 1
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
       screenShake(500, 5)
@@ -162,18 +210,24 @@ function pd.update()
     asteroids[id] = nil
   end
 
+  -- Check for game over
+  if earth.health <= 0 then
+    scene = 'gameover'
+  end
+
   -- Update screen
   gfx.clear()
+
+  -- Stars
+  gfx.setColor(gfx.kColorWhite)
+  for _, star in ipairs(stars) do
+    gfx.drawPixel(star)
+  end
 
   -- Earth
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.45, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(earth.pos, earth.radius)
-
-  -- Earth health
-  gfx.setColor(gfx.kColorWhite)
-  gfx.drawRoundRect(earth.pos.x - 10, earth.pos.y + 14, 20, 5, 3)
-  gfx.fillRoundRect(earth.pos.x - 10, earth.pos.y + 14, 20 * (earth.health / 100), 5, 3)
 
   -- Moon
   gfx.setColor(gfx.kColorWhite)
@@ -183,7 +237,15 @@ function pd.update()
   -- Asteroids
   gfx.setColor(gfx.kColorXOR)
   for _, asteroid in pairs(asteroids) do
-    gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
+    if isAsteroidOnScreen(asteroid) then
+      gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
+    end
+  end
+
+  -- Hearts
+  for i = 1, earth.maxHealth do
+    gfx.setPattern(earth.health >= i and heartSolid or heartOutline)
+    gfx.fillRect(0, (i - 1) * 8, 8, 8)
   end
 
   -- UI
