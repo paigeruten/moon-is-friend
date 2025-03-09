@@ -1,0 +1,89 @@
+{
+	"amp_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.43538171052933,
+		"delay_fade":0.031208194792271,
+		"delay_start":0.077528342604637,
+		"depth":1.8880558013916,
+		"enabled":false,
+		"phase":0,
+		"rate":7.0927581787109,
+		"start_phase":0.40361428260803,
+		"type":5
+	},
+	"attack":0.020332351326942,
+	"curvature":0.42137506604195,
+	"decay":0.052765086293221,
+	"duration":0.061066083610058,
+	"freq_mod": {
+		"arpeggio": [
+			13.534733772278,
+			5.0456376075745,
+			14.111736297607,
+			5.9282598495483,
+			17.267948150635
+		],
+		"arpeggio_enabled":false,
+		"center":0.49984899163246,
+		"delay_fade":0.00042736300383694,
+		"delay_start":0.3991741836071,
+		"depth":0.27557855844498,
+		"enabled":false,
+		"phase":0,
+		"rate":0.10000000149012,
+		"start_phase":0.43683513998985,
+		"type":1
+	},
+	"lock_note_to_integer":false,
+	"name":"moon-boop",
+	"note":65.052299499512,
+	"parameter1_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"parameter2_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"release":0.24337840080261,
+	"sustain":0.70324856042862,
+	"volume":0.4289259314537,
+	"wave":4
+}

@@ -19,6 +19,7 @@ local reduceFlashing = pd.getReduceFlashing()
 local largeFont = gfx.getSystemFont()
 local smallFont = gfx.font.new("fonts/font-rains-1x")
 
+local boopSound = pdfxr.synth.new("sounds/boop")
 local boomSound = pdfxr.synth.new("sounds/boom")
 local goodBoomSound = pdfxr.synth.new("sounds/good-boom")
 local pointSound = pdfxr.synth.new("sounds/point")
@@ -291,6 +292,7 @@ function pd.update()
     if pd.buttonJustReleased(pd.kButtonA) then
       scene = 'story'
       frameCount = 0
+      boopSound:play()
     end
     return
   elseif scene == 'story' or scene == 'instructions' then
@@ -361,9 +363,11 @@ function pd.update()
       elseif scene == 'story' then
         scene = 'instructions'
         frameCount = 0
+        boopSound:play()
       else
         scene = 'game'
         frameCount = 0
+        boopSound:play(77)
       end
     end
     return
@@ -395,6 +399,7 @@ function pd.update()
       else
         gameoverSelection = 'retry'
       end
+      boopSound:play()
     end
 
     if pd.buttonJustReleased(pd.kButtonA) then
@@ -417,6 +422,7 @@ function pd.update()
       explosions = {}
       regenerateStars()
       gameoverSelection = 'retry'
+      boopSound:play(77)
     end
     frameCount += 1
     return
