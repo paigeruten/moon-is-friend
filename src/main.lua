@@ -38,7 +38,7 @@ local function spawnAsteroid()
   asteroids[id] = {
     id = id,
     pos = pos,
-    vel = (earth.pos - pos):normalized():scaledBy(1),
+    vel = (earth.pos - pos):normalized():scaledBy(math.random() + 1),
     radius = 3,
     state = 'entering',
   }
@@ -54,7 +54,7 @@ gfx.setBackgroundColor(gfx.kColorBlack)
 
 local frameCount = 0
 function pd.update()
-  if frameCount % 150 == 0 then -- 5 seconds
+  if frameCount % 60 == 0 then -- 2 seconds
     spawnAsteroid()
   end
 
