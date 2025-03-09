@@ -131,15 +131,32 @@ function pd.update()
   -- Collisions
   idsToRemove = {}
   for id, asteroid in pairs(asteroids) do
+    if asteroid.state ~= 'active' then
+      goto continue
+    end
+
     if areCirclesColliding(asteroid.pos, asteroid.radius, earth.pos, earth.radius) then
       earth.health -= 30
       table.insert(idsToRemove, id)
+      asteroid.state = 'dead'
       screenShake(500, 5)
     elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius) then
       moon.health -= 1
       table.insert(idsToRemove, id)
+      asteroid.state = 'dead'
       screenShake(500, 5)
+    else
+      for id2, asteroid2 in pairs(asteroids) do
+        if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
+          table.insert(idsToRemove, id)
+          table.insert(idsToRemove, id2)
+          asteroid.state = 'dead'
+          asteroid2.state = 'dead'
+          break
+        end
+      end
     end
+    ::continue::
   end
   for _, id in ipairs(idsToRemove) do
     asteroids[id] = nil
