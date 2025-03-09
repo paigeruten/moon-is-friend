@@ -290,9 +290,9 @@ function pd.update()
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 4, 140, 16, 5)
+    gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5, 140, 17, 5)
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 4, 140, 16, 5)
+    gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5, 140, 17, 5)
 
     gfx.setFont(smallFont)
     gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4, kTextAlignment.center)
@@ -300,8 +300,82 @@ function pd.update()
     frameCount += 1
 
     if pd.buttonJustReleased(pd.kButtonA) then
-      scene = 'game'
+      scene = 'story'
       frameCount = 0
+    end
+    return
+  elseif scene == 'story' or scene == 'instructions' then
+    gfx.clear()
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(0, 0, screenWidth, screenHeight, 15)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(1, 1, screenWidth - 2, screenHeight - 2, 15)
+
+    local text
+    local paddingX, paddingY = 10, 10
+    local title = nil
+    if scene == 'story' then
+      title = "2038: The Moon Wakes Up"
+      paddingY = 50
+      text = {
+        "After a large-scale asteroid mining expedition\ngone wrong, "
+        .. "the Earth is now under a barrage of\nasteroids and is very scared.",
+        "Desparate to help its best friend, "
+        .. "the Moon has\nwoken up from its deep slumber "
+        .. "and is free to\nmove around in its orbit "
+        .. "to deflect the incoming\nasteroids with its gravitational pull." }
+    else
+      text = {
+        "Control the Moon with the crank "
+        .. "to pull incoming\nasteroids away from the Earth, "
+        .. "but don't let the\nasteroids hit the Moon either. "
+        .. "Bonus points for\ngetting two asteroids to collide with each other!",
+        "Sometimes Earth will send up a rocket full of\nsupplies - "
+        .. "make sure to catch it as it zooms by! "
+        .. "It\ncould contain extra health, a shield, or give you\nspecial abilities.",
+        "The game has no end, but if you can get 100\npoints you'll get a gold star on the title screen!"
+      }
+    end
+
+    local maxChars = math.floor(frameCount * 1.5)
+
+    gfx.setFont(largeFont)
+
+    if title then
+      gfx.drawTextAligned('*' .. title .. '*', screenWidth // 2, 16, kTextAlignment.center)
+    end
+
+    local done = true
+    local textY = paddingY
+    for _, para in ipairs(text) do
+      if maxChars < #para then
+        para = string.sub(para, 1, maxChars)
+        done = false
+      end
+      local _, paraHeight = gfx.drawText(para, paddingX, textY, screenWidth - paddingX * 2, screenHeight)
+      textY += paraHeight + 10
+      if maxChars < #para then
+        break
+      else
+        maxChars -= #para
+      end
+    end
+
+    local perlY = math.min(3, math.max(-3, gfx.perlin(0, (frameCount % 100) / 100, 0, 0) * 20 - 10))
+    gfx.drawText("Ⓐ", screenWidth - 28, screenHeight - 28 + perlY)
+
+    frameCount += 1
+
+    if pd.buttonJustReleased(pd.kButtonA) then
+      if not done then
+        frameCount = 1000000
+      elseif scene == 'story' then
+        scene = 'instructions'
+        frameCount = 0
+      else
+        scene = 'game'
+        frameCount = 0
+      end
     end
     return
   elseif scene == 'gameover' then
