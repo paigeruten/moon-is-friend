@@ -12,8 +12,10 @@
     * [ ] Asteroid collision explosions
     * [ ] Rocket taking off particles
     * [ ] Asteroid tail (like a comet?) animation/particles
-* [ ] Proper title screen
+* [x] Proper title screen
+* [ ] Tutorial/story
 * [ ] Increase difficulty (more frequent asteroids)
+* [ ] End goal (100 points = you saved Earth, but can choose to keep playing endlessly?)
 * [ ] Powerups
     * [x] +1 HP
     * [x] Moon shield
@@ -21,11 +23,11 @@
     * [ ] Max health up? (rare)
     * [ ] +1 Bomb
 * [ ] Sound effects
-    * [ ] Asteroid goes off screen
-    * [ ] Asteroids collide with each other
-    * [ ] Asteroid collides with moon or earth
-    * [ ] +1 HP
-    * [ ] Gain shield
-    * [ ] Asteroid takes out shield
-* [ ] Googly eyes on earth looking worriedly at the closest incoming asteroid?
+    * [x] Asteroid goes off screen
+    * [x] Asteroids collide with each other
+    * [x] Asteroid collides with moon or earth
+    * [x] +1 HP / powerup
+    * [x] Gain shield
+    * [x] Asteroid takes out shield
+* [x] Googly eyes on earth looking worriedly at the closest incoming asteroid?
 * [ ] Cute messages (or facial expressions?) between moon and earth
