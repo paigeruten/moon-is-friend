@@ -16,6 +16,7 @@ local earth = {
   pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
   radius = 12,
   mass = 0.5,
+  health = 100,
 }
 
 local moonDistanceFromEarth = 60
@@ -25,6 +26,7 @@ local moon = {
   radius = 6,
   gravityRadius = 50,
   mass = 3,
+  health = 3,
 }
 
 local asteroids = {}
@@ -92,6 +94,12 @@ function pd.update()
     spawnAsteroid()
   end
 
+  if frameCount % 20 == 0 then
+    if earth.health < 100 then
+      earth.health += 1
+    end
+  end
+
   -- Handle input
   if not pd.isCrankDocked() then
     moon.pos = earth.pos + pd.geometry.vector2D.newPolar(moon.distanceFromEarth, pd.getCrankPosition())
@@ -124,9 +132,11 @@ function pd.update()
   idsToRemove = {}
   for id, asteroid in pairs(asteroids) do
     if areCirclesColliding(asteroid.pos, asteroid.radius, earth.pos, earth.radius) then
+      earth.health -= 30
       table.insert(idsToRemove, id)
       screenShake(500, 5)
     elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius) then
+      moon.health -= 1
       table.insert(idsToRemove, id)
       screenShake(500, 5)
     end
@@ -142,6 +152,11 @@ function pd.update()
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.45, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(earth.pos, earth.radius)
+
+  -- Earth health
+  gfx.setColor(gfx.kColorWhite)
+  gfx.drawRoundRect(earth.pos.x - 10, earth.pos.y + 14, 20, 5, 3)
+  gfx.fillRoundRect(earth.pos.x - 10, earth.pos.y + 14, 20 * (earth.health / 100), 5, 3)
 
   -- Moon
   gfx.setColor(gfx.kColorWhite)
