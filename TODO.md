@@ -14,6 +14,7 @@
     * [ ] Asteroid tail (like a comet?) animation/particles
 * [x] Proper title screen
 * [ ] Tutorial/story
+* [ ] Bigger hearts
 * [ ] Increase difficulty (more frequent asteroids)
 * [ ] End goal (100 points = you saved Earth, but can choose to keep playing endlessly?)
 * [ ] Powerups

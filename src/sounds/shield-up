@@ -1,0 +1,89 @@
+{
+	"amp_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.57630431652069,
+		"delay_fade":0.50148302316666,
+		"delay_start":0,
+		"depth":0.44367331266403,
+		"enabled":true,
+		"phase":0,
+		"rate":13.996129989624,
+		"start_phase":0.38878855109215,
+		"type":4
+	},
+	"attack":0.076634854078293,
+	"curvature":0.68440282344818,
+	"decay":0.051165781915188,
+	"duration":0.069202229380608,
+	"freq_mod": {
+		"arpeggio": [
+			1.6976654529572,
+			4.0323243141174,
+			10.874706268311,
+			6.2603621482849,
+			24.617433547974
+		],
+		"arpeggio_enabled":false,
+		"center":0.21635577082634,
+		"delay_fade":0,
+		"delay_start":0.0006988289533183,
+		"depth":0.67306864261627,
+		"enabled":true,
+		"phase":0,
+		"rate":1.8638007640839,
+		"start_phase":0.26740449666977,
+		"type":2
+	},
+	"lock_note_to_integer":false,
+	"name":"moon-shield-up",
+	"note":57.701332092285,
+	"parameter1_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"parameter2_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"release":0.20664183795452,
+	"sustain":0.68528366088867,
+	"volume":0.70566469430923,
+	"wave":6
+}

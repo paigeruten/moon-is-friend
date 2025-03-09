@@ -1,0 +1,89 @@
+{
+	"amp_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.45615473389626,
+		"delay_fade":0.15884330868721,
+		"delay_start":0.10071181505919,
+		"depth":1.0446619987488,
+		"enabled":false,
+		"phase":0,
+		"rate":4.0302391052246,
+		"start_phase":0.10181927680969,
+		"type":4
+	},
+	"attack":0.08519871532917,
+	"curvature":0.43445253372192,
+	"decay":0.1321128308773,
+	"duration":0.13254028558731,
+	"freq_mod": {
+		"arpeggio": [
+			4.5583486557007,
+			1.57410800457,
+			14.262223243713,
+			2.7965650558472,
+			7.7439785003662
+		],
+		"arpeggio_enabled":true,
+		"center":0.5808852314949,
+		"delay_fade":0.0039422288537025,
+		"delay_start":0.093294195830822,
+		"depth":2.6505346298218,
+		"enabled":true,
+		"phase":0,
+		"rate":7.5041904449463,
+		"start_phase":0.3938399553299,
+		"type":2
+	},
+	"lock_note_to_integer":false,
+	"name":"moon-powerup",
+	"note":65.586944580078,
+	"parameter1_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"parameter2_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"release":0.4480944275856,
+	"sustain":0.79688429832458,
+	"volume":0.7182799577713,
+	"wave":8
+}

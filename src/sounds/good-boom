@@ -1,0 +1,89 @@
+{
+	"amp_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.57587862014771,
+		"delay_fade":0.33442705869675,
+		"delay_start":0.00073453719960526,
+		"depth":0.68187272548676,
+		"enabled":true,
+		"phase":0,
+		"rate":10.117022514343,
+		"start_phase":0.48030224442482,
+		"type":1
+	},
+	"attack":0.051833741366863,
+	"curvature":0.80374014377594,
+	"decay":0.20927877724171,
+	"duration":0.031319499015808,
+	"freq_mod": {
+		"arpeggio": [
+			1.6976654529572,
+			4.0323243141174,
+			10.874706268311,
+			6.2603621482849,
+			24.617433547974
+		],
+		"arpeggio_enabled":false,
+		"center":0.67007285356522,
+		"delay_fade":0.0094141224399209,
+		"delay_start":0,
+		"depth":0.51974701881409,
+		"enabled":true,
+		"phase":0,
+		"rate":4.4060492515564,
+		"start_phase":0.29247033596039,
+		"type":2
+	},
+	"lock_note_to_integer":false,
+	"name":"moon-boom-asteroids",
+	"note":48.974422454834,
+	"parameter1_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"parameter2_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.5,
+		"delay_fade":0,
+		"delay_start":0,
+		"depth":0.5,
+		"enabled":false,
+		"phase":0,
+		"rate":5,
+		"start_phase":0,
+		"type":1
+	},
+	"release":0.16368547081947,
+	"sustain":0.67606365680695,
+	"volume":0.56708043813705,
+	"wave":5
+}

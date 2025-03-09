@@ -3,6 +3,8 @@ import "CoreLibs/object"
 import "CoreLibs/timer"
 import "CoreLibs/ui"
 
+import "vendor/pdfxr"
+
 local pd = playdate
 local gfx = pd.graphics
 local screenWidth, screenHeight = pd.display.getSize()
@@ -16,6 +18,13 @@ local reduceFlashing = pd.getReduceFlashing()
 
 local largeFont = gfx.getSystemFont()
 local smallFont = gfx.font.new("fonts/font-rains-1x")
+
+local boomSound = pdfxr.synth.new("sounds/boom")
+local goodBoomSound = pdfxr.synth.new("sounds/good-boom")
+local pointSound = pdfxr.synth.new("sounds/point")
+local powerupSound = pdfxr.synth.new("sounds/powerup")
+local shieldDownSound = pdfxr.synth.new("sounds/shield-down")
+local shieldUpSound = pdfxr.synth.new("sounds/shield-up")
 
 local earth = {
   pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
@@ -322,6 +331,7 @@ function pd.update()
     elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
       table.insert(idsToRemove, id)
       score += 1
+      pointSound:play()
     end
   end
   for _, id in ipairs(idsToRemove) do
@@ -346,9 +356,11 @@ function pd.update()
       if earth.health < earth.maxHealth then
         earth.health += 1
         flashMessage('+1 HP!')
+        powerupSound:play()
       elseif not moon.hasShield then
         moon.hasShield = true
         flashMessage('You got a shield!')
+        shieldUpSound:play()
       end
 
       curRocket = nil
@@ -371,24 +383,28 @@ function pd.update()
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
       screenShake(500, 5)
+      boomSound:play()
     elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
       if moon.hasShield then
         moon.hasShield = false
+        shieldDownSound:play()
       else
         earth.health -= 1
         screenShake(500, 5)
+        boomSound:play()
       end
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
     else
       for id2, asteroid2 in pairs(asteroids) do
         if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
-          score += 5
-          flashMessage('2 asteroids collided! +5 points')
           table.insert(idsToRemove, id)
           table.insert(idsToRemove, id2)
           asteroid.state = 'dead'
           asteroid2.state = 'dead'
+          score += 5
+          flashMessage('2 asteroids collided! +5 points')
+          goodBoomSound:play()
           break
         end
       end
