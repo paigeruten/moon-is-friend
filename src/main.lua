@@ -242,6 +242,8 @@ local heartImage = gfx.image.new("images/heart")
 local heartEmptyImage = gfx.image.new("images/empty-heart")
 local bombImage = gfx.image.new("images/bomb")
 
+local gameoverSelection = 'retry'
+
 pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
 
@@ -366,8 +368,42 @@ function pd.update()
     end
     return
   elseif scene == 'gameover' then
+    local gameoverBoxHeight = math.min(math.floor(frameCount * 1.5), 28)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(0, screenHeight - gameoverBoxHeight, screenWidth, gameoverBoxHeight)
+    gfx.setFont(largeFont)
+    gfx.drawText("Game Over", 20, screenHeight - gameoverBoxHeight + 5)
+
+    gfx.setFont(smallFont)
+    local optionY = screenHeight - gameoverBoxHeight + 11
+    local retryX = screenWidth // 2 - 32
+    local backX = screenWidth // 2 + 64
+    local retryWidth, retryHeight = gfx.drawText("Retry", retryX, optionY)
+    local backWidth, backHeight = gfx.drawText("Back to title", backX, optionY)
+
+    local perlY = math.min(2, math.max(-2, gfx.perlin(0, (frameCount % 100) / 100, 0, 0) * 20 - 10))
+    gfx.setColor(gfx.kColorBlack)
+    if gameoverSelection == 'retry' then
+      gfx.fillRect(retryX, optionY + retryHeight + 4 + perlY, retryWidth, 2)
+    else
+      gfx.fillRect(backX, optionY + backHeight + 4 + perlY, backWidth, 2)
+    end
+
+    if pd.buttonJustPressed(pd.kButtonLeft) or pd.buttonJustPressed(pd.kButtonRight) then
+      if gameoverSelection == 'retry' then
+        gameoverSelection = 'back'
+      else
+        gameoverSelection = 'retry'
+      end
+    end
+
     if pd.buttonJustReleased(pd.kButtonA) then
-      scene = 'game'
+      if gameoverSelection == 'retry' then
+        scene = 'game'
+      else
+        scene = 'title'
+      end
+
       frameCount = 0
       score = 0
       asteroids = {}
@@ -380,7 +416,9 @@ function pd.update()
       curMessage = nil
       explosions = {}
       regenerateStars()
+      gameoverSelection = 'retry'
     end
+    frameCount += 1
     return
   end
 
@@ -531,7 +569,7 @@ function pd.update()
     -- Check for game over
     if earth.health <= 0 then
       scene = 'gameover'
-      flashMessage('Game Over')
+      frameCount = 0
     end
 
     frameCount += 1
