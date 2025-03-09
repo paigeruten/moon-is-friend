@@ -14,6 +14,9 @@ local score = 0
 local scene = 'title'
 local reduceFlashing = pd.getReduceFlashing()
 
+local largeFont = gfx.getSystemFont()
+local smallFont = gfx.font.new("fonts/font-rains-1x")
+
 local earth = {
   pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
   radius = 12,
@@ -237,12 +240,45 @@ function pd.update()
 
   if scene == 'title' then
     gfx.clear()
+
+    gfx.setColor(gfx.kColorWhite)
+    for _, star in ipairs(stars) do
+      gfx.drawPixel(star)
+    end
+
+    local animFrame = math.min(frameCount, 700)
+
+    -- Earth
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.45, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillCircleAtPoint(screenWidth - 60, screenHeight // 4, 20)
+
+    -- Moon
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillCircleAtPoint(screenWidth / 3 + animFrame / 10, screenHeight * 2 / 3 - animFrame / 20, screenWidth / 3)
+
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRoundRect(screenWidth // 4, screenHeight // 2 - 12, screenWidth // 2, 24, 5)
+
+    gfx.setFont(largeFont)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight // 2, kTextAlignment.center)
+    gfx.drawTextAligned("The Moon is our Friend", screenWidth // 2, screenHeight // 2 - 9, kTextAlignment.center)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 4, 140, 16, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 4, 140, 16, 5)
+
+    gfx.setFont(smallFont)
+    gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4, kTextAlignment.center)
+
+    frameCount += 1
 
     if pd.buttonJustReleased(pd.kButtonA) then
       scene = 'game'
+      frameCount = 0
     end
     return
   elseif scene == 'gameover' then
@@ -348,7 +384,7 @@ function pd.update()
       for id2, asteroid2 in pairs(asteroids) do
         if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
           score += 5
-          flashMessage('Asteroids collided! +5 points')
+          flashMessage('2 asteroids collided! +5 points')
           table.insert(idsToRemove, id)
           table.insert(idsToRemove, id2)
           asteroid.state = 'dead'
@@ -431,6 +467,7 @@ function pd.update()
     pd.ui.crankIndicator:draw()
   end
 
+  gfx.setFont(largeFont)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
   gfx.drawTextAligned("Score: " .. score, screenWidth - 10, 10, kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
@@ -439,6 +476,7 @@ function pd.update()
     if frameCount - curMessageAt > 100 then
       curMessage = nil
     else
+      gfx.setFont(largeFont)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
       gfx.drawTextAligned(curMessage, screenWidth // 2, screenHeight - 24, kTextAlignment.center)
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
