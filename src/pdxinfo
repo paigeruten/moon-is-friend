@@ -4,3 +4,4 @@ description=Help the Moon must protect its best friend from a barrage of asteroi
 bundleID=com.paigeruten.moonisfriend
 version=0.1.0
 buildNumber=1
+imagePath=images/launcher
