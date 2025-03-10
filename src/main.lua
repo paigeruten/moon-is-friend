@@ -15,7 +15,7 @@ math.randomseed(pd.getSecondsSinceEpoch())
 local frameCount = 0
 local score = 0
 local scene = 'title'
-local reduceFlashing = pd.getReduceFlashing()
+local screenShakeEnabled = not pd.getReduceFlashing()
 local starScore = 100
 
 local largeFont = gfx.getSystemFont()
@@ -223,7 +223,7 @@ local function flashMessage(message)
 end
 
 local function screenShake(shakeTime, shakeMagnitude)
-  if reduceFlashing then
+  if not screenShakeEnabled then
     return
   end
 
@@ -248,8 +248,40 @@ local heartEmptyImage = gfx.image.new("images/empty-heart")
 local bombImage = gfx.image.new("images/bomb")
 local starImage = gfx.image.new("images/star")
 
+local menu = pd.getSystemMenu()
+menu:addCheckmarkMenuItem('screen shake', screenShakeEnabled, function(checked)
+  screenShakeEnabled = checked
+end)
+
+-- Menu items that should be removed when going back to the title screen
+local inGameMenuItems = {}
+
+local function resetMenu()
+  for _, menuItem in ipairs(inGameMenuItems) do
+    menu:removeMenuItem(menuItem)
+  end
+  inGameMenuItems = {}
+end
+
 local gameoverSelection = 'retry'
 local isHighScore = false
+
+local function resetGame()
+  frameCount = 0
+  score = 0
+  asteroids = {}
+  earth.maxHealth = 5
+  earth.health = earth.maxHealth
+  earth.bombs = 0
+  moon.hasShield = false
+  curRocket = nil
+  lastRocketAt = 0
+  curMessage = nil
+  explosions = {}
+  regenerateStars()
+  gameoverSelection = 'retry'
+  isHighScore = false
+end
 
 pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
@@ -390,6 +422,16 @@ function pd.update()
         scene = 'game'
         frameCount = 0
         boopSound:play(77)
+
+        table.insert(inGameMenuItems, (menu:addMenuItem('restart game', function()
+          resetGame()
+          scene = 'game'
+        end)))
+        table.insert(inGameMenuItems, (menu:addMenuItem('back to title', function()
+          resetGame()
+          scene = 'title'
+          resetMenu()
+        end)))
       end
     end
     return
@@ -437,22 +479,10 @@ function pd.update()
         scene = 'game'
       else
         scene = 'title'
+        resetMenu()
       end
 
-      frameCount = 0
-      score = 0
-      asteroids = {}
-      earth.maxHealth = 5
-      earth.health = earth.maxHealth
-      earth.bombs = 0
-      moon.hasShield = false
-      curRocket = nil
-      lastRocketAt = 0
-      curMessage = nil
-      explosions = {}
-      regenerateStars()
-      gameoverSelection = 'retry'
-      isHighScore = false
+      resetGame()
       boopSound:play(77)
     end
     frameCount += 1
