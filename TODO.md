@@ -19,8 +19,8 @@
 * [x] End goal (100 points = you get a star?)
 * [x] Save high score
 * [x] Bigger hearts
-* [ ] Launcher card
-* [ ] Screenshots / GIFs for itch and github
+* [x] Launcher card
+* [x] Screenshots / GIFs for itch and github
 * [x] Pause menu (Restart / Title Screen)
 * [x] Bombs
 * [ ] Powerups
@@ -37,5 +37,5 @@
     * [x] Gain shield
     * [x] Asteroid takes out shield
 * [x] Googly eyes on earth looking worriedly at the closest incoming asteroid?
-* [ ] Increase difficulty (more frequent asteroids)
+* [x] Increase difficulty (more frequent asteroids)
 * [ ] Cute messages (or facial expressions?) between moon and earth
