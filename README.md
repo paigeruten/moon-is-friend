@@ -2,6 +2,8 @@
 
 An arcade game for [Playdate](https://play.date/) made in one weekend, for [PlayJam 7](https://itch.io/jam/playjam-7).
 
+Download the game here: https://paigeruten.itch.io/moon-is-friend
+
 ![](screenshots/moon-friend-title.png) ![](screenshots/moon-friend-video.gif)
 
 > #### 2038: The Moon Wakes Up
