@@ -358,27 +358,30 @@ function pd.update()
 
     local text
     local paddingX, paddingY = 10, 10
-    local title = nil
+    local titleY
+    local title
     if scene == 'story' then
       title = "2038: The Moon Wakes Up"
+      titleY = 16
       paddingY = 50
       text = {
         "After a large-scale asteroid mining expedition\ngone wrong, "
-        .. "the Earth is now under a barrage of\nasteroids and is very scared.",
+        .. "the Earth is now under a barrage of\nasteroids, and is very scared.",
         "Desparate to help its best friend, "
-        .. "the Moon has\nwoken up from its deep slumber "
-        .. "and is free to\nmove around in its orbit "
-        .. "to deflect the incoming\nasteroids with its gravitational pull." }
+        .. "the Moon wakes\nup from its deep slumber "
+        .. "and springs into action\nto protect the Earth." }
     else
+      title = "How to play"
+      titleY = 10
+      paddingY = 36
       text = {
-        "Control the Moon with the crank "
-        .. "to pull incoming\nasteroids away from the Earth, "
-        .. "but don't let the\nasteroids hit the Moon either. "
-        .. "Bonus points for\ngetting two asteroids to collide with each other!",
-        "Sometimes Earth will send up a rocket full of\nsupplies - "
-        .. "make sure to catch it as it zooms by! "
-        .. "It\ncould contain extra health, a shield, or give you\nspecial abilities.",
-        "The game has no end, but if you can get 100\npoints you'll get a gold star on the title screen!"
+        "Use the crank to control the Moon and "
+        .. "pull\nincoming asteroids away from the Earth. "
+        .. "Get\n*+1 point* per asteroid averted, "
+        .. "and *+5 points* for\ngetting two asteroids to collide with each other!",
+        "Try to grab any supplies the Earth sends your\nway - "
+        .. "they may contain extra health or various\npowerups.",
+        "If you get *100 points*, you get a little gold star on\nthe title screen. Good luck!"
       }
     end
 
@@ -387,7 +390,7 @@ function pd.update()
     gfx.setFont(largeFont)
 
     if title then
-      gfx.drawTextAligned('*' .. title .. '*', screenWidth // 2, 16, kTextAlignment.center)
+      gfx.drawTextAligned('*' .. title .. '*', screenWidth // 2, titleY, kTextAlignment.center)
     end
 
     local done = true

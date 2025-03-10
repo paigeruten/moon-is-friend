@@ -2,14 +2,34 @@
 
 An arcade game for [Playdate](https://play.date/) made in one weekend, for [PlayJam 7](https://itch.io/jam/playjam-7).
 
+![](screenshots/moon-friend-title.png)
+
+---
+
+![](screenshots/moon-friend-game.png)
+
+---
+
+![](screenshots/moon-friend-video.gif)
+
 ## Story
 
-> After a large-scale asteroid mining expedition gone wrong, the Earth is now under a barrage of asteroids and is very scared. Desparate to help its best friend, the Moon has woken up from its deep slumber and is free to move around in its orbit to deflect the incoming asteroids with its gravitational pull.
+> #### 2038: The Moon Wakes Up
 >
-> ---
+> After a large-scale asteroid mining expedition gone wrong, the Earth is now under a barrage of asteroids, and is very scared.
 >
-> Control the Moon with the crank to pull incoming asteroids away from the Earth, but don't let the asteroids hit the Moon either. Bonus points for getting 2 asteroids to collide with each other!
+> Desperate to help its best friend, the Moon wakes up from its deep slumber and springs into action to protect the Earth.
 >
-> Sometimes Earth will send up a rocket full of supplies--make sure to catch it as it zooms by! It could contain extra health, a shield, or give you special abilities.
+> #### How to play
 >
-> The game has no end, but if you can get 100 points you'll get a star on the title screen!
+> Use the crank to control the Moon and pull incoming asteroids away from the Earth. Get **+1 point** per asteroid averted, and **+5 points** for getting two asteroids to collide with each other!
+>
+> Try to grab any supplies the Earth sends your way - they may contain extra health or various powerups.
+>
+> If you get **100 points**, you get a little gold star on the title screen. Good luck!
+
+## Made with
+
+* [PDFXR](https://psychicteeth.itch.io/pdfxr) for sound effects
+* [Pixen](https://pixenapp.com/) for pixel art(?)
+* [Playdate SDK](https://play.date/dev/)

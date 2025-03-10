@@ -21,7 +21,7 @@
 * [x] Bigger hearts
 * [ ] Launcher card
 * [ ] Screenshots / GIFs for itch and github
-* [ ] Pause menu (Restart / Title Screen)
+* [x] Pause menu (Restart / Title Screen)
 * [x] Bombs
 * [ ] Powerups
     * [x] +1 HP
