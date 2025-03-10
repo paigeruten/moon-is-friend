@@ -1,3 +1,4 @@
+import "CoreLibs/easing"
 import "CoreLibs/graphics"
 import "CoreLibs/object"
 import "CoreLibs/timer"
@@ -26,6 +27,8 @@ local pointSound = pdfxr.synth.new("sounds/point")
 local powerupSound = pdfxr.synth.new("sounds/powerup")
 local shieldDownSound = pdfxr.synth.new("sounds/shield-down")
 local shieldUpSound = pdfxr.synth.new("sounds/shield-up")
+
+local saveData = pd.datastore.read() or { highScore = 0 }
 
 local earth = {
   pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
@@ -244,6 +247,7 @@ local heartEmptyImage = gfx.image.new("images/empty-heart")
 local bombImage = gfx.image.new("images/bomb")
 
 local gameoverSelection = 'retry'
+local isHighScore = false
 
 pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
@@ -279,13 +283,22 @@ function pd.update()
     gfx.drawTextAligned("The Moon is our Friend", screenWidth // 2, screenHeight // 2 - 9, kTextAlignment.center)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
+    local perlY = math.min(3, math.max(-3, gfx.perlin(0, (frameCount % 100) / 100, 0, 0) * 20 - 10))
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5, 140, 17, 5)
+    gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5, 140, 17, 5)
-
+    gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
     gfx.setFont(smallFont)
-    gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4, kTextAlignment.center)
+    gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4 + perlY,
+      kTextAlignment.center)
+
+    if saveData.highScore > 0 then
+      gfx.setFont(smallFont)
+      gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+      gfx.drawTextAligned("High score\n" .. saveData.highScore, screenWidth - 7, screenHeight - 26, kTextAlignment.right,
+        4)
+      gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    end
 
     frameCount += 1
 
@@ -372,7 +385,15 @@ function pd.update()
     end
     return
   elseif scene == 'gameover' then
-    local gameoverBoxHeight = math.min(math.floor(frameCount * 1.5), 28)
+    if isHighScore then
+      local highScoreBoxWidth = pd.easingFunctions.outExpo(frameCount, 0, 136, 50)
+      gfx.setColor(gfx.kColorWhite)
+      gfx.fillRoundRect(screenWidth - highScoreBoxWidth, 26, highScoreBoxWidth + 5, 24, 5)
+      gfx.setFont(largeFont)
+      gfx.drawText("New high score!", screenWidth - highScoreBoxWidth + 11, 29)
+    end
+
+    local gameoverBoxHeight = pd.easingFunctions.outExpo(frameCount, 0, 28, 50)
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(0, screenHeight - gameoverBoxHeight, screenWidth, gameoverBoxHeight)
     gfx.setFont(largeFont)
@@ -422,6 +443,7 @@ function pd.update()
       explosions = {}
       regenerateStars()
       gameoverSelection = 'retry'
+      isHighScore = false
       boopSound:play(77)
     end
     frameCount += 1
@@ -576,6 +598,11 @@ function pd.update()
     if earth.health <= 0 then
       scene = 'gameover'
       frameCount = 0
+      if score > saveData.highScore then
+        saveData.highScore = score
+        pd.datastore.write(saveData)
+        isHighScore = true
+      end
     end
 
     frameCount += 1
