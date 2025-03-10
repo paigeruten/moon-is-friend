@@ -248,7 +248,18 @@ local heartEmptyImage = gfx.image.new("images/empty-heart")
 local bombImage = gfx.image.new("images/bomb")
 local starImage = gfx.image.new("images/star")
 
+local difficultyLevels = {
+  easy = 125,   -- asteroid spawns every 2.5 seconds
+  normal = 100, -- asteroid spawns every 2 seconds
+  hard = 75,    -- asteroid spawns every 1.5 seconds
+  aaaah = 50,   -- asteroid spawns every 1 second
+}
+local difficulty = 'normal'
+
 local menu = pd.getSystemMenu()
+menu:addOptionsMenuItem('difficulty', { 'easy', 'normal', 'hard', 'aaaah' }, difficulty, function(selected)
+  difficulty = selected
+end)
 menu:addCheckmarkMenuItem('screen shake', screenShakeEnabled, function(checked)
   screenShakeEnabled = checked
 end)
@@ -506,7 +517,7 @@ function pd.update()
   if not pd.isCrankDocked() then
     moon.pos = earth.pos + pd.geometry.vector2D.newPolar(moon.distanceFromEarth, pd.getCrankPosition())
 
-    if frameCount % 100 == 0 then -- 2 seconds
+    if frameCount % difficultyLevels[difficulty] == 0 then
       spawnAsteroid()
     end
 
