@@ -15,10 +15,10 @@
 * [x] Proper title screen
 * [x] Don't start the game until the crank is undocked
 * [x] Tutorial/story
-* [ ] Game Over menu (Retry / Title Screen)
+* [x] Game Over menu (Retry / Title Screen)
 * [ ] End goal (100 points = you get a star?)
-* [ ] Save high score
-* [ ] Bigger hearts
+* [x] Save high score
+* [x] Bigger hearts
 * [ ] Launcher card
 * [ ] Screenshots / GIFs for itch and github
 * [ ] Pause menu (Restart / Title Screen)

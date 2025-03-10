@@ -16,6 +16,7 @@ local frameCount = 0
 local score = 0
 local scene = 'title'
 local reduceFlashing = pd.getReduceFlashing()
+local starScore = 100
 
 local largeFont = gfx.getSystemFont()
 local smallFont = gfx.font.new("fonts/font-rains-1x")
@@ -245,6 +246,7 @@ end
 local heartImage = gfx.image.new("images/heart")
 local heartEmptyImage = gfx.image.new("images/empty-heart")
 local bombImage = gfx.image.new("images/bomb")
+local starImage = gfx.image.new("images/star")
 
 local gameoverSelection = 'retry'
 local isHighScore = false
@@ -280,7 +282,7 @@ function pd.update()
 
     gfx.setFont(largeFont)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawTextAligned("The Moon is our Friend", screenWidth // 2, screenHeight // 2 - 9, kTextAlignment.center)
+    gfx.drawTextAligned("*The Moon is our Friend*", screenWidth // 2, screenHeight // 2 - 9, kTextAlignment.center)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
     local perlY = math.min(3, math.max(-3, gfx.perlin(0, (frameCount % 100) / 100, 0, 0) * 20 - 10))
@@ -293,11 +295,18 @@ function pd.update()
       kTextAlignment.center)
 
     if saveData.highScore > 0 then
+      local hasStar = saveData.highScore >= starScore
       gfx.setFont(smallFont)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-      gfx.drawTextAligned("High score\n" .. saveData.highScore, screenWidth - 7, screenHeight - 26, kTextAlignment.right,
-        4)
+      gfx.drawTextAligned("High score\n" .. saveData.highScore .. (hasStar and "  " or ""), screenWidth - 7,
+        screenHeight - 30,
+        kTextAlignment.right,
+        8)
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+      if hasStar then
+        starImage:draw(screenWidth - 19, screenHeight - 18)
+      end
     end
 
     frameCount += 1
@@ -691,8 +700,13 @@ function pd.update()
 
   gfx.setFont(smallFont)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned("Score " .. score, screenWidth - 10, 10, kTextAlignment.right)
+  gfx.drawTextAligned("Score " .. score .. (score >= starScore and "  " or ""), screenWidth - 10, 10,
+    kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  if score >= starScore then
+    starImage:draw(screenWidth - 19, 7)
+  end
 
   if curMessage then
     if frameCount - curMessageAt > 100 then
