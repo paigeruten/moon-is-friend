@@ -2,15 +2,7 @@
 
 An arcade game for [Playdate](https://play.date/) made in one weekend, for [PlayJam 7](https://itch.io/jam/playjam-7).
 
-![](screenshots/moon-friend-title.png)
-
----
-
-![](screenshots/moon-friend-game.png)
-
----
-
-![](screenshots/moon-friend-video.gif)
+![](screenshots/moon-friend-title.png) ![](screenshots/moon-friend-video.gif)
 
 ## Story
 
