@@ -561,7 +561,7 @@ function pd.update()
         lastRocketAt = frameCount
       elseif isRocketCollidingWithCircle(curRocket, moon.pos, moon.radius) then
         local powerups = { 'bomb' }
-        if earth.health <= earth.maxHealth then
+        if earth.health < earth.maxHealth then
           table.insert(powerups, 'health')
         end
         if not moon.hasShield then
