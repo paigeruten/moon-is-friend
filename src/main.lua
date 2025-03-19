@@ -75,6 +75,9 @@ local function resetGameState()
   gs.curAsteroidId = 0
   gs.lastAsteroidAt = 0
 
+  gs.particles = {}
+  gs.curParticleId = 0
+
   gs.stars = {}
   for _ = 1, 100 do
     table.insert(gs.stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
@@ -193,7 +196,16 @@ local function spawnExplosion(pos)
   gs.explosions[id] = {
     pos = pos,
     frame = 0,
-    dir = -1,
+  }
+end
+
+local function spawnParticle(pos, vel, ttl)
+  gs.curParticleId += 1
+  local id = gs.curParticleId
+  gs.particles[id] = {
+    pos = pos,
+    vel = vel,
+    ttl = ttl,
   }
 end
 
@@ -586,6 +598,9 @@ function pd.update()
       if gs.curRocket.frame == 100 then
         -- Liftoff!
         gs.curRocket.acc = pd.geometry.vector2D.newPolar(0.005, gs.curRocket.info.angle)
+      elseif gs.curRocket.frame > 100 and gs.frameCount % 2 == 0 then
+        spawnParticle(gs.curRocket.pos,
+          -gs.curRocket.vel + pd.geometry.vector2D.new(math.random() - 0.5, math.random() - 0.5), 5)
       end
       gs.curRocket.vel += gs.curRocket.acc
       gs.curRocket.pos += gs.curRocket.vel
@@ -751,11 +766,36 @@ function pd.update()
     gfx.drawCircleAtPoint(gs.moon.pos, gs.moon.radius + 3)
   end
 
-  -- Asteroids
+  -- Particles
   gfx.setColor(gfx.kColorXOR)
+  idsToRemove = {}
+  for id, particle in pairs(gs.particles) do
+    gfx.fillCircleAtPoint(particle.pos, math.random(1, 2))
+    if particle.ttl <= 0 then
+      table.insert(idsToRemove, id)
+    else
+      particle.ttl -= 1
+      particle.pos += particle.vel
+    end
+  end
+  for _, id in ipairs(idsToRemove) do
+    gs.particles[id] = nil
+  end
+
+  -- Asteroids
+  gfx.setColor(gfx.kColorWhite)
   for _, asteroid in pairs(gs.asteroids) do
     if isAsteroidOnScreen(asteroid) then
       gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
+      if gs.frameCount % 2 == 0 or gs.frameCount % 3 == 0 then
+        local velAngle = -asteroid.vel:angleBetween(pd.geometry.vector2D.new(0, -1))
+        spawnParticle(
+          asteroid.pos - pd.geometry.vector2D.newPolar(asteroid.radius, velAngle + math.random(-25, 25)),
+          pd.geometry.vector2D.newPolar(math.random(-asteroid.radius, asteroid.radius) / 10,
+            -velAngle + math.random(-15, 15)),
+          7
+        )
+      end
     end
   end
 
