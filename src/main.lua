@@ -12,12 +12,6 @@ local screenWidth, screenHeight = pd.display.getSize()
 
 math.randomseed(pd.getSecondsSinceEpoch())
 
-local frameCount = 0
-local score = 0
-local scene = 'title'
-local screenShakeEnabled = not pd.getReduceFlashing()
-local starScore = 100
-
 local largeFont = gfx.getSystemFont()
 local smallFont = gfx.font.new("fonts/font-rains-1x")
 
@@ -31,24 +25,58 @@ local shieldUpSound = pdfxr.synth.new("sounds/shield-up")
 
 local saveData = pd.datastore.read() or { highScore = 0 }
 
-local earth = {
-  pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
-  radius = 12,
-  mass = 0.6,
-  health = 5,
-  maxHealth = 5,
-  bombs = 0,
+local MOON_DISTANCE_FROM_EARTH = 60
+local STAR_SCORE = 100
+
+local gs = {
+  scene = 'title',
+  difficulty = 'normal',
+  screenShakeEnabled = not pd.getReduceFlashing()
 }
 
-local moonDistanceFromEarth = 60
-local moon = {
-  pos = pd.geometry.point.new(earth.pos.x, earth.pos.y - moonDistanceFromEarth),
-  distanceFromEarth = moonDistanceFromEarth,
-  radius = 6,
-  gravityRadius = 50,
-  mass = 1.75,
-  hasShield = false,
-}
+local function resetGameState()
+  gs.frameCount = 0
+  gs.score = 0
+
+  gs.earth = {
+    pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
+    radius = 12,
+    mass = 0.6,
+    health = 5,
+    maxHealth = 5,
+    bombs = 0,
+  }
+
+  gs.moon = {
+    pos = pd.geometry.point.new(gs.earth.pos.x, gs.earth.pos.y - MOON_DISTANCE_FROM_EARTH),
+    distanceFromEarth = MOON_DISTANCE_FROM_EARTH,
+    radius = 6,
+    gravityRadius = 50,
+    mass = 1.75,
+    hasShield = false,
+  }
+
+  gs.curRocket = nil
+  gs.lastRocketAt = 0
+
+  gs.explosions = {}
+  gs.curExplosionId = 0
+
+  gs.asteroids = {}
+  gs.curAsteroidId = 0
+
+  gs.stars = {}
+  for _ = 1, 100 do
+    table.insert(gs.stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
+  end
+
+  gs.curMessage = nil
+  gs.curMessageAt = nil
+
+  gs.gameoverSelection = 'retry'
+  gs.isHighScore = false
+end
+resetGameState()
 
 local rocketNorthImage = gfx.image.new("images/rocket-orth")
 local rocketEastImage = rocketNorthImage:rotatedImage(90)
@@ -109,14 +137,11 @@ for direction, _ in pairs(rocketDirectionInfo) do
   table.insert(rocketDirections, direction)
 end
 
-local curRocket = nil
-local lastRocketAt = 0
-
 local function spawnRocket()
   local direction = rocketDirections[math.random(#rocketDirections)]
   local directionInfo = rocketDirectionInfo[direction]
-  local pos = earth.pos + pd.geometry.vector2D.newPolar(earth.radius + 1, directionInfo.angle)
-  curRocket = {
+  local pos = gs.earth.pos + pd.geometry.vector2D.newPolar(gs.earth.radius + 1, directionInfo.angle)
+  gs.curRocket = {
     frame = 0,
     pos = pos,
     vel = pd.geometry.vector2D.new(0, 0),
@@ -127,31 +152,27 @@ local function spawnRocket()
 end
 
 local explosionImageTable = gfx.imagetable.new("images/explosion")
-local explosions = {}
-local curExplosionId = 0
 
 local function spawnExplosion(pos)
-  curExplosionId += 1
-  local id = curExplosionId
-  explosions[id] = {
+  gs.curExplosionId += 1
+  local id = gs.curExplosionId
+  gs.explosions[id] = {
     pos = pos,
     frame = 0,
     dir = -1,
   }
 end
 
-local asteroids = {}
-local curAsteroidId = 0
 local function nextAsteroidId()
-  curAsteroidId += 1
-  return curAsteroidId
+  gs.curAsteroidId += 1
+  return gs.curAsteroidId
 end
 
 local function spawnAsteroid()
   local id = nextAsteroidId()
   local angle = math.random() * 360
-  local pos = earth.pos + pd.geometry.vector2D.newPolar(250, angle)
-  asteroids[id] = {
+  local pos = gs.earth.pos + pd.geometry.vector2D.newPolar(250, angle)
+  gs.asteroids[id] = {
     id = id,
     pos = pos,
     vel = -pd.geometry.vector2D.newPolar(
@@ -167,8 +188,8 @@ end
 local function closestAsteroidDirection()
   local direction = pd.geometry.vector2D.new(0, 0)
   local minDistance = nil
-  for _, asteroid in pairs(asteroids) do
-    local earthVec = asteroid.pos - earth.pos
+  for _, asteroid in pairs(gs.asteroids) do
+    local earthVec = asteroid.pos - gs.earth.pos
     local distance = earthVec:magnitudeSquared()
     if minDistance == nil or distance < minDistance then
       minDistance = distance
@@ -205,25 +226,13 @@ local function isRocketCollidingWithCircle(rocket, center, radius)
   return false
 end
 
-local stars = {}
-local function regenerateStars()
-  stars = {}
-  for _ = 1, 100 do
-    table.insert(stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
-  end
-end
-regenerateStars()
-
-local curMessage = nil
-local curMessageAt = nil
-
 local function flashMessage(message)
-  curMessage = message
-  curMessageAt = frameCount
+  gs.curMessage = message
+  gs.curMessageAt = gs.frameCount
 end
 
 local function screenShake(shakeTime, shakeMagnitude)
-  if not screenShakeEnabled then
+  if not gs.screenShakeEnabled then
     return
   end
 
@@ -254,14 +263,13 @@ local difficultyLevels = {
   hard = 75,    -- asteroid spawns every 1.5 seconds
   aaaah = 50,   -- asteroid spawns every 1 second
 }
-local difficulty = 'normal'
 
 local menu = pd.getSystemMenu()
-menu:addOptionsMenuItem('difficulty', { 'easy', 'normal', 'hard', 'aaaah' }, difficulty, function(selected)
-  difficulty = selected
+menu:addOptionsMenuItem('difficulty', { 'easy', 'normal', 'hard', 'aaaah' }, gs.difficulty, function(selected)
+  gs.difficulty = selected
 end)
-menu:addCheckmarkMenuItem('screen shake', screenShakeEnabled, function(checked)
-  screenShakeEnabled = checked
+menu:addCheckmarkMenuItem('screen shake', gs.screenShakeEnabled, function(checked)
+  gs.screenShakeEnabled = checked
 end)
 
 -- Menu items that should be removed when going back to the title screen
@@ -274,41 +282,22 @@ local function resetMenu()
   inGameMenuItems = {}
 end
 
-local gameoverSelection = 'retry'
-local isHighScore = false
-
-local function resetGame()
-  frameCount = 0
-  score = 0
-  asteroids = {}
-  earth.maxHealth = 5
-  earth.health = earth.maxHealth
-  earth.bombs = 0
-  moon.hasShield = false
-  curRocket = nil
-  lastRocketAt = 0
-  curMessage = nil
-  explosions = {}
-  regenerateStars()
-  gameoverSelection = 'retry'
-  isHighScore = false
-end
-
 pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
 
 function pd.update()
   pd.timer.updateTimers()
 
-  if scene == 'title' then
+  if gs.scene == 'title' then
     gfx.clear()
 
+    -- TODO: Try drawing stars to a background image once instead?
     gfx.setColor(gfx.kColorWhite)
-    for _, star in ipairs(stars) do
+    for _, star in ipairs(gs.stars) do
       gfx.drawPixel(star)
     end
 
-    local animFrame = math.min(frameCount, 700)
+    local animFrame = math.min(gs.frameCount, 700)
 
     -- Earth
     local earthX, earthY = screenWidth - 60, screenHeight // 4
@@ -339,7 +328,7 @@ function pd.update()
     gfx.drawTextAligned("*The Moon is our Friend*", screenWidth // 2, screenHeight // 2 - 9, kTextAlignment.center)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-    local perlY = math.min(3, math.max(-3, gfx.perlin(0, (frameCount % 100) / 100, 0, 0) * 20 - 10))
+    local perlY = math.min(3, math.max(-3, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
     gfx.setColor(gfx.kColorBlack)
@@ -349,7 +338,7 @@ function pd.update()
       kTextAlignment.center)
 
     if saveData.highScore > 0 then
-      local hasStar = saveData.highScore >= starScore
+      local hasStar = saveData.highScore >= STAR_SCORE
       gfx.setFont(smallFont)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
       gfx.drawTextAligned("High score\n" .. saveData.highScore .. (hasStar and "  " or ""), screenWidth - 7,
@@ -363,15 +352,15 @@ function pd.update()
       end
     end
 
-    frameCount += 1
+    gs.frameCount += 1
 
     if pd.buttonJustReleased(pd.kButtonA) then
-      scene = 'story'
-      frameCount = 0
+      gs.scene = 'story'
+      gs.frameCount = 0
       boopSound:play()
     end
     return
-  elseif scene == 'story' or scene == 'instructions' then
+  elseif gs.scene == 'story' or gs.scene == 'instructions' then
     gfx.clear()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(0, 0, screenWidth, screenHeight, 15)
@@ -382,7 +371,7 @@ function pd.update()
     local paddingX, paddingY = 10, 10
     local titleY
     local title
-    if scene == 'story' then
+    if gs.scene == 'story' then
       title = "2038: The Moon Wakes Up"
       titleY = 16
       paddingY = 50
@@ -407,7 +396,7 @@ function pd.update()
       }
     end
 
-    local maxChars = math.floor(frameCount * 1.5)
+    local maxChars = math.floor(gs.frameCount * 1.5)
 
     gfx.setFont(largeFont)
 
@@ -431,45 +420,45 @@ function pd.update()
       end
     end
 
-    local perlY = math.min(3, math.max(-3, gfx.perlin(0, (frameCount % 100) / 100, 0, 0) * 20 - 10))
+    local perlY = math.min(3, math.max(-3, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
     gfx.drawText("Ⓐ", screenWidth - 28, screenHeight - 28 + perlY)
 
-    frameCount += 1
+    gs.frameCount += 1
 
     if pd.buttonJustReleased(pd.kButtonA) then
       if not done then
-        frameCount = 1000000
-      elseif scene == 'story' then
-        scene = 'instructions'
-        frameCount = 0
+        gs.frameCount = 1000000
+      elseif gs.scene == 'story' then
+        gs.scene = 'instructions'
+        gs.frameCount = 0
         boopSound:play()
       else
-        scene = 'game'
-        frameCount = 0
+        gs.scene = 'game'
+        gs.frameCount = 0
         boopSound:play(77)
 
         table.insert(inGameMenuItems, (menu:addMenuItem('restart game', function()
-          resetGame()
-          scene = 'game'
+          resetGameState()
+          gs.scene = 'game'
         end)))
         table.insert(inGameMenuItems, (menu:addMenuItem('back to title', function()
-          resetGame()
-          scene = 'title'
+          resetGameState()
+          gs.scene = 'title'
           resetMenu()
         end)))
       end
     end
     return
-  elseif scene == 'gameover' then
-    if isHighScore then
-      local highScoreBoxWidth = pd.easingFunctions.outExpo(frameCount, 0, 136, 50)
+  elseif gs.scene == 'gameover' then
+    if gs.isHighScore then
+      local highScoreBoxWidth = pd.easingFunctions.outExpo(gs.frameCount, 0, 136, 50)
       gfx.setColor(gfx.kColorWhite)
       gfx.fillRoundRect(screenWidth - highScoreBoxWidth, 26, highScoreBoxWidth + 5, 24, 5)
       gfx.setFont(largeFont)
       gfx.drawText("New high score!", screenWidth - highScoreBoxWidth + 11, 29)
     end
 
-    local gameoverBoxHeight = pd.easingFunctions.outExpo(frameCount, 0, 28, 50)
+    local gameoverBoxHeight = pd.easingFunctions.outExpo(gs.frameCount, 0, 28, 50)
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(0, screenHeight - gameoverBoxHeight, screenWidth, gameoverBoxHeight)
     gfx.setFont(largeFont)
@@ -482,53 +471,53 @@ function pd.update()
     local retryWidth, retryHeight = gfx.drawText("Retry", retryX, optionY)
     local backWidth, backHeight = gfx.drawText("Back to title", backX, optionY)
 
-    local perlY = math.min(2, math.max(-2, gfx.perlin(0, (frameCount % 100) / 100, 0, 0) * 20 - 10))
+    local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
     gfx.setColor(gfx.kColorBlack)
-    if gameoverSelection == 'retry' then
+    if gs.gameoverSelection == 'retry' then
       gfx.fillRect(retryX, optionY + retryHeight + 4 + perlY, retryWidth, 2)
     else
       gfx.fillRect(backX, optionY + backHeight + 4 + perlY, backWidth, 2)
     end
 
     if pd.buttonJustPressed(pd.kButtonLeft) or pd.buttonJustPressed(pd.kButtonRight) then
-      if gameoverSelection == 'retry' then
-        gameoverSelection = 'back'
+      if gs.gameoverSelection == 'retry' then
+        gs.gameoverSelection = 'back'
       else
-        gameoverSelection = 'retry'
+        gs.gameoverSelection = 'retry'
       end
       boopSound:play()
     end
 
     if pd.buttonJustReleased(pd.kButtonA) then
-      if gameoverSelection == 'retry' then
-        scene = 'game'
+      if gs.gameoverSelection == 'retry' then
+        gs.scene = 'game'
       else
-        scene = 'title'
+        gs.scene = 'title'
         resetMenu()
       end
 
-      resetGame()
+      resetGameState()
       boopSound:play(77)
     end
-    frameCount += 1
+    gs.frameCount += 1
     return
   end
 
   if not pd.isCrankDocked() then
-    moon.pos = earth.pos + pd.geometry.vector2D.newPolar(moon.distanceFromEarth, pd.getCrankPosition())
+    gs.moon.pos = gs.earth.pos + pd.geometry.vector2D.newPolar(gs.moon.distanceFromEarth, pd.getCrankPosition())
 
-    if frameCount % difficultyLevels[difficulty] == 0 then
+    if gs.frameCount % difficultyLevels[gs.difficulty] == 0 then
       spawnAsteroid()
     end
 
     -- Update physics
     local idsToRemove = {}
-    for id, asteroid in pairs(asteroids) do
-      local earthVec = earth.pos - asteroid.pos
-      local acc = earthVec:scaledBy(earth.mass / earthVec:magnitudeSquared())
-      local moonVec = moon.pos - asteroid.pos
-      if moonVec:magnitude() <= moon.gravityRadius then
-        acc += moonVec:scaledBy(moon.mass / moonVec:magnitudeSquared())
+    for id, asteroid in pairs(gs.asteroids) do
+      local earthVec = gs.earth.pos - asteroid.pos
+      local acc = earthVec:scaledBy(gs.earth.mass / earthVec:magnitudeSquared())
+      local moonVec = gs.moon.pos - asteroid.pos
+      if moonVec:magnitude() <= gs.moon.gravityRadius then
+        acc += moonVec:scaledBy(gs.moon.mass / moonVec:magnitudeSquared())
       end
       asteroid.vel += acc
       asteroid.pos += asteroid.vel
@@ -537,81 +526,81 @@ function pd.update()
         asteroid.state = 'active'
       elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
         table.insert(idsToRemove, id)
-        score += 1
+        gs.score += 1
         pointSound:play()
       end
     end
     for _, id in ipairs(idsToRemove) do
-      asteroids[id] = nil
+      gs.asteroids[id] = nil
     end
 
     -- Update rocket
-    if curRocket then
-      if curRocket.frame == 100 then
+    if gs.curRocket then
+      if gs.curRocket.frame == 100 then
         -- Liftoff!
-        curRocket.acc = pd.geometry.vector2D.newPolar(0.005, curRocket.info.angle)
+        gs.curRocket.acc = pd.geometry.vector2D.newPolar(0.005, gs.curRocket.info.angle)
       end
-      curRocket.vel += curRocket.acc
-      curRocket.pos += curRocket.vel
+      gs.curRocket.vel += gs.curRocket.acc
+      gs.curRocket.pos += gs.curRocket.vel
 
-      curRocket.frame += 1
+      gs.curRocket.frame += 1
 
-      if not isRocketOnScreen(curRocket) then
-        curRocket = nil
-        lastRocketAt = frameCount
-      elseif isRocketCollidingWithCircle(curRocket, moon.pos, moon.radius) then
+      if not isRocketOnScreen(gs.curRocket) then
+        gs.curRocket = nil
+        gs.lastRocketAt = gs.frameCount
+      elseif isRocketCollidingWithCircle(gs.curRocket, gs.moon.pos, gs.moon.radius) then
         local powerups = { 'bomb' }
-        if earth.health < earth.maxHealth then
+        if gs.earth.health < gs.earth.maxHealth then
           table.insert(powerups, 'health')
         end
-        if not moon.hasShield then
+        if not gs.moon.hasShield then
           table.insert(powerups, 'shield')
         end
 
         local powerup = powerups[math.random(#powerups)]
 
         if powerup == 'health' then
-          earth.health += 1
+          gs.earth.health += 1
           flashMessage('+1 Health!')
           powerupSound:play()
         elseif powerup == 'shield' then
-          moon.hasShield = true
+          gs.moon.hasShield = true
           flashMessage('You got a shield!')
           shieldUpSound:play()
         elseif powerup == 'bomb' then
-          earth.bombs += 1
+          gs.earth.bombs += 1
           flashMessage('+1 Bomb! (Ⓑ to use)')
           powerupSound:play()
         end
 
-        curRocket = nil
-        lastRocketAt = frameCount
+        gs.curRocket = nil
+        gs.lastRocketAt = gs.frameCount
       end
-    elseif (frameCount - lastRocketAt) > 150 and math.random(500) == 1 then -- every 3 + ~10 seconds
+    elseif (gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1 then -- every 3 + ~10 seconds
       spawnRocket()
       flashMessage('Supplies incoming!')
     end
 
     -- Collisions
     idsToRemove = {}
-    for id, asteroid in pairs(asteroids) do
+    for id, asteroid in pairs(gs.asteroids) do
       if asteroid.state ~= 'active' then
         goto continue
       end
 
-      if areCirclesColliding(asteroid.pos, asteroid.radius, earth.pos, earth.radius) then
-        earth.health -= 1
+      if areCirclesColliding(asteroid.pos, asteroid.radius, gs.earth.pos, gs.earth.radius) then
+        gs.earth.health -= 1
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
         spawnExplosion(asteroid.pos)
         screenShake(500, 5)
         boomSound:play()
-      elseif areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
-        if moon.hasShield then
-          moon.hasShield = false
+      elseif areCirclesColliding(asteroid.pos, asteroid.radius, gs.moon.pos, gs.moon.radius + (gs.moon.hasShield and 3 or 0)) then
+        if gs.moon.hasShield then
+          gs.moon.hasShield = false
           shieldDownSound:play()
         else
-          earth.health -= 1
+          gs.earth.health -= 1
           spawnExplosion(asteroid.pos)
           screenShake(500, 5)
           boomSound:play()
@@ -619,13 +608,13 @@ function pd.update()
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
       else
-        for id2, asteroid2 in pairs(asteroids) do
+        for id2, asteroid2 in pairs(gs.asteroids) do
           if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
             table.insert(idsToRemove, id)
             table.insert(idsToRemove, id2)
             asteroid.state = 'dead'
             asteroid2.state = 'dead'
-            score += 5
+            gs.score += 5
             flashMessage('2 asteroids collided! +5 points')
             spawnExplosion(
               pd.geometry.lineSegment.new(
@@ -643,33 +632,33 @@ function pd.update()
       ::continue::
     end
     for _, id in ipairs(idsToRemove) do
-      asteroids[id] = nil
+      gs.asteroids[id] = nil
     end
 
-    if pd.buttonJustPressed(pd.kButtonB) and earth.bombs > 0 then
-      earth.bombs -= 1
-      for _, asteroid in pairs(asteroids) do
+    if pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 then
+      gs.earth.bombs -= 1
+      for _, asteroid in pairs(gs.asteroids) do
         if isAsteroidOnScreen(asteroid) then
           spawnExplosion(asteroid.pos)
         end
       end
       goodBoomSound:play()
       screenShake(500, 5)
-      asteroids = {}
+      gs.asteroids = {}
     end
 
     -- Check for game over
-    if earth.health <= 0 then
-      scene = 'gameover'
-      frameCount = 0
-      if score > saveData.highScore then
-        saveData.highScore = score
+    if gs.earth.health <= 0 then
+      gs.scene = 'gameover'
+      gs.frameCount = 0
+      if gs.score > saveData.highScore then
+        saveData.highScore = gs.score
         pd.datastore.write(saveData)
-        isHighScore = true
+        gs.isHighScore = true
       end
     end
 
-    frameCount += 1
+    gs.frameCount += 1
   end
 
   -- Update screen
@@ -677,18 +666,18 @@ function pd.update()
 
   -- Stars
   gfx.setColor(gfx.kColorWhite)
-  for _, star in ipairs(stars) do
+  for _, star in ipairs(gs.stars) do
     gfx.drawPixel(star)
   end
 
   -- Earth
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.45, gfx.image.kDitherTypeBayer8x8)
-  gfx.fillCircleAtPoint(earth.pos, earth.radius)
+  gfx.fillCircleAtPoint(gs.earth.pos, gs.earth.radius)
 
   -- Earth eyes
-  local leftEye = pd.geometry.point.new(earth.pos.x - 4, earth.pos.y - 4)
-  local rightEye = pd.geometry.point.new(earth.pos.x + 4, earth.pos.y - 4)
+  local leftEye = pd.geometry.point.new(gs.earth.pos.x - 4, gs.earth.pos.y - 4)
+  local rightEye = pd.geometry.point.new(gs.earth.pos.x + 4, gs.earth.pos.y - 4)
   gfx.setColor(gfx.kColorWhite)
   gfx.fillCircleAtPoint(leftEye, 3)
   gfx.fillCircleAtPoint(rightEye, 3)
@@ -698,26 +687,26 @@ function pd.update()
   gfx.fillCircleAtPoint(rightEye + lookAt, 1)
 
   -- Rocket
-  if curRocket then
-    if curRocket.frame >= 100 or (curRocket.frame // 5) % 2 == 0 then
-      curRocket.info.image:drawAnchored(curRocket.pos.x, curRocket.pos.y, curRocket.info.anchor.x,
-        curRocket.info.anchor.y, curRocket.info.flip)
+  if gs.curRocket then
+    if gs.curRocket.frame >= 100 or (gs.curRocket.frame // 5) % 2 == 0 then
+      gs.curRocket.info.image:drawAnchored(gs.curRocket.pos.x, gs.curRocket.pos.y, gs.curRocket.info.anchor.x,
+        gs.curRocket.info.anchor.y, gs.curRocket.info.flip)
     end
   end
 
   -- Moon
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
-  gfx.fillCircleAtPoint(moon.pos, moon.radius)
-  if moon.hasShield then
+  gfx.fillCircleAtPoint(gs.moon.pos, gs.moon.radius)
+  if gs.moon.hasShield then
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.drawCircleAtPoint(moon.pos, moon.radius + 3)
+    gfx.drawCircleAtPoint(gs.moon.pos, gs.moon.radius + 3)
   end
 
   -- Asteroids
   gfx.setColor(gfx.kColorXOR)
-  for _, asteroid in pairs(asteroids) do
+  for _, asteroid in pairs(gs.asteroids) do
     if isAsteroidOnScreen(asteroid) then
       gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
     end
@@ -725,7 +714,7 @@ function pd.update()
 
   -- Explosions
   local idsToRemove = {}
-  for id, explosion in pairs(explosions) do
+  for id, explosion in pairs(gs.explosions) do
     local animFrame = explosion.frame // 5 + 1
     if animFrame <= #explosionImageTable then
       explosionImageTable:getImage(animFrame):drawAnchored(explosion.pos.x, explosion.pos.y, 0.5, 0.5)
@@ -735,16 +724,16 @@ function pd.update()
     end
   end
   for _, id in ipairs(idsToRemove) do
-    explosions[id] = nil
+    gs.explosions[id] = nil
   end
 
   -- Hearts
-  for i = 1, earth.maxHealth do
-    (earth.health >= i and heartImage or heartEmptyImage):draw(4, 4 + (i - 1) * 15)
+  for i = 1, gs.earth.maxHealth do
+    (gs.earth.health >= i and heartImage or heartEmptyImage):draw(4, 4 + (i - 1) * 15)
   end
 
   -- Bombs
-  for i = 1, earth.bombs do
+  for i = 1, gs.earth.bombs do
     bombImage:draw(20, 4 + (i - 1) * 15)
   end
 
@@ -755,21 +744,21 @@ function pd.update()
 
   gfx.setFont(smallFont)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned("Score " .. score .. (score >= starScore and "  " or ""), screenWidth - 10, 10,
+  gfx.drawTextAligned("Score " .. gs.score .. (gs.score >= STAR_SCORE and "  " or ""), screenWidth - 10, 10,
     kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-  if score >= starScore then
+  if gs.score >= STAR_SCORE then
     starImage:draw(screenWidth - 19, 7)
   end
 
-  if curMessage then
-    if frameCount - curMessageAt > 100 then
-      curMessage = nil
+  if gs.curMessage then
+    if gs.frameCount - gs.curMessageAt > 100 then
+      gs.curMessage = nil
     else
       gfx.setFont(largeFont)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-      gfx.drawTextAligned(curMessage, screenWidth // 2, screenHeight - 24, kTextAlignment.center)
+      gfx.drawTextAligned(gs.curMessage, screenWidth // 2, screenHeight - 24, kTextAlignment.center)
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
   end
