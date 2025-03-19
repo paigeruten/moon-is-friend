@@ -14,7 +14,7 @@ math.randomseed(pd.getSecondsSinceEpoch())
 
 local saveData = pd.datastore.read() or { highScore = 0 }
 
-local MOON_DISTANCE_FROM_EARTH = 60
+local MOON_DISTANCE_FROM_EARTH = 70
 local STAR_SCORE = 100
 local MAX_RAMP_UP_DIFFICULTY = 120
 local MIN_RAMP_UP_DIFFICULTY = 40
@@ -49,8 +49,8 @@ local function resetGameState()
 
   gs.earth = {
     pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
-    radius = 12,
-    mass = 0.6,
+    radius = 14,
+    mass = 0.75,
     health = 5,
     maxHealth = 5,
     bombs = 0,
@@ -59,9 +59,9 @@ local function resetGameState()
   gs.moon = {
     pos = pd.geometry.point.new(gs.earth.pos.x, gs.earth.pos.y - MOON_DISTANCE_FROM_EARTH),
     distanceFromEarth = MOON_DISTANCE_FROM_EARTH,
-    radius = 6,
-    gravityRadius = 50,
-    mass = 1.75,
+    radius = 7,
+    gravityRadius = 75,
+    mass = 2.5,
     hasShield = false,
   }
 
@@ -206,14 +206,33 @@ local function spawnAsteroid()
   local id = nextAsteroidId()
   local angle = math.random() * 360
   local pos = gs.earth.pos + pd.geometry.vector2D.newPolar(250, angle)
+  local chooseRadius = math.random()
+  local asteroidRadius
+  if chooseRadius < 0.6 then
+    asteroidRadius = 3
+  elseif chooseRadius < 0.9 then
+    asteroidRadius = 4
+  elseif chooseRadius < 0.95 then
+    asteroidRadius = 5
+  elseif chooseRadius < 0.99 then
+    asteroidRadius = 6
+  else
+    asteroidRadius = 7
+  end
+  local speed
+  if pos.x < 0 or pos.x >= screenWidth then
+    speed = math.random(5, 14) / 10
+  else
+    speed = math.random(5, 9) / 10
+  end
   gs.asteroids[id] = {
     id = id,
     pos = pos,
     vel = -pd.geometry.vector2D.newPolar(
-      (math.random() / 2) + 0.5,        -- magnitude between 0.5 and 1.0
+      speed,
       angle + (math.random() * 20 - 10) -- vary angle from -10 to +10
     ),
-    radius = math.random(2, 4),
+    radius = asteroidRadius,
     state = 'entering',
   }
   return id
@@ -540,18 +559,19 @@ function pd.update()
     -- Update physics
     local idsToRemove = {}
     for id, asteroid in pairs(gs.asteroids) do
+      local isOnScreen = isAsteroidOnScreen(asteroid)
       local earthVec = gs.earth.pos - asteroid.pos
       local acc = earthVec:scaledBy(gs.earth.mass / earthVec:magnitudeSquared())
       local moonVec = gs.moon.pos - asteroid.pos
-      if moonVec:magnitude() <= gs.moon.gravityRadius then
+      if isOnScreen and moonVec:magnitude() <= gs.moon.gravityRadius then
         acc += moonVec:scaledBy(gs.moon.mass / moonVec:magnitudeSquared())
       end
       asteroid.vel += acc
       asteroid.pos += asteroid.vel
 
-      if asteroid.state == 'entering' and isAsteroidOnScreen(asteroid) then
+      if asteroid.state == 'entering' and isOnScreen then
         asteroid.state = 'active'
-      elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
+      elseif asteroid.state == 'active' and not isOnScreen then
         table.insert(idsToRemove, id)
         gs.score += 1
         assets.sfx.point:play()
