@@ -16,12 +16,32 @@ local saveData = pd.datastore.read() or { highScore = 0 }
 
 local MOON_DISTANCE_FROM_EARTH = 60
 local STAR_SCORE = 100
+local MAX_RAMP_UP_DIFFICULTY = 120
+local MIN_RAMP_UP_DIFFICULTY = 40
+
+local difficultyLevels = {
+  easy = 125,   -- asteroid spawns every 2.5 seconds
+  normal = 100, -- asteroid spawns every 2 seconds
+  hard = 75,    -- asteroid spawns every 1.5 seconds
+  aaaah = 50,   -- asteroid spawns every 1 second
+}
 
 local gs = {
   scene = 'title',
-  difficulty = 'normal',
+  difficulty = 'ramp-up',
   screenShakeEnabled = not pd.getReduceFlashing()
 }
+
+local function updateRampUpDifficulty()
+  gs.rampUpDifficulty = MAX_RAMP_UP_DIFFICULTY - math.floor(
+    pd.easingFunctions.outSine(
+      gs.frameCount,
+      0,
+      MAX_RAMP_UP_DIFFICULTY - MIN_RAMP_UP_DIFFICULTY,
+      22500 -- 7.5 minutes
+    )
+  )
+end
 
 local function resetGameState()
   gs.frameCount = 0
@@ -53,6 +73,7 @@ local function resetGameState()
 
   gs.asteroids = {}
   gs.curAsteroidId = 0
+  gs.lastAsteroidAt = 0
 
   gs.stars = {}
   for _ = 1, 100 do
@@ -64,6 +85,8 @@ local function resetGameState()
 
   gs.gameoverSelection = 'retry'
   gs.isHighScore = false
+
+  updateRampUpDifficulty()
 end
 resetGameState()
 
@@ -263,16 +286,10 @@ local function screenShake(shakeTime, shakeMagnitude)
   end
 end
 
-local difficultyLevels = {
-  easy = 125,   -- asteroid spawns every 2.5 seconds
-  normal = 100, -- asteroid spawns every 2 seconds
-  hard = 75,    -- asteroid spawns every 1.5 seconds
-  aaaah = 50,   -- asteroid spawns every 1 second
-}
-
 local menu = pd.getSystemMenu()
-menu:addOptionsMenuItem('difficulty', { 'easy', 'normal', 'hard', 'aaaah' }, gs.difficulty, function(selected)
+menu:addOptionsMenuItem('difficulty', { 'easy', 'normal', 'ramp-up', 'hard', 'aaaah' }, gs.difficulty, function(selected)
   gs.difficulty = selected
+  updateRampUpDifficulty()
 end)
 menu:addCheckmarkMenuItem('screen shake', gs.screenShakeEnabled, function(checked)
   gs.screenShakeEnabled = checked
@@ -440,7 +457,7 @@ function pd.update()
         assets.sfx.boop:play()
       else
         gs.scene = 'game'
-        gs.frameCount = 0
+        resetGameState()
         assets.sfx.boop:play(77)
 
         table.insert(inGameMenuItems, (menu:addMenuItem('restart game', function()
@@ -512,8 +529,12 @@ function pd.update()
   if not pd.isCrankDocked() then
     gs.moon.pos = gs.earth.pos + pd.geometry.vector2D.newPolar(gs.moon.distanceFromEarth, pd.getCrankPosition())
 
-    if gs.frameCount % difficultyLevels[gs.difficulty] == 0 then
+    if gs.frameCount - gs.lastAsteroidAt >= (gs.difficulty == 'ramp-up' and gs.rampUpDifficulty or difficultyLevels[gs.difficulty]) then
       spawnAsteroid()
+      gs.lastAsteroidAt = gs.frameCount
+      if gs.difficulty == 'ramp-up' then
+        updateRampUpDifficulty()
+      end
     end
 
     -- Update physics
@@ -770,4 +791,8 @@ function pd.update()
   end
 
   --pd.drawFPS(5, screenHeight - 15)
+  gfx.setFont(assets.fonts.small)
+  gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+  gfx.drawText('' .. gs.rampUpDifficulty, 5, screenHeight - 15)
+  gfx.setImageDrawMode(gfx.kDrawModeCopy)
 end
