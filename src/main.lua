@@ -12,17 +12,6 @@ local screenWidth, screenHeight = pd.display.getSize()
 
 math.randomseed(pd.getSecondsSinceEpoch())
 
-local largeFont = gfx.getSystemFont()
-local smallFont = gfx.font.new("fonts/font-rains-1x")
-
-local boopSound = pdfxr.synth.new("sounds/boop")
-local boomSound = pdfxr.synth.new("sounds/boom")
-local goodBoomSound = pdfxr.synth.new("sounds/good-boom")
-local pointSound = pdfxr.synth.new("sounds/point")
-local powerupSound = pdfxr.synth.new("sounds/powerup")
-local shieldDownSound = pdfxr.synth.new("sounds/shield-down")
-local shieldUpSound = pdfxr.synth.new("sounds/shield-up")
-
 local saveData = pd.datastore.read() or { highScore = 0 }
 
 local MOON_DISTANCE_FROM_EARTH = 60
@@ -78,55 +67,79 @@ local function resetGameState()
 end
 resetGameState()
 
-local rocketNorthImage = gfx.image.new("images/rocket-orth")
-local rocketEastImage = rocketNorthImage:rotatedImage(90)
-local rocketNorthEastImage = gfx.image.new("images/rocket-diag")
+local assets = {
+  fonts = {
+    large = gfx.getSystemFont(),
+    small = gfx.font.new("fonts/font-rains-1x")
+  },
+  sfx = {
+    boop = pdfxr.synth.new("sounds/boop"),
+    boom = pdfxr.synth.new("sounds/boom"),
+    goodBoom = pdfxr.synth.new("sounds/good-boom"),
+    point = pdfxr.synth.new("sounds/point"),
+    powerup = pdfxr.synth.new("sounds/powerup"),
+    shieldDown = pdfxr.synth.new("sounds/shield-down"),
+    shieldUp = pdfxr.synth.new("sounds/shield-up")
+  },
+  gfx = {
+    rocketNorth = gfx.image.new("images/rocket-orth"),
+    rocketNorthEast = gfx.image.new("images/rocket-diag"),
+
+    explosion = gfx.imagetable.new("images/explosion"),
+
+    heart = gfx.image.new("images/heart"),
+    heartEmpty = gfx.image.new("images/empty-heart"),
+    bomb = gfx.image.new("images/bomb"),
+    star = gfx.image.new("images/star")
+  }
+}
+assets.gfx.rocketEast = assets.gfx.rocketNorth:rotatedImage(90)
 
 local rocketDirectionInfo = {
   north = {
-    image = rocketNorthImage,
+    image = assets.gfx.rocketNorth,
     angle = 0,
     anchor = { x = 0.5, y = 1 },
     flip = gfx.kImageUnflipped,
   },
   northeast = {
-    image = rocketNorthEastImage,
+    image = assets.gfx.rocketNorthEast,
     angle = 45,
     anchor = { x = 0, y = 1 },
     flip = gfx.kImageUnflipped,
   },
   east = {
-    image = rocketEastImage,
+    image = assets.gfx.rocketEast,
     angle = 90,
     anchor = { x = 0, y = 0.5 },
     flip = gfx.kImageUnflipped,
   },
   southeast = {
-    image = rocketNorthEastImage,
+    image = assets.gfx.rocketNorthEast,
     angle = 135,
     anchor = { x = 0, y = 0 },
     flip = gfx.kImageFlippedY,
   },
   south = {
-    image = rocketNorthImage,
+    image = assets.gfx.rocketNorth,
     angle = 180,
     anchor = { x = 0.5, y = 0 },
     flip = gfx.kImageFlippedY,
   },
   southwest = {
-    image = rocketNorthEastImage,
+    image = assets.gfx.rocketNorthEast,
     angle = 225,
     anchor = { x = 1, y = 0 },
     flip = gfx.kImageFlippedXY,
   },
   west = {
-    image = rocketEastImage,
+    image = assets.gfx.rocketEast,
     angle = 270,
     anchor = { x = 1, y = 0.5 },
     flip = gfx.kImageFlippedX,
   },
   northwest = {
-    image = rocketNorthEastImage,
+    image = assets.gfx.rocketNorthEast,
     angle = 315,
     anchor = { x = 1, y = 1 },
     flip = gfx.kImageFlippedX,
@@ -150,8 +163,6 @@ local function spawnRocket()
     info = directionInfo
   }
 end
-
-local explosionImageTable = gfx.imagetable.new("images/explosion")
 
 local function spawnExplosion(pos)
   gs.curExplosionId += 1
@@ -252,11 +263,6 @@ local function screenShake(shakeTime, shakeMagnitude)
   end
 end
 
-local heartImage = gfx.image.new("images/heart")
-local heartEmptyImage = gfx.image.new("images/empty-heart")
-local bombImage = gfx.image.new("images/bomb")
-local starImage = gfx.image.new("images/star")
-
 local difficultyLevels = {
   easy = 125,   -- asteroid spawns every 2.5 seconds
   normal = 100, -- asteroid spawns every 2 seconds
@@ -323,7 +329,7 @@ function pd.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRoundRect(screenWidth // 4, screenHeight // 2 - 12, screenWidth // 2, 24, 5)
 
-    gfx.setFont(largeFont)
+    gfx.setFont(assets.fonts.large)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.drawTextAligned("*The Moon is our Friend*", screenWidth // 2, screenHeight // 2 - 9, kTextAlignment.center)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
@@ -333,13 +339,13 @@ function pd.update()
     gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
     gfx.setColor(gfx.kColorBlack)
     gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
-    gfx.setFont(smallFont)
+    gfx.setFont(assets.fonts.small)
     gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4 + perlY,
       kTextAlignment.center)
 
     if saveData.highScore > 0 then
       local hasStar = saveData.highScore >= STAR_SCORE
-      gfx.setFont(smallFont)
+      gfx.setFont(assets.fonts.small)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
       gfx.drawTextAligned("High score\n" .. saveData.highScore .. (hasStar and "  " or ""), screenWidth - 7,
         screenHeight - 30,
@@ -348,7 +354,7 @@ function pd.update()
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
       if hasStar then
-        starImage:draw(screenWidth - 19, screenHeight - 18)
+        assets.gfx.star:draw(screenWidth - 19, screenHeight - 18)
       end
     end
 
@@ -357,7 +363,7 @@ function pd.update()
     if pd.buttonJustReleased(pd.kButtonA) then
       gs.scene = 'story'
       gs.frameCount = 0
-      boopSound:play()
+      assets.sfx.boop:play()
     end
     return
   elseif gs.scene == 'story' or gs.scene == 'instructions' then
@@ -398,7 +404,7 @@ function pd.update()
 
     local maxChars = math.floor(gs.frameCount * 1.5)
 
-    gfx.setFont(largeFont)
+    gfx.setFont(assets.fonts.large)
 
     if title then
       gfx.drawTextAligned('*' .. title .. '*', screenWidth // 2, titleY, kTextAlignment.center)
@@ -431,11 +437,11 @@ function pd.update()
       elseif gs.scene == 'story' then
         gs.scene = 'instructions'
         gs.frameCount = 0
-        boopSound:play()
+        assets.sfx.boop:play()
       else
         gs.scene = 'game'
         gs.frameCount = 0
-        boopSound:play(77)
+        assets.sfx.boop:play(77)
 
         table.insert(inGameMenuItems, (menu:addMenuItem('restart game', function()
           resetGameState()
@@ -454,17 +460,17 @@ function pd.update()
       local highScoreBoxWidth = pd.easingFunctions.outExpo(gs.frameCount, 0, 136, 50)
       gfx.setColor(gfx.kColorWhite)
       gfx.fillRoundRect(screenWidth - highScoreBoxWidth, 26, highScoreBoxWidth + 5, 24, 5)
-      gfx.setFont(largeFont)
+      gfx.setFont(assets.fonts.large)
       gfx.drawText("New high score!", screenWidth - highScoreBoxWidth + 11, 29)
     end
 
     local gameoverBoxHeight = pd.easingFunctions.outExpo(gs.frameCount, 0, 28, 50)
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRect(0, screenHeight - gameoverBoxHeight, screenWidth, gameoverBoxHeight)
-    gfx.setFont(largeFont)
+    gfx.setFont(assets.fonts.large)
     gfx.drawText("Game Over", 20, screenHeight - gameoverBoxHeight + 5)
 
-    gfx.setFont(smallFont)
+    gfx.setFont(assets.fonts.small)
     local optionY = screenHeight - gameoverBoxHeight + 11
     local retryX = screenWidth // 2 - 32
     local backX = screenWidth // 2 + 64
@@ -485,7 +491,7 @@ function pd.update()
       else
         gs.gameoverSelection = 'retry'
       end
-      boopSound:play()
+      assets.sfx.boop:play()
     end
 
     if pd.buttonJustReleased(pd.kButtonA) then
@@ -497,7 +503,7 @@ function pd.update()
       end
 
       resetGameState()
-      boopSound:play(77)
+      assets.sfx.boop:play(77)
     end
     gs.frameCount += 1
     return
@@ -527,7 +533,7 @@ function pd.update()
       elseif asteroid.state == 'active' and not isAsteroidOnScreen(asteroid) then
         table.insert(idsToRemove, id)
         gs.score += 1
-        pointSound:play()
+        assets.sfx.point:play()
       end
     end
     for _, id in ipairs(idsToRemove) do
@@ -562,15 +568,15 @@ function pd.update()
         if powerup == 'health' then
           gs.earth.health += 1
           flashMessage('+1 Health!')
-          powerupSound:play()
+          assets.sfx.powerup:play()
         elseif powerup == 'shield' then
           gs.moon.hasShield = true
           flashMessage('You got a shield!')
-          shieldUpSound:play()
+          assets.sfx.shieldUp:play()
         elseif powerup == 'bomb' then
           gs.earth.bombs += 1
           flashMessage('+1 Bomb! (Ⓑ to use)')
-          powerupSound:play()
+          assets.sfx.powerup:play()
         end
 
         gs.curRocket = nil
@@ -594,16 +600,16 @@ function pd.update()
         asteroid.state = 'dead'
         spawnExplosion(asteroid.pos)
         screenShake(500, 5)
-        boomSound:play()
+        assets.sfx.boom:play()
       elseif areCirclesColliding(asteroid.pos, asteroid.radius, gs.moon.pos, gs.moon.radius + (gs.moon.hasShield and 3 or 0)) then
         if gs.moon.hasShield then
           gs.moon.hasShield = false
-          shieldDownSound:play()
+          assets.sfx.shieldDown:play()
         else
           gs.earth.health -= 1
           spawnExplosion(asteroid.pos)
           screenShake(500, 5)
-          boomSound:play()
+          assets.sfx.boom:play()
         end
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
@@ -624,7 +630,7 @@ function pd.update()
                 asteroid2.pos.y
               ):midPoint()
             )
-            goodBoomSound:play()
+            assets.sfx.goodBoom:play()
             break
           end
         end
@@ -642,7 +648,7 @@ function pd.update()
           spawnExplosion(asteroid.pos)
         end
       end
-      goodBoomSound:play()
+      assets.sfx.goodBoom:play()
       screenShake(500, 5)
       gs.asteroids = {}
     end
@@ -716,8 +722,8 @@ function pd.update()
   local idsToRemove = {}
   for id, explosion in pairs(gs.explosions) do
     local animFrame = explosion.frame // 5 + 1
-    if animFrame <= #explosionImageTable then
-      explosionImageTable:getImage(animFrame):drawAnchored(explosion.pos.x, explosion.pos.y, 0.5, 0.5)
+    if animFrame <= #assets.gfx.explosion then
+      assets.gfx.explosion:getImage(animFrame):drawAnchored(explosion.pos.x, explosion.pos.y, 0.5, 0.5)
       explosion.frame += 1
     else
       table.insert(idsToRemove, id)
@@ -729,12 +735,12 @@ function pd.update()
 
   -- Hearts
   for i = 1, gs.earth.maxHealth do
-    (gs.earth.health >= i and heartImage or heartEmptyImage):draw(4, 4 + (i - 1) * 15)
+    (gs.earth.health >= i and assets.gfx.heart or assets.gfx.heartEmpty):draw(4, 4 + (i - 1) * 15)
   end
 
   -- Bombs
   for i = 1, gs.earth.bombs do
-    bombImage:draw(20, 4 + (i - 1) * 15)
+    assets.gfx.bomb:draw(20, 4 + (i - 1) * 15)
   end
 
   -- UI
@@ -742,21 +748,21 @@ function pd.update()
     pd.ui.crankIndicator:draw()
   end
 
-  gfx.setFont(smallFont)
+  gfx.setFont(assets.fonts.small)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
   gfx.drawTextAligned("Score " .. gs.score .. (gs.score >= STAR_SCORE and "  " or ""), screenWidth - 10, 10,
     kTextAlignment.right)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   if gs.score >= STAR_SCORE then
-    starImage:draw(screenWidth - 19, 7)
+    assets.gfx.star:draw(screenWidth - 19, 7)
   end
 
   if gs.curMessage then
     if gs.frameCount - gs.curMessageAt > 100 then
       gs.curMessage = nil
     else
-      gfx.setFont(largeFont)
+      gfx.setFont(assets.fonts.large)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
       gfx.drawTextAligned(gs.curMessage, screenWidth // 2, screenHeight - 24, kTextAlignment.center)
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
