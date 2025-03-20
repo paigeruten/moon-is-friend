@@ -199,13 +199,16 @@ local function spawnExplosion(pos)
   }
 end
 
-local function spawnParticle(pos, vel, ttl)
+local function spawnParticle(pos, vel, ttl, minRadius, maxRadius, ditherAlpha)
   gs.curParticleId += 1
   local id = gs.curParticleId
   gs.particles[id] = {
     pos = pos,
     vel = vel,
     ttl = ttl,
+    minRadius = minRadius,
+    maxRadius = maxRadius,
+    ditherAlpha = ditherAlpha,
   }
 end
 
@@ -600,7 +603,7 @@ function pd.update()
         gs.curRocket.acc = pd.geometry.vector2D.newPolar(0.005, gs.curRocket.info.angle)
       elseif gs.curRocket.frame > 100 and gs.frameCount % 2 == 0 then
         spawnParticle(gs.curRocket.pos,
-          -gs.curRocket.vel + pd.geometry.vector2D.new(math.random() - 0.5, math.random() - 0.5), 5)
+          -gs.curRocket.vel + pd.geometry.vector2D.new(math.random() - 0.5, math.random() - 0.5), 5, 1, 2, 0.2)
       end
       gs.curRocket.vel += gs.curRocket.acc
       gs.curRocket.pos += gs.curRocket.vel
@@ -769,10 +772,15 @@ function pd.update()
   end
 
   -- Particles
-  gfx.setColor(gfx.kColorXOR)
-  idsToRemove = {}
+  local idsToRemove = {}
   for id, particle in pairs(gs.particles) do
-    gfx.fillCircleAtPoint(particle.pos, math.random(1, 2))
+    if math.random(1, 4) == 1 then
+      gfx.setColor(gfx.kColorXOR)
+    else
+      gfx.setColor(gfx.kColorWhite)
+    end
+    gfx.setDitherPattern(particle.ditherAlpha, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillCircleAtPoint(particle.pos, math.random(particle.minRadius, particle.maxRadius))
     if particle.ttl <= 0 then
       table.insert(idsToRemove, id)
     else
@@ -791,18 +799,29 @@ function pd.update()
       gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
       if gs.frameCount % 2 == 0 or gs.frameCount % 3 == 0 then
         local velAngle = -asteroid.vel:angleBetween(pd.geometry.vector2D.new(0, -1))
+        local minRadius, maxRadius = 1, 2
+        if asteroid.radius > 3 then
+          minRadius, maxRadius = 1, 3
+        elseif asteroid.radius > 4 then
+          minRadius, maxRadius = 1, 4
+        elseif asteroid.radius > 5 then
+          minRadius, maxRadius = 2, 4
+        end
         spawnParticle(
-          asteroid.pos - pd.geometry.vector2D.newPolar(asteroid.radius, velAngle + math.random(-25, 25)),
-          pd.geometry.vector2D.newPolar(math.random(-asteroid.radius, asteroid.radius) / 10,
+          asteroid.pos - pd.geometry.vector2D.newPolar(asteroid.radius, velAngle + math.random(-35, 35)),
+          pd.geometry.vector2D.newPolar(math.random(1, asteroid.radius) / 10,
             -velAngle + math.random(-15, 15)),
-          7
+          7,
+          minRadius,
+          maxRadius,
+          0.5
         )
       end
     end
   end
 
   -- Explosions
-  local idsToRemove = {}
+  idsToRemove = {}
   for id, explosion in pairs(gs.explosions) do
     local animFrame = explosion.frame // 5 + 1
     if animFrame <= #assets.gfx.explosion then
