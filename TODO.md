@@ -41,5 +41,6 @@
     * [x] +1 Bomb
     * [ ] Limit bombs
 * [ ] Asteroids collide with rockets
+* [ ] Make earth look like earth
 * [ ] More legible font
 * [ ] Cute messages (or facial expressions?) between moon and earth

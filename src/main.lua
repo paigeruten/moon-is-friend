@@ -809,12 +809,14 @@ function pd.update()
       if gs.frameCount % 2 == 0 or gs.frameCount % 3 == 0 then
         local velAngle = -asteroid.vel:angleBetween(pd.geometry.vector2D.new(0, -1))
         local minRadius, maxRadius = 1, 2
-        if asteroid.radius > 3 then
-          minRadius, maxRadius = 1, 3
-        elseif asteroid.radius > 4 then
-          minRadius, maxRadius = 1, 4
+        if asteroid.radius > 6 then
+          minRadius, maxRadius = 2, 5
         elseif asteroid.radius > 5 then
           minRadius, maxRadius = 2, 4
+        elseif asteroid.radius > 4 then
+          minRadius, maxRadius = 1, 4
+        elseif asteroid.radius > 3 then
+          minRadius, maxRadius = 1, 3
         end
         spawnParticle(
           asteroid.pos - pd.geometry.vector2D.newPolar(asteroid.radius, velAngle + math.random(-35, 35)),
