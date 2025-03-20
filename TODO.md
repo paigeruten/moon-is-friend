@@ -36,11 +36,16 @@
 * [ ] Powerups
     * [x] +1 HP
     * [x] Moon shield
-    * [ ] Slow motion in moon's orbit
+    * [ ] Double shield??
+    * [ ] Slow motion in moon's orbit (or time bombs?)
     * [ ] Max health up? (rare)
     * [x] +1 Bomb
     * [ ] Limit bombs
 * [ ] Asteroids collide with rockets
 * [ ] Make earth look like earth
+* [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
+* [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
+* [ ] Make Moon orbit more of an ellipse?
+* [ ] Minimap/radar
 * [ ] More legible font
 * [ ] Cute messages (or facial expressions?) between moon and earth

@@ -245,7 +245,7 @@ local function spawnAsteroid()
     pos = pos,
     vel = -pd.geometry.vector2D.newPolar(
       speed,
-      angle + (math.random() * 20 - 10) -- vary angle from -10 to +10
+      angle + (math.random() * 40 - 20) -- vary angle from -20 to +20
     ),
     radius = asteroidRadius,
     state = 'entering',
