@@ -36,16 +36,21 @@
 * [ ] Powerups
     * [x] +1 HP
     * [x] Moon shield
-    * [ ] Double shield??
+    * [ ] Earth shield
     * [ ] Slow motion in moon's orbit (or time bombs?)
     * [ ] Max health up? (rare)
     * [x] +1 Bomb
     * [ ] Limit bombs
 * [ ] Asteroids collide with rockets
+* [ ] Press B for super gravity (for throwing things?)
+* [ ] Waves/levels
 * [ ] Make earth look like earth
 * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
 * [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
+* [ ] Targets you have to try to hit on the edges of the screen (the default way to score points? Or like a boss fight where asteroids to damage against a giant planet just poking into one side of the screen?)
+* [ ] Arrows showing where asteroids are about to enter the screen (may kinda conflict with the targets idea?)
 * [ ] Make Moon orbit more of an ellipse?
 * [ ] Minimap/radar
 * [ ] More legible font
-* [ ] Cute messages (or facial expressions?) between moon and earth
+* [ ] Music
+* [ ] Quieter coin sound

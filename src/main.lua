@@ -75,6 +75,9 @@ local function resetGameState()
   gs.curAsteroidId = 0
   gs.lastAsteroidAt = 0
 
+  gs.targets = {}
+  gs.curTargetId = 0
+
   gs.particles = {}
   gs.curParticleId = 0
 
@@ -249,6 +252,18 @@ local function spawnAsteroid()
     ),
     radius = asteroidRadius,
     state = 'entering',
+  }
+  return id
+end
+
+local function spawnTarget(x, y, r)
+  gs.curTargetId += 1
+  local id = gs.curTargetId
+  gs.targets[id] = {
+    id = id,
+    pos = pd.geometry.point.new(x, y),
+    radius = r,
+    health = 100,
   }
   return id
 end
@@ -571,6 +586,13 @@ function pd.update()
       end
     end
 
+    if gs.frameCount == 2 then
+      --spawnTarget(100, 30, 26)
+      --spawnTarget(screenWidth - 30, 100, 20)
+      --spawnTarget(35, 130, 22)
+      --spawnTarget(280, screenHeight - 40, 18)
+    end
+
     -- Update physics
     local idsToRemove = {}
     for id, asteroid in pairs(gs.asteroids) do
@@ -579,7 +601,11 @@ function pd.update()
       local acc = earthVec:scaledBy(gs.earth.mass / earthVec:magnitudeSquared())
       local moonVec = gs.moon.pos - asteroid.pos
       if isOnScreen and moonVec:magnitude() <= gs.moon.gravityRadius then
-        acc += moonVec:scaledBy(gs.moon.mass / moonVec:magnitudeSquared())
+        local moonMass = gs.moon.mass
+        if pd.buttonIsPressed(pd.kButtonA) then
+          moonMass *= 2
+        end
+        acc += moonVec:scaledBy(moonMass / moonVec:magnitudeSquared())
       end
       asteroid.vel += acc
       asteroid.pos += asteroid.vel
@@ -675,6 +701,23 @@ function pd.update()
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
       else
+        for targetId, target in pairs(gs.targets) do
+          if areCirclesColliding(asteroid.pos, asteroid.radius, target.pos, target.radius) then
+            table.insert(idsToRemove, id)
+            asteroid.state = 'dead'
+            target.health -= math.max(5, math.floor(asteroid.radius * asteroid.vel:magnitude()))
+            assets.sfx.goodBoom:play()
+            for i = 1, 32 do
+              spawnParticle(asteroid.pos, pd.geometry.vector2D.newPolar(math.random() + 1, math.random() * 360),
+                10, 2, 4, 0.2)
+            end
+            if target.health <= 0 then
+              gs.targets[targetId] = nil
+            end
+            goto continue
+          end
+        end
+
         for id2, asteroid2 in pairs(gs.asteroids) do
           if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
             table.insert(idsToRemove, id)
@@ -777,6 +820,25 @@ function pd.update()
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
     gfx.drawCircleAtPoint(gs.moon.pos, gs.moon.radius + 3)
+  end
+
+  -- Targets
+  for _, target in pairs(gs.targets) do
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.7, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillCircleAtPoint(target.pos, target.radius)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillCircleAtPoint(target.pos + pd.geometry.vector2D.new(-2, -2), target.radius - 2)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.2, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillCircleAtPoint(target.pos + pd.geometry.vector2D.new(-4, -4), target.radius - 4)
+
+    if target.health < 100 then
+      gfx.setColor(gfx.kColorWhite)
+      gfx.drawRoundRect(target.pos.x - 10, target.pos.y + target.radius + 4, 20, 4, 2)
+      gfx.fillRoundRect(target.pos.x - 10, target.pos.y + target.radius + 4, target.health / 5, 4, 2)
+    end
   end
 
   -- Particles
