@@ -763,8 +763,16 @@ function pd.update()
 
   -- Moon
   gfx.setColor(gfx.kColorWhite)
-  gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
+  --gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(gs.moon.pos, gs.moon.radius)
+  gfx.setColor(gfx.kColorBlack)
+  gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+  gfx.fillCircleAtPoint(gs.moon.pos + pd.geometry.vector2D.new(3, 2), 3)
+  gfx.fillCircleAtPoint(gs.moon.pos + pd.geometry.vector2D.new(-3, -1), 2)
+  gfx.fillCircleAtPoint(gs.moon.pos + pd.geometry.vector2D.new(3, -3), 2)
+  gfx.fillCircleAtPoint(gs.moon.pos + pd.geometry.vector2D.new(-4, 4), 2)
+  gfx.fillCircleAtPoint(gs.moon.pos + pd.geometry.vector2D.new(-1, -5), 2)
+  gfx.fillCircleAtPoint(gs.moon.pos + pd.geometry.vector2D.new(-5, 0), 2)
   if gs.moon.hasShield then
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
@@ -794,6 +802,7 @@ function pd.update()
 
   -- Asteroids
   gfx.setColor(gfx.kColorWhite)
+  gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
   for _, asteroid in pairs(gs.asteroids) do
     if isAsteroidOnScreen(asteroid) then
       gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)

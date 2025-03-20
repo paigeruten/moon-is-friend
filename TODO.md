@@ -8,7 +8,7 @@
 * [x] Game over screen
 * [x] Stars in background
 * [x] Rockets from Earth that repair the moon
-* [ ] Animations
+* [x] Animations
     * [x] Asteroid collision explosions
     * [x] Rocket taking off particles
     * [x] Asteroid tail (like a comet?) animation/particles
@@ -24,13 +24,6 @@
 * [x] Screenshots / GIFs for itch and github
 * [x] Pause menu (Restart / Title Screen)
 * [x] Bombs
-* [ ] Powerups
-    * [x] +1 HP
-    * [x] Moon shield
-    * [ ] Slow motion in moon's orbit
-    * [ ] Max health up? (rare)
-    * [x] +1 Bomb
-    * [ ] Limit bombs
 * [x] Sound effects
     * [x] Asteroid goes off screen
     * [x] Asteroids collide with each other
@@ -40,5 +33,13 @@
     * [x] Asteroid takes out shield
 * [x] Googly eyes on earth looking worriedly at the closest incoming asteroid?
 * [x] Increase difficulty (more frequent asteroids)
+* [ ] Powerups
+    * [x] +1 HP
+    * [x] Moon shield
+    * [ ] Slow motion in moon's orbit
+    * [ ] Max health up? (rare)
+    * [x] +1 Bomb
+    * [ ] Limit bombs
+* [ ] Asteroids collide with rockets
 * [ ] More legible font
 * [ ] Cute messages (or facial expressions?) between moon and earth
