@@ -638,7 +638,9 @@ function pd.update()
         gs.curRocket = nil
         gs.lastRocketAt = gs.frameCount
       end
-    elseif (gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1 then -- every 3 + ~10 seconds
+    elseif ((gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1)
+        or (gs.frameCount - gs.lastRocketAt) > 1000 -- every 3 + ~10 seconds, max 20 seconds
+    then
       spawnRocket()
       flashMessage('Supplies incoming!')
     end
@@ -738,15 +740,15 @@ function pd.update()
   gfx.fillCircleAtPoint(gs.earth.pos, gs.earth.radius)
 
   -- Earth eyes
-  local leftEye = pd.geometry.point.new(gs.earth.pos.x - 4, gs.earth.pos.y - 4)
-  local rightEye = pd.geometry.point.new(gs.earth.pos.x + 4, gs.earth.pos.y - 4)
+  local leftEye = pd.geometry.point.new(gs.earth.pos.x - 5, gs.earth.pos.y - 5)
+  local rightEye = pd.geometry.point.new(gs.earth.pos.x + 5, gs.earth.pos.y - 5)
   gfx.setColor(gfx.kColorWhite)
-  gfx.fillCircleAtPoint(leftEye, 3)
-  gfx.fillCircleAtPoint(rightEye, 3)
+  gfx.fillCircleAtPoint(leftEye, 4)
+  gfx.fillCircleAtPoint(rightEye, 4)
   local lookAt = closestAsteroidDirection()
   gfx.setColor(gfx.kColorBlack)
-  gfx.fillCircleAtPoint(leftEye + lookAt, 1)
-  gfx.fillCircleAtPoint(rightEye + lookAt, 1)
+  gfx.fillCircleAtPoint(leftEye + lookAt, 2)
+  gfx.fillCircleAtPoint(rightEye + lookAt, 2)
 
   -- Rocket
   if gs.curRocket then
