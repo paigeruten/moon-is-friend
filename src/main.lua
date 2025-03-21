@@ -962,9 +962,10 @@ function pd.update()
     end
   end
 
-  --pd.drawFPS(5, screenHeight - 15)
   gfx.setFont(assets.fonts.small)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
   gfx.drawText('' .. gs.rampUpDifficulty, 5, screenHeight - 15)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  pd.drawFPS(screenWidth - 20, screenHeight - 15)
 end
