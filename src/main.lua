@@ -54,6 +54,7 @@ local function resetGameState()
     health = 5,
     maxHealth = 5,
     bombs = 0,
+    hasShield = false,
   }
 
   gs.moon = {
@@ -645,7 +646,10 @@ function pd.update()
           table.insert(powerups, 'health')
         end
         if not gs.moon.hasShield then
-          table.insert(powerups, 'shield')
+          table.insert(powerups, 'moon-shield')
+        end
+        if not gs.earth.hasShield then
+          table.insert(powerups, 'earth-shield')
         end
 
         local powerup = powerups[math.random(#powerups)]
@@ -654,9 +658,13 @@ function pd.update()
           gs.earth.health += 1
           flashMessage('+1 Health!')
           assets.sfx.powerup:play()
-        elseif powerup == 'shield' then
+        elseif powerup == 'moon-shield' then
           gs.moon.hasShield = true
           flashMessage('You got a shield!')
+          assets.sfx.shieldUp:play()
+        elseif powerup == 'earth-shield' then
+          gs.earth.hasShield = true
+          flashMessage('Earth got a shield!')
           assets.sfx.shieldUp:play()
         elseif powerup == 'bomb' then
           gs.earth.bombs += 1
@@ -681,13 +689,18 @@ function pd.update()
         goto continue
       end
 
-      if areCirclesColliding(asteroid.pos, asteroid.radius, gs.earth.pos, gs.earth.radius) then
-        gs.earth.health -= 1
+      if areCirclesColliding(asteroid.pos, asteroid.radius, gs.earth.pos, gs.earth.radius + (gs.earth.hasShield and 4 or 0)) then
+        if gs.earth.hasShield then
+          gs.earth.hasShield = false
+          assets.sfx.shieldDown:play()
+        else
+          gs.earth.health -= 1
+          spawnExplosion(asteroid.pos)
+          screenShake(500, 5)
+          assets.sfx.boom:play()
+        end
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
-        spawnExplosion(asteroid.pos)
-        screenShake(500, 5)
-        assets.sfx.boom:play()
       elseif areCirclesColliding(asteroid.pos, asteroid.radius, gs.moon.pos, gs.moon.radius + (gs.moon.hasShield and 3 or 0)) then
         if gs.moon.hasShield then
           gs.moon.hasShield = false
@@ -784,6 +797,11 @@ function pd.update()
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.45, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(gs.earth.pos, gs.earth.radius)
+  if gs.earth.hasShield then
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.drawCircleAtPoint(gs.earth.pos, gs.earth.radius + 4)
+  end
 
   -- Earth eyes
   local leftEye = pd.geometry.point.new(gs.earth.pos.x - 5, gs.earth.pos.y - 5)
