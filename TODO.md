@@ -38,11 +38,12 @@
     * [x] Moon shield
     * [x] Earth shield
     * [ ] Slow motion in moon's orbit (or time bombs?)
-    * [ ] Max health up? (rare)
+    * [x] Max health up (only when no other powerups applicable)
     * [x] +1 Bomb
-    * [ ] Limit bombs
+    * [x] Limit bombs
 * [ ] Asteroids collide with rockets
 * [x] Press A for super gravity (for throwing things?)
+* [ ] Bomb shockwave animation
 * [ ] Waves/levels
 * [ ] Make earth look like earth
 * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)

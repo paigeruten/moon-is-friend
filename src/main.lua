@@ -54,6 +54,7 @@ local function resetGameState()
     health = 5,
     maxHealth = 5,
     bombs = 0,
+    maxBombs = 5,
     hasShield = false,
   }
 
@@ -641,9 +642,13 @@ function pd.update()
         gs.curRocket = nil
         gs.lastRocketAt = gs.frameCount
       elseif isRocketCollidingWithCircle(gs.curRocket, gs.moon.pos, gs.moon.radius) then
-        local powerups = { 'bomb' }
+        local powerups = {}
         if gs.earth.health < gs.earth.maxHealth then
           table.insert(powerups, 'health')
+          table.insert(powerups, 'health')
+        end
+        if gs.earth.bombs < gs.earth.maxBombs then
+          table.insert(powerups, 'bomb')
         end
         if not gs.moon.hasShield then
           table.insert(powerups, 'moon-shield')
@@ -651,12 +656,20 @@ function pd.update()
         if not gs.earth.hasShield then
           table.insert(powerups, 'earth-shield')
         end
+        if #powerups == 0 then
+          table.insert(powerups, 'max-health')
+        end
 
         local powerup = powerups[math.random(#powerups)]
 
         if powerup == 'health' then
           gs.earth.health += 1
           flashMessage('+1 Health!')
+          assets.sfx.powerup:play()
+        elseif powerup == 'max-health' then
+          gs.earth.maxHealth += 1
+          gs.earth.health = gs.earth.maxHealth
+          flashMessage('+1 Max Health!')
           assets.sfx.powerup:play()
         elseif powerup == 'moon-shield' then
           gs.moon.hasShield = true
