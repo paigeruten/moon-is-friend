@@ -41,17 +41,21 @@
     * [x] Max health up (only when no other powerups applicable)
     * [x] +1 Bomb
     * [x] Limit bombs
-* [ ] Asteroids collide with rockets
+* [x] Asteroids collide with rockets
 * [x] Press A for super gravity (for throwing things?)
 * [x] Bomb shockwave animation
-* [ ] Waves/levels
-* [ ] Make earth look like earth
-* [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
-* [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
-* [ ] Targets you have to try to hit on the edges of the screen (the default way to score points? Or like a boss fight where asteroids to damage against a giant planet just poking into one side of the screen?)
 * [ ] Arrows showing where asteroids are about to enter the screen (may kinda conflict with the targets idea?)
-* [ ] Make Moon orbit more of an ellipse?
-* [ ] Minimap/radar
+* [ ] Make earth look like earth
+* [ ] Waves/levels
+* [ ] Menu with "Start" / "High scores" / "How to play"
 * [ ] More legible font
 * [ ] Music
+* [ ] New sound for triggering bomb
 * [ ] Quieter coin sound
+* [ ] Light mode
+* [ ] Possibly bad ideas
+    * [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
+    * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
+    * [ ] Make Moon orbit more of an ellipse?
+    * [ ] Targets you have to try to hit on the edges of the screen (the default way to score points? Or like a boss fight where asteroids to damage against a giant planet just poking into one side of the screen?)
+    * [ ] Minimap/radar

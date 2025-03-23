@@ -53,7 +53,7 @@ local function resetGameState()
     mass = 0.75,
     health = 5,
     maxHealth = 5,
-    bombs = 5,
+    bombs = 0,
     maxBombs = 5,
     hasShield = false,
   }
@@ -649,7 +649,8 @@ function pd.update()
       if gs.curRocket.frame == 100 then
         -- Liftoff!
         gs.curRocket.acc = pd.geometry.vector2D.newPolar(0.005, gs.curRocket.info.angle)
-      elseif gs.curRocket.frame > 100 and gs.frameCount % 2 == 0 then
+      end
+      if gs.frameCount % 2 == 0 then
         spawnParticle(gs.curRocket.pos,
           -gs.curRocket.vel + pd.geometry.vector2D.new(math.random() - 0.5, math.random() - 0.5), 5, 1, 2, 0.2)
       end
@@ -707,6 +708,24 @@ function pd.update()
 
         gs.curRocket = nil
         gs.lastRocketAt = gs.frameCount
+      else
+        for id, asteroid in pairs(gs.asteroids) do
+          if asteroid.state == 'active' and isRocketCollidingWithCircle(gs.curRocket, asteroid.pos, asteroid.radius) then
+            spawnExplosion(
+              pd.geometry.lineSegment.new(
+                asteroid.pos.x,
+                asteroid.pos.y,
+                gs.curRocket.pos.x,
+                gs.curRocket.pos.y
+              ):midPoint()
+            )
+            assets.sfx.goodBoom:play()
+            gs.asteroids[id] = nil
+            gs.curRocket = nil
+            gs.lastRocketAt = gs.frameCount
+            break
+          end
+        end
       end
     elseif ((gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1)
         or (gs.frameCount - gs.lastRocketAt) > 1000 -- every 3 + ~10 seconds, max 20 seconds
@@ -844,10 +863,8 @@ function pd.update()
 
   -- Rocket
   if gs.curRocket then
-    if gs.curRocket.frame >= 100 or (gs.curRocket.frame // 5) % 2 == 0 then
-      gs.curRocket.info.image:drawAnchored(gs.curRocket.pos.x, gs.curRocket.pos.y, gs.curRocket.info.anchor.x,
-        gs.curRocket.info.anchor.y, gs.curRocket.info.flip)
-    end
+    gs.curRocket.info.image:drawAnchored(gs.curRocket.pos.x, gs.curRocket.pos.y, gs.curRocket.info.anchor.x,
+      gs.curRocket.info.anchor.y, gs.curRocket.info.flip)
   end
 
   -- Moon
