@@ -1,0 +1,82 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-c",
+      "-g",
+      "-dynamiclib",
+      "-DTARGET_SIMULATOR=1",
+      "-DTARGET_EXTENSION=1",
+      "-I",
+      ".",
+      "-I",
+      "/Users/paige/Developer/PlaydateSDK/C_API",
+      "-o",
+      "build/pdex.dylib",
+      "src/main.c"
+    ],
+    "directory": "/Users/paige/projects/playdate/moon-is-friend/c",
+    "file": "/Users/paige/projects/playdate/moon-is-friend/c/src/main.c",
+    "output": "/Users/paige/projects/playdate/moon-is-friend/c/build/pdex.dylib"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-c",
+      "-g",
+      "-dynamiclib",
+      "-DTARGET_SIMULATOR=1",
+      "-DTARGET_EXTENSION=1",
+      "-I",
+      ".",
+      "-I",
+      "/Users/paige/Developer/PlaydateSDK/C_API",
+      "-o",
+      "build/pdex.dylib",
+      "src/game.c"
+    ],
+    "directory": "/Users/paige/projects/playdate/moon-is-friend/c",
+    "file": "/Users/paige/projects/playdate/moon-is-friend/c/src/game.c",
+    "output": "/Users/paige/projects/playdate/moon-is-friend/c/build/pdex.dylib"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-c",
+      "-g",
+      "-dynamiclib",
+      "-DTARGET_SIMULATOR=1",
+      "-DTARGET_EXTENSION=1",
+      "-I",
+      ".",
+      "-I",
+      "/Users/paige/Developer/PlaydateSDK/C_API",
+      "-o",
+      "build/pdex.dylib",
+      "src/graphics.c"
+    ],
+    "directory": "/Users/paige/projects/playdate/moon-is-friend/c",
+    "file": "/Users/paige/projects/playdate/moon-is-friend/c/src/graphics.c",
+    "output": "/Users/paige/projects/playdate/moon-is-friend/c/build/pdex.dylib"
+  },
+  {
+    "arguments": [
+      "/usr/bin/clang",
+      "-c",
+      "-g",
+      "-dynamiclib",
+      "-DTARGET_SIMULATOR=1",
+      "-DTARGET_EXTENSION=1",
+      "-I",
+      ".",
+      "-I",
+      "/Users/paige/Developer/PlaydateSDK/C_API",
+      "-o",
+      "build/pdex.dylib",
+      "/Users/paige/Developer/PlaydateSDK/C_API/buildsupport/setup.c"
+    ],
+    "directory": "/Users/paige/projects/playdate/moon-is-friend/c",
+    "file": "/Users/paige/Developer/PlaydateSDK/C_API/buildsupport/setup.c",
+    "output": "/Users/paige/projects/playdate/moon-is-friend/c/build/pdex.dylib"
+  }
+]
