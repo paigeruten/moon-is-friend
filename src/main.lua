@@ -53,7 +53,7 @@ local function resetGameState()
     mass = 0.75,
     health = 5,
     maxHealth = 5,
-    bombs = 0,
+    bombs = 5,
     maxBombs = 5,
     hasShield = false,
   }
@@ -66,6 +66,9 @@ local function resetGameState()
     mass = 2.5,
     hasShield = false,
   }
+
+  gs.bombShockwave = 0
+  gs.bombShockwavePos = nil
 
   gs.curRocket = nil
   gs.lastRocketAt = 0
@@ -580,6 +583,23 @@ function pd.update()
   if not pd.isCrankDocked() then
     gs.moon.pos = gs.earth.pos + pd.geometry.vector2D.newPolar(gs.moon.distanceFromEarth, pd.getCrankPosition())
 
+    -- Animate bomb shockwave
+    if gs.bombShockwave > 0 then
+      gs.lastAsteroidAt = gs.frameCount
+      gs.bombShockwave += 10
+      for id, asteroid in pairs(gs.asteroids) do
+        if asteroid.state == 'active' and areCirclesColliding(gs.bombShockwavePos, gs.bombShockwave, asteroid.pos, asteroid.radius) then
+          spawnExplosion(asteroid.pos)
+          assets.sfx.goodBoom:play()
+          gs.asteroids[id] = nil
+        end
+      end
+      if gs.bombShockwave > screenWidth then
+        gs.bombShockwave = 0
+        gs.asteroids = {}
+      end
+    end
+
     if gs.frameCount - gs.lastAsteroidAt >= (gs.difficulty == 'ramp-up' and gs.rampUpDifficulty or difficultyLevels[gs.difficulty]) then
       spawnAsteroid()
       gs.lastAsteroidAt = gs.frameCount
@@ -771,16 +791,11 @@ function pd.update()
       gs.asteroids[id] = nil
     end
 
-    if pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 then
+    if pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
       gs.earth.bombs -= 1
-      for _, asteroid in pairs(gs.asteroids) do
-        if isAsteroidOnScreen(asteroid) then
-          spawnExplosion(asteroid.pos)
-        end
-      end
-      assets.sfx.goodBoom:play()
+      gs.bombShockwave = 1
+      gs.bombShockwavePos = gs.moon.pos
       screenShake(500, 5)
-      gs.asteroids = {}
     end
 
     -- Check for game over
@@ -937,6 +952,18 @@ function pd.update()
   end
   for _, id in ipairs(idsToRemove) do
     gs.explosions[id] = nil
+  end
+
+  -- Bomb shockwave
+  if gs.bombShockwave > 0 then
+    for i, alpha in ipairs({ 0.8, 0.4, 0.1, 0.4, 0.8 }) do
+      local radius = gs.bombShockwave - i * 4
+      if radius > 0 then
+        gfx.setColor(gfx.kColorWhite)
+        gfx.setDitherPattern(alpha, gfx.image.kDitherTypeBayer8x8)
+        gfx.drawCircleAtPoint(gs.bombShockwavePos, radius)
+      end
+    end
   end
 
   -- Hearts

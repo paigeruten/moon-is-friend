@@ -43,7 +43,7 @@
     * [x] Limit bombs
 * [ ] Asteroids collide with rockets
 * [x] Press A for super gravity (for throwing things?)
-* [ ] Bomb shockwave animation
+* [x] Bomb shockwave animation
 * [ ] Waves/levels
 * [ ] Make earth look like earth
 * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
