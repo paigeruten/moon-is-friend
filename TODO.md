@@ -44,16 +44,31 @@
 * [x] Asteroids collide with rockets
 * [x] Press A for super gravity (for throwing things?)
 * [x] Bomb shockwave animation
-* [ ] Arrows showing where asteroids are about to enter the screen (may kinda conflict with the targets idea?)
-* [ ] Make earth look like earth
+* [x] Start with 1 or 2 bombs
+* [ ] Arrows showing where asteroids are about to enter the screen
+* [ ] Make earth look like earth and moon look like moon
 * [ ] Waves/levels
+    * [ ] Progress bar at bottom divided into 5 sections (levels), showing how close you are to getting to the next level
+    * [ ] Small breather in between levels where you get a free powerup or two
+    * [ ] Each level will have a higher asteroid spawn rate, and higher average asteroid velocity
+    * [ ] Level 1: Basic game
+    * [ ] Level 2: Larger asteroids have a chance of spawning
+    * [ ] Level 3: Meteor showers
+    * [ ] Level 4: Comets
+    * [ ] Level 5: Boss fight
+    * [ ] Goes into endless mode after the boss fight with a slow but never- ending ramp up in asteroid spawn rate
+* [ ] Optimize lua code
+    * [ ] Less table allocations (especially for particles)
+    * [ ] Pre-draw the moon/earth/asteroid/stars into images
 * [ ] Menu with "Start" / "High scores" / "How to play"
 * [ ] More legible font
 * [ ] Music
 * [ ] New sound for triggering bomb
 * [ ] Quieter coin sound
+* [ ] Explain bombs in "How to play"
 * [ ] Light mode
 * [ ] Possibly bad ideas
+    * [ ] On harder levels, a comet (distinguished by being black with a white outline) comes by every once in a while - these are very fast and almost guaranteed to hit earth, and you're supposed to "parry" it by hitting A (or a d-pad button matching where the comet's coming from?) when it hits earth rather than diverting it with the moon
     * [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
     * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
     * [ ] Make Moon orbit more of an ellipse?

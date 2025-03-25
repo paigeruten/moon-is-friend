@@ -53,7 +53,7 @@ local function resetGameState()
     mass = 0.75,
     health = 5,
     maxHealth = 5,
-    bombs = 0,
+    bombs = 2,
     maxBombs = 5,
     hasShield = false,
   }
@@ -124,7 +124,10 @@ local assets = {
     heart = gfx.image.new("images/heart"),
     heartEmpty = gfx.image.new("images/empty-heart"),
     bomb = gfx.image.new("images/bomb"),
-    star = gfx.image.new("images/star")
+    star = gfx.image.new("images/star"),
+
+    arrowUp = gfx.image.new("images/arrow-up"),
+    arrowRight = gfx.image.new("images/arrow-right"),
   }
 }
 assets.gfx.rocketEast = assets.gfx.rocketNorth:rotatedImage(90)
@@ -317,6 +320,10 @@ end
 local function flashMessage(message)
   gs.curMessage = message
   gs.curMessageAt = gs.frameCount
+end
+
+local function clamp(value, low, high)
+  return math.min(high, math.max(low, value))
 end
 
 local function screenShake(shakeTime, shakeMagnitude)
@@ -952,6 +959,17 @@ function pd.update()
           maxRadius,
           0.5
         )
+      end
+    elseif (gs.frameCount // 10) % 3 ~= 0 then
+      if asteroid.pos.y < 0 then
+        assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, 0, screenWidth - 1), 0, 0.5, 0)
+      elseif asteroid.pos.y >= screenHeight then
+        assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, 0, screenWidth - 1), screenHeight - 1, 0.5, 1,
+          gfx.kImageFlippedY)
+      elseif asteroid.pos.x < 0 then
+        assets.gfx.arrowRight:drawAnchored(0, clamp(asteroid.pos.y, 0, screenHeight - 1), 0, 0.5, gfx.kImageFlippedX)
+      elseif asteroid.pos.x >= screenWidth then
+        assets.gfx.arrowRight:drawAnchored(screenWidth - 1, clamp(asteroid.pos.y, 0, screenHeight - 1), 1, 0.5)
       end
     end
   end
