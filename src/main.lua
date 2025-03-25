@@ -1029,6 +1029,17 @@ function pd.update()
   end
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
+  -- Time
+  local totalSecondsElapsed = gs.frameCount // 50
+  local minutesElapsed = totalSecondsElapsed // 60
+  local secondsElapsed = totalSecondsElapsed % 60
+  local timeElapsed = table.concat({ minutesElapsed, ":", secondsElapsed < 10 and "0" or "", secondsElapsed })
+  gfx.setFont(assets.fonts.small)
+  gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+  gfx.drawText(timeElapsed, 7, 180)
+  gfx.drawText("TIME", 7, 190)
+
+  -- Score
   gfx.setFont(assets.fonts.small)
   gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
   gfx.drawText("" .. gs.score, 7, 215)
