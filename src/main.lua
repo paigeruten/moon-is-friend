@@ -9,6 +9,7 @@ import "vendor/pdfxr"
 local pd = playdate
 local gfx = pd.graphics
 local screenWidth, screenHeight = pd.display.getSize()
+local sidebarWidth = 48
 
 math.randomseed(pd.getSecondsSinceEpoch())
 
@@ -48,7 +49,7 @@ local function resetGameState()
   gs.score = 0
 
   gs.earth = {
-    pos = pd.geometry.point.new(screenWidth // 2, screenHeight // 2),
+    pos = pd.geometry.point.new(screenWidth // 2 + sidebarWidth // 2, screenHeight // 2),
     radius = 14,
     mass = 0.75,
     health = 5,
@@ -292,12 +293,12 @@ end
 
 local function isAsteroidOnScreen(asteroid)
   local x, y, r = asteroid.pos.x, asteroid.pos.y, asteroid.radius
-  return x + r >= 0 and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
+  return x + r >= sidebarWidth and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
 end
 
 local function isRocketOnScreen(rocket)
   local x, y, r = rocket.pos.x, rocket.pos.y, 3
-  return x + r >= 0 and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
+  return x + r >= sidebarWidth and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
 end
 
 local function areCirclesColliding(centerA, radiusA, centerB, radiusB)
@@ -542,16 +543,21 @@ function pd.update()
       gfx.drawText("New high score!", screenWidth - highScoreBoxWidth + 11, 29)
     end
 
-    local gameoverBoxHeight = pd.easingFunctions.outExpo(gs.frameCount, 0, 28, 50)
+    local gameoverBoxHeight = pd.easingFunctions.outExpo(gs.frameCount, 0, 32, 50)
+    local gameoverBoxLeft = sidebarWidth + 32
+    local gameoverBoxWidth = screenWidth - gameoverBoxLeft
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRect(0, screenHeight - gameoverBoxHeight, screenWidth, gameoverBoxHeight)
+    gfx.setDitherPattern(0.4, gfx.image.kDitherTypeDiagonalLine)
+    gfx.fillRect(gameoverBoxLeft, screenHeight - gameoverBoxHeight, gameoverBoxWidth, gameoverBoxHeight)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(gameoverBoxLeft + 4, screenHeight - gameoverBoxHeight + 4, gameoverBoxWidth - 4, gameoverBoxHeight - 4)
     gfx.setFont(assets.fonts.large)
-    gfx.drawText("Game Over", 20, screenHeight - gameoverBoxHeight + 5)
+    gfx.drawText("*Game Over*", gameoverBoxLeft + 20, screenHeight - gameoverBoxHeight + 9)
 
     gfx.setFont(assets.fonts.small)
-    local optionY = screenHeight - gameoverBoxHeight + 11
-    local retryX = screenWidth // 2 - 32
-    local backX = screenWidth // 2 + 64
+    local optionY = screenHeight - gameoverBoxHeight + 15
+    local retryX = screenWidth // 2 + 16
+    local backX = screenWidth // 2 + 80
     local retryWidth, retryHeight = gfx.drawText("Retry", retryX, optionY)
     local backWidth, backHeight = gfx.drawText("Back to title", backX, optionY)
 
@@ -962,12 +968,13 @@ function pd.update()
       end
     elseif (gs.frameCount // 10) % 3 ~= 0 then
       if asteroid.pos.y < 0 then
-        assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, 0, screenWidth - 1), 0, 0.5, 0)
+        assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, sidebarWidth, screenWidth - 1), 0, 0.5, 0)
       elseif asteroid.pos.y >= screenHeight then
-        assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, 0, screenWidth - 1), screenHeight - 1, 0.5, 1,
+        assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, sidebarWidth, screenWidth - 1), screenHeight - 1, 0.5, 1,
           gfx.kImageFlippedY)
-      elseif asteroid.pos.x < 0 then
-        assets.gfx.arrowRight:drawAnchored(0, clamp(asteroid.pos.y, 0, screenHeight - 1), 0, 0.5, gfx.kImageFlippedX)
+      elseif asteroid.pos.x < sidebarWidth then
+        assets.gfx.arrowRight:drawAnchored(sidebarWidth, clamp(asteroid.pos.y, 0, screenHeight - 1), 0, 0.5,
+          gfx.kImageFlippedX)
       elseif asteroid.pos.x >= screenWidth then
         assets.gfx.arrowRight:drawAnchored(screenWidth - 1, clamp(asteroid.pos.y, 0, screenHeight - 1), 1, 0.5)
       end
@@ -1001,29 +1008,36 @@ function pd.update()
     end
   end
 
+  -- Sidebar
+  gfx.setColor(gfx.kColorBlack)
+  gfx.fillRect(sidebarWidth - 8, 0, 8, screenHeight)
+  gfx.setColor(gfx.kColorWhite)
+  gfx.setDitherPattern(0.4, gfx.image.kDitherTypeDiagonalLine)
+  gfx.fillRect(sidebarWidth - 8, 0, 8, screenHeight)
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRect(0, 0, sidebarWidth - 4, screenHeight)
+  gfx.setImageDrawMode(gfx.kDrawModeInverted)
+
   -- Hearts
   for i = 1, gs.earth.maxHealth do
-    (gs.earth.health >= i and assets.gfx.heart or assets.gfx.heartEmpty):draw(4, 4 + (i - 1) * 15)
+    (gs.earth.health >= i and assets.gfx.heart or assets.gfx.heartEmpty):draw(8, 8 + (i - 1) * 15)
   end
 
   -- Bombs
   for i = 1, gs.earth.bombs do
-    assets.gfx.bomb:draw(20, 4 + (i - 1) * 15)
+    assets.gfx.bomb:draw(26, 8 + (i - 1) * 15)
   end
+  gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  gfx.setFont(assets.fonts.small)
+  gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+  gfx.drawText("" .. gs.score, 7, 215)
+  gfx.drawText("PTS", 7, 225)
+  gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   -- UI
   if pd.isCrankDocked() then
     pd.ui.crankIndicator:draw()
-  end
-
-  gfx.setFont(assets.fonts.small)
-  gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned("Score " .. gs.score .. (gs.score >= STAR_SCORE and "  " or ""), screenWidth - 10, 10,
-    kTextAlignment.right)
-  gfx.setImageDrawMode(gfx.kDrawModeCopy)
-
-  if gs.score >= STAR_SCORE then
-    assets.gfx.star:draw(screenWidth - 19, 7)
   end
 
   if gs.curMessage then
@@ -1037,10 +1051,10 @@ function pd.update()
     end
   end
 
-  gfx.setFont(assets.fonts.small)
-  gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawText('' .. gs.rampUpDifficulty, 5, screenHeight - 15)
-  gfx.setImageDrawMode(gfx.kDrawModeCopy)
+  --gfx.setFont(assets.fonts.small)
+  --gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+  --gfx.drawText('' .. gs.rampUpDifficulty, 5, screenHeight - 15)
+  --gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-  pd.drawFPS(screenWidth - 20, screenHeight - 15)
+  --pd.drawFPS(screenWidth - 20, screenHeight - 15)
 end
