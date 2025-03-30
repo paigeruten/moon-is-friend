@@ -45,8 +45,8 @@
 * [x] Press A for super gravity (for throwing things?)
 * [x] Bomb shockwave animation
 * [x] Start with 1 or 2 bombs
-* [ ] Arrows showing where asteroids are about to enter the screen
-* [ ] Make earth look like earth and moon look like moon
+* [x] Arrows showing where asteroids are about to enter the screen
+* [x] Make earth look like earth and moon look like moon
 * [ ] Waves/levels
     * [ ] Progress bar at bottom divided into 5 sections (levels), showing how close you are to getting to the next level
     * [ ] Small breather in between levels where you get a free powerup or two
@@ -68,6 +68,7 @@
 * [ ] Explain bombs in "How to play"
 * [ ] Light mode
 * [ ] Possibly bad ideas
+    * [ ] Moon colonization mode (goal is to catch every rocket which is full of people)
     * [ ] On harder levels, a comet (distinguished by being black with a white outline) comes by every once in a while - these are very fast and almost guaranteed to hit earth, and you're supposed to "parry" it by hitting A (or a d-pad button matching where the comet's coming from?) when it hits earth rather than diverting it with the moon
     * [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
     * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
