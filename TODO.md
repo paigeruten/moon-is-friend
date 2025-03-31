@@ -47,16 +47,19 @@
 * [x] Start with 1 or 2 bombs
 * [x] Arrows showing where asteroids are about to enter the screen
 * [x] Make earth look like earth and moon look like moon
-* [ ] Waves/levels
-    * [ ] Progress bar at bottom divided into 5 sections (levels), showing how close you are to getting to the next level
-    * [ ] Small breather in between levels where you get a free powerup or two
-    * [ ] Each level will have a higher asteroid spawn rate, and higher average asteroid velocity
-    * [ ] Level 1: Basic game
-    * [ ] Level 2: Larger asteroids have a chance of spawning
-    * [ ] Level 3: Meteor showers
-    * [ ] Level 4: Comets
-    * [ ] Level 5: Boss fight
-    * [ ] Goes into endless mode after the boss fight with a slow but never- ending ramp up in asteroid spawn rate
+* [ ] Missions/Campaign/Story
+    * [ ] Intro/Tutorial: Easy difficulty, divert 10 asteroids
+    * [ ] Survival (part 1): Medium difficulty, survive for 1 (or 2?) minutes
+    * [ ] Moon colonization (part 1): Medium difficulty, catch 15 rockets
+    * [ ] Juggling (part 1): 3 asteroids on screen at once, cause 3 collisions
+    * [ ] Double moon (part 1): "Easy" difficulty, survive for 1 minute
+    * [ ] Boss fight (part 1): Hard difficulty, but no westward asteroids
+    * [ ] Survival (part 2): Hard difficulty, survive for 2 minutes
+    * [ ] Moon colonization (part 1): Hard difficulty, catch 20 rockets
+    * [ ] Juggling (part 2): 4 asteroids on screen at once, cause 5 collisions
+    * [ ] Double moon (part 2): Medium difficulty, survive for 90 seconds
+    * [ ] Survival (part 3): Ramp-up difficulty, survive for 5 minutes
+    * [ ] Boss fight (part 2): Expert difficulty, higher health, some other surprise(???)
 * [ ] Optimize lua code
     * [ ] Less table allocations (especially for particles)
     * [ ] Pre-draw the moon/earth/asteroid/stars into images
@@ -67,6 +70,11 @@
 * [ ] Quieter coin sound
 * [ ] Explain bombs in "How to play"
 * [ ] Light mode
+* [ ] Achievements
+    * [ ] X amount of asteroid-asteroid collisions
+    * [ ] Revenge: Diverted asteroid got pulled back (after ~2 seconds) and hit moon/earth
+    * [ ] Return to Sender: Asteroid was sent off the same side of the screen that it entered from
+    * [ ] X amount of asteroids cleared at once from a bomb
 * [ ] Possibly bad ideas
     * [ ] Moon colonization mode (goal is to catch every rocket which is full of people)
     * [x] Juggling mode (asteroids never despawn and always get pulled back, the only way to get rid of them is to make them collide with each other)
