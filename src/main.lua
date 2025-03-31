@@ -29,6 +29,7 @@ local difficultyLevels = {
 
 local gs = {
   scene = 'title',
+  gameMode = 'standard', -- 'standard' | 'juggling'
   difficulty = 'ramp-up',
   screenShakeEnabled = not pd.getReduceFlashing()
 }
@@ -349,9 +350,13 @@ local function screenShake(shakeTime, shakeMagnitude)
 end
 
 local menu = pd.getSystemMenu()
-menu:addOptionsMenuItem('difficulty', { 'easy', 'normal', 'ramp-up', 'hard', 'aaaah' }, gs.difficulty, function(selected)
-  gs.difficulty = selected
-  updateRampUpDifficulty()
+-- menu:addOptionsMenuItem('difficulty', { 'easy', 'normal', 'ramp-up', 'hard', 'aaaah' }, gs.difficulty, function(selected)
+--   gs.difficulty = selected
+--   updateRampUpDifficulty()
+-- end)
+menu:addOptionsMenuItem('mode', { 'standard', 'juggling' }, gs.gameMode, function(selected)
+  gs.gameMode = selected
+  resetGameState()
 end)
 menu:addCheckmarkMenuItem('screen shake', gs.screenShakeEnabled, function(checked)
   gs.screenShakeEnabled = checked
@@ -613,12 +618,18 @@ function pd.update()
       end
     end
 
-    if gs.frameCount - gs.lastAsteroidAt >= (gs.difficulty == 'ramp-up' and gs.rampUpDifficulty or difficultyLevels[gs.difficulty]) then
-      spawnAsteroid()
-      gs.lastAsteroidAt = gs.frameCount
-      if gs.difficulty == 'ramp-up' then
-        updateRampUpDifficulty()
+    if gs.gameMode == 'standard' then
+      if gs.frameCount - gs.lastAsteroidAt >= (gs.difficulty == 'ramp-up' and gs.rampUpDifficulty or difficultyLevels[gs.difficulty]) then
+        spawnAsteroid()
+        gs.lastAsteroidAt = gs.frameCount
+        if gs.difficulty == 'ramp-up' then
+          updateRampUpDifficulty()
+        end
       end
+    end
+
+    if gs.gameMode == 'juggling' and pd.buttonJustReleased(pd.kButtonA) then
+      spawnAsteroid()
     end
 
     if gs.frameCount == 2 then
@@ -633,14 +644,24 @@ function pd.update()
     for id, asteroid in pairs(gs.asteroids) do
       local isOnScreen = isAsteroidOnScreen(asteroid)
       local earthVec = gs.earth.pos - asteroid.pos
-      local acc = earthVec:scaledBy(gs.earth.mass / earthVec:magnitudeSquared())
+      local earthMass = gs.earth.mass
+      local acc = earthVec:scaledBy(earthMass / earthVec:magnitudeSquared())
       local moonVec = gs.moon.pos - asteroid.pos
       if isOnScreen and moonVec:magnitude() <= gs.moon.gravityRadius then
         local moonMass = gs.moon.mass
-        if pd.buttonIsPressed(pd.kButtonA) then
+        if gs.gameMode == 'juggling' and pd.buttonIsPressed(pd.kButtonB) then
           moonMass *= 2
         end
         acc += moonVec:scaledBy(moonMass / moonVec:magnitudeSquared())
+      end
+      if gs.gameMode == 'juggling' then
+        if (asteroid.pos.x < sidebarWidth + asteroid.radius and asteroid.vel.x < 0) or (asteroid.pos.x > screenWidth - asteroid.radius and asteroid.vel.x > 0) then
+          asteroid.vel.x = -asteroid.vel.x
+          asteroid.vel = asteroid.vel:scaledBy(0.65)
+        elseif (asteroid.pos.y < asteroid.radius and asteroid.vel.y < 0) or (asteroid.pos.y > screenHeight - asteroid.radius and asteroid.vel.y > 0) then
+          asteroid.vel.y = -asteroid.vel.y
+          asteroid.vel = asteroid.vel:scaledBy(0.65)
+        end
       end
       asteroid.vel += acc
       asteroid.pos += asteroid.vel
@@ -743,8 +764,10 @@ function pd.update()
     elseif ((gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1)
         or (gs.frameCount - gs.lastRocketAt) > 1000 -- every 3 + ~10 seconds, max 20 seconds
     then
-      spawnRocket()
-      flashMessage('Supplies incoming!')
+      if gs.gameMode == 'standard' then
+        spawnRocket()
+        flashMessage('Supplies incoming!')
+      end
     end
 
     -- Collisions
@@ -803,6 +826,9 @@ function pd.update()
             asteroid.state = 'dead'
             asteroid2.state = 'dead'
             gs.score += 5
+            if gs.gameMode == 'juggling' and gs.earth.health < gs.earth.maxHealth then
+              gs.earth.health += 1
+            end
             flashMessage('2 asteroids collided! +5 points')
             spawnExplosion(
               pd.geometry.lineSegment.new(
@@ -823,7 +849,7 @@ function pd.update()
       gs.asteroids[id] = nil
     end
 
-    if pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
+    if gs.gameMode == 'standard' and pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
       gs.earth.bombs -= 1
       gs.bombShockwave = 1
       gs.bombShockwavePos = gs.moon.pos
@@ -877,7 +903,7 @@ function pd.update()
     gfx.drawCircleAtPoint(gs.earth.pos, gs.earth.radius + 4)
   end
 
-  ---[[ Earth eyes
+  -- Earth eyes
   local leftEye = pd.geometry.point.new(gs.earth.pos.x - 5, gs.earth.pos.y - 5)
   local rightEye = pd.geometry.point.new(gs.earth.pos.x + 5, gs.earth.pos.y - 5)
   gfx.setColor(gfx.kColorWhite)
@@ -891,7 +917,6 @@ function pd.update()
   gfx.setColor(gfx.kColorBlack)
   gfx.fillCircleAtPoint(leftEye + lookAt, 2)
   gfx.fillCircleAtPoint(rightEye + lookAt, 2)
-  --]]
 
   -- Rocket
   if gs.curRocket then

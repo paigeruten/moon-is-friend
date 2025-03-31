@@ -69,6 +69,8 @@
 * [ ] Light mode
 * [ ] Possibly bad ideas
     * [ ] Moon colonization mode (goal is to catch every rocket which is full of people)
+    * [x] Juggling mode (asteroids never despawn and always get pulled back, the only way to get rid of them is to make them collide with each other)
+    * [ ] Slow motion mode (more of a puzzle game feel where a lot of asteroids are coming at you and you have to figure out how to divert all of them - either very slow motion, or turn-based somehow)
     * [ ] On harder levels, a comet (distinguished by being black with a white outline) comes by every once in a while - these are very fast and almost guaranteed to hit earth, and you're supposed to "parry" it by hitting A (or a d-pad button matching where the comet's coming from?) when it hits earth rather than diverting it with the moon
     * [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
     * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
