@@ -28,7 +28,7 @@ function Bomb.update()
   if gs.gameMode == 'standard' and pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
     gs.earth.bombs -= 1
     gs.bombShockwave = 1
-    gs.bombShockwavePos = gs.moon.pos
+    gs.bombShockwavePos = gs.earth.pos
     Explosion.screenShake(500, 5)
   end
 end

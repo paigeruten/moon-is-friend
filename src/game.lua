@@ -30,14 +30,8 @@ function Game.reset()
     hasShield = false,
   }
 
-  gs.moon = {
-    pos = pd.geometry.point.new(gs.earth.pos.x, gs.earth.pos.y - MOON_DISTANCE_FROM_EARTH),
-    distanceFromEarth = MOON_DISTANCE_FROM_EARTH,
-    radius = 7,
-    gravityRadius = 75,
-    mass = 2.5,
-    hasShield = false,
-  }
+  gs.moons = { Moon.create() }
+  Moon.update()
 
   gs.bombShockwave = 0
   gs.bombShockwavePos = nil
@@ -82,8 +76,6 @@ function Game.updateRampUpDifficulty()
     )
   )
 end
-
-Game.reset()
 
 function Game.flashMessage(message)
   gs.curMessage = message

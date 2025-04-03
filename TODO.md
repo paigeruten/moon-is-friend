@@ -59,11 +59,15 @@
     * [ ] Juggling (part 2): 4 asteroids on screen at once, cause 5 collisions
     * [ ] Double moon (part 2): Medium difficulty, survive for 90 seconds
     * [ ] Survival (part 3): Ramp-up difficulty, survive for 5 minutes
+    * [ ] Triple moon: Medium difficulty, survive for 90 seconds
     * [ ] Boss fight (part 2): Expert difficulty, higher health, some other surprise(???)
 * [ ] Optimize lua code
     * [ ] Less table allocations (especially for particles)
     * [ ] Pre-draw the moon/earth/asteroid/stars into images
-* [ ] Menu with "Start" / "High scores" / "How to play"
+* [ ] Menu with "Campaign" / "Endless" / "High scores" / "How to play"
+    * [ ] "Campaign" goes to mission selection tree
+    * [ ] "Endless" goes to mode selection (survival vs. juggling vs. target practice, # of moons)
+    * [ ] "High scores" shows high score for each endless mode (and each # of moons?)
 * [ ] More legible font
 * [ ] Music
 * [ ] New sound for triggering bomb

@@ -96,6 +96,15 @@ local function isRocketCollidingWithCircle(rocket, center, radius)
   return false
 end
 
+local function isRocketCollidingWithMoon(rocket)
+  for _, moon in ipairs(gs.moons) do
+    if isRocketCollidingWithCircle(rocket, moon.pos, moon.radius) then
+      return moon
+    end
+  end
+  return nil
+end
+
 function Rocket.update()
   if gs.curRocket then
     if gs.curRocket.frame == 100 then
@@ -111,10 +120,12 @@ function Rocket.update()
 
     gs.curRocket.frame += 1
 
+    local collidingMoon = isRocketCollidingWithMoon(gs.curRocket)
+
     if not isRocketOnScreen(gs.curRocket) then
       gs.curRocket = nil
       gs.lastRocketAt = gs.frameCount
-    elseif isRocketCollidingWithCircle(gs.curRocket, gs.moon.pos, gs.moon.radius) then
+    elseif collidingMoon then
       local powerups = {}
       if gs.earth.health < gs.earth.maxHealth then
         table.insert(powerups, 'health')
@@ -123,7 +134,7 @@ function Rocket.update()
       if gs.earth.bombs < gs.earth.maxBombs then
         table.insert(powerups, 'bomb')
       end
-      if not gs.moon.hasShield then
+      if not collidingMoon.hasShield then
         table.insert(powerups, 'moon-shield')
       end
       if not gs.earth.hasShield then
@@ -145,7 +156,7 @@ function Rocket.update()
         Game.flashMessage('+1 Max Health!')
         assets.sfx.powerup:play()
       elseif powerup == 'moon-shield' then
-        gs.moon.hasShield = true
+        collidingMoon.hasShield = true
         Game.flashMessage('You got a shield!')
         assets.sfx.shieldUp:play()
       elseif powerup == 'earth-shield' then

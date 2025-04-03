@@ -29,6 +29,8 @@ local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
 
+Game.reset()
+
 SaveData = pd.datastore.read() or { highScore = 0 }
 
 math.randomseed(pd.getSecondsSinceEpoch())

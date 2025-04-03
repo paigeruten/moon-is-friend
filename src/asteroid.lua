@@ -109,13 +109,15 @@ function Asteroid.update()
     local earthVec = gs.earth.pos - asteroid.pos
     local earthMass = gs.earth.mass
     local acc = earthVec:scaledBy(earthMass / earthVec:magnitudeSquared())
-    local moonVec = gs.moon.pos - asteroid.pos
-    if isOnScreen and moonVec:magnitude() <= gs.moon.gravityRadius then
-      local moonMass = gs.moon.mass
-      if gs.gameMode == 'juggling' and pd.buttonIsPressed(pd.kButtonB) then
-        moonMass *= 2
+    for _, moon in ipairs(gs.moons) do
+      local moonVec = moon.pos - asteroid.pos
+      if isOnScreen and moonVec:magnitude() <= moon.gravityRadius then
+        local moonMass = moon.mass
+        if gs.gameMode == 'juggling' and pd.buttonIsPressed(pd.kButtonB) then
+          moonMass *= 2
+        end
+        acc += moonVec:scaledBy(moonMass / moonVec:magnitudeSquared())
       end
-      acc += moonVec:scaledBy(moonMass / moonVec:magnitudeSquared())
     end
     if gs.gameMode == 'juggling' then
       if (asteroid.pos.x < sidebarWidth + asteroid.radius and asteroid.vel.x < 0) or (asteroid.pos.x > screenWidth - asteroid.radius and asteroid.vel.x > 0) then
@@ -163,60 +165,67 @@ function Asteroid.checkCollisions()
       end
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
-    elseif areCirclesColliding(asteroid.pos, asteroid.radius, gs.moon.pos, gs.moon.radius + (gs.moon.hasShield and 3 or 0)) then
-      if gs.moon.hasShield then
-        gs.moon.hasShield = false
-        assets.sfx.shieldDown:play()
-      else
-        gs.earth.health -= 1
-        Explosion.spawn(asteroid.pos)
-        Explosion.screenShake(500, 5)
-        assets.sfx.boom:play()
-      end
-      table.insert(idsToRemove, id)
-      asteroid.state = 'dead'
-    else
-      for targetId, target in pairs(gs.targets) do
-        if areCirclesColliding(asteroid.pos, asteroid.radius, target.pos, target.radius) then
-          table.insert(idsToRemove, id)
-          asteroid.state = 'dead'
-          target.health -= math.max(5, math.floor(asteroid.radius * asteroid.vel:magnitude()))
-          assets.sfx.goodBoom:play()
-          for _ = 1, 32 do
-            Particle.spawn(asteroid.pos, pd.geometry.vector2D.newPolar(math.random() + 1, math.random() * 360),
-              10, 2, 4, 0.2)
-          end
-          if target.health <= 0 then
-            gs.targets[targetId] = nil
-          end
-          goto continue
-        end
-      end
+      goto continue
+    end
 
-      for id2, asteroid2 in pairs(gs.asteroids) do
-        if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
-          table.insert(idsToRemove, id)
-          table.insert(idsToRemove, id2)
-          asteroid.state = 'dead'
-          asteroid2.state = 'dead'
-          gs.score += 5
-          if gs.gameMode == 'juggling' and gs.earth.health < gs.earth.maxHealth then
-            gs.earth.health += 1
-          end
-          Game.flashMessage('2 asteroids collided! +5 points')
-          Explosion.spawn(
-            pd.geometry.lineSegment.new(
-              asteroid.pos.x,
-              asteroid.pos.y,
-              asteroid2.pos.x,
-              asteroid2.pos.y
-            ):midPoint()
-          )
-          assets.sfx.goodBoom:play()
-          break
+    for _, moon in ipairs(gs.moons) do
+      if areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
+        if moon.hasShield then
+          moon.hasShield = false
+          assets.sfx.shieldDown:play()
+        else
+          gs.earth.health -= 1
+          Explosion.spawn(asteroid.pos)
+          Explosion.screenShake(500, 5)
+          assets.sfx.boom:play()
         end
+        table.insert(idsToRemove, id)
+        asteroid.state = 'dead'
+        goto continue
       end
     end
+
+    for targetId, target in pairs(gs.targets) do
+      if areCirclesColliding(asteroid.pos, asteroid.radius, target.pos, target.radius) then
+        table.insert(idsToRemove, id)
+        asteroid.state = 'dead'
+        target.health -= math.max(5, math.floor(asteroid.radius * asteroid.vel:magnitude()))
+        assets.sfx.goodBoom:play()
+        for _ = 1, 32 do
+          Particle.spawn(asteroid.pos, pd.geometry.vector2D.newPolar(math.random() + 1, math.random() * 360),
+            10, 2, 4, 0.2)
+        end
+        if target.health <= 0 then
+          gs.targets[targetId] = nil
+        end
+        goto continue
+      end
+    end
+
+    for id2, asteroid2 in pairs(gs.asteroids) do
+      if id ~= id2 and asteroid2.state == 'active' and areCirclesColliding(asteroid.pos, asteroid.radius, asteroid2.pos, asteroid2.radius) then
+        table.insert(idsToRemove, id)
+        table.insert(idsToRemove, id2)
+        asteroid.state = 'dead'
+        asteroid2.state = 'dead'
+        gs.score += 5
+        if gs.gameMode == 'juggling' and gs.earth.health < gs.earth.maxHealth then
+          gs.earth.health += 1
+        end
+        Game.flashMessage('2 asteroids collided! +5 points')
+        Explosion.spawn(
+          pd.geometry.lineSegment.new(
+            asteroid.pos.x,
+            asteroid.pos.y,
+            asteroid2.pos.x,
+            asteroid2.pos.y
+          ):midPoint()
+        )
+        assets.sfx.goodBoom:play()
+        break
+      end
+    end
+
     ::continue::
   end
   for _, id in ipairs(idsToRemove) do
