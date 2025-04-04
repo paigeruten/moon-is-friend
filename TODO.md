@@ -48,19 +48,21 @@
 * [x] Arrows showing where asteroids are about to enter the screen
 * [x] Make earth look like earth and moon look like moon
 * [ ] Missions/Campaign/Story
-    * [ ] Intro/Tutorial: Easy difficulty, divert 10 asteroids
-    * [ ] Survival (part 1): Medium difficulty, survive for 1 (or 2?) minutes
-    * [ ] Moon colonization (part 1): Medium difficulty, catch 15 rockets
-    * [ ] Juggling (part 1): 3 asteroids on screen at once, cause 3 collisions
-    * [ ] Double moon (part 1): "Easy" difficulty, survive for 1 minute
+    * [x] Intro/Tutorial: Easy difficulty, divert 10 asteroids
+    * [x] Survival (part 1): Medium difficulty, survive for 1 (or 2?) minutes
+    * [x] Moon colonization (part 1): Medium difficulty, catch 15 rockets
+    * [x] Juggling (part 1): 3 asteroids on screen at once, cause 3 collisions
+    * [x] Double moon (part 1): "Easy" difficulty, survive for 1 minute
     * [ ] Boss fight (part 1): Hard difficulty, but no westward asteroids
-    * [ ] Survival (part 2): Hard difficulty, survive for 2 minutes
-    * [ ] Moon colonization (part 1): Hard difficulty, catch 20 rockets
-    * [ ] Juggling (part 2): 4 asteroids on screen at once, cause 5 collisions
-    * [ ] Double moon (part 2): Medium difficulty, survive for 90 seconds
-    * [ ] Survival (part 3): Ramp-up difficulty, survive for 5 minutes
-    * [ ] Triple moon: Medium difficulty, survive for 90 seconds
+    * [x] Survival (part 2): Hard difficulty, survive for 2 minutes
+    * [x] Moon colonization (part 1): Hard difficulty, catch 20 rockets
+    * [x] Juggling (part 2): 4 asteroids on screen at once, cause 5 collisions
+    * [x] Double moon (part 2): Medium difficulty, survive for 90 seconds
+    * [x] Survival (part 3): Ramp-up difficulty, survive for 5 minutes
+    * [x] Triple moon: Medium difficulty, survive for 90 seconds
     * [ ] Boss fight (part 2): Expert difficulty, higher health, some other surprise(???)
+* [ ] Show win condition/progress in sidebar
+* [ ] For survival missions, asteroid collisions should subtract time from the goal
 * [ ] Optimize lua code
     * [ ] Less table allocations (especially for particles)
     * [ ] Pre-draw the moon/earth/asteroid/stars into images
@@ -80,6 +82,7 @@
     * [ ] Return to Sender: Asteroid was sent off the same side of the screen that it entered from
     * [ ] X amount of asteroids cleared at once from a bomb
 * [ ] Possibly bad ideas
+    * [ ] Roguelike mode? (randomized mission trees)
     * [ ] Moon colonization mode (goal is to catch every rocket which is full of people)
     * [x] Juggling mode (asteroids never despawn and always get pulled back, the only way to get rid of them is to make them collide with each other)
     * [ ] Slow motion mode (more of a puzzle game feel where a lot of asteroids are coming at you and you have to figure out how to divert all of them - either very slow motion, or turn-based somehow)

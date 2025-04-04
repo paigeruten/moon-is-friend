@@ -25,7 +25,7 @@ function Bomb.update()
     end
   end
 
-  if gs.gameMode == 'standard' and pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
+  if gs.mission.mode == 'standard' and pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
     gs.earth.bombs -= 1
     gs.bombShockwave = 1
     gs.bombShockwavePos = gs.earth.pos

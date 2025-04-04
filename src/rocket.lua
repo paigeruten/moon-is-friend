@@ -126,6 +126,8 @@ function Rocket.update()
       gs.curRocket = nil
       gs.lastRocketAt = gs.frameCount
     elseif collidingMoon then
+      gs.rocketsCaught += 1
+
       local powerups = {}
       if gs.earth.health < gs.earth.maxHealth then
         table.insert(powerups, 'health')
@@ -193,7 +195,7 @@ function Rocket.update()
   elseif ((gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1)
       or (gs.frameCount - gs.lastRocketAt) > 1000 -- every 3 + ~10 seconds, max 20 seconds
   then
-    if gs.gameMode == 'standard' then
+    if gs.mission.mode == 'standard' then
       Rocket.spawn()
       Game.flashMessage('Supplies incoming!')
     end

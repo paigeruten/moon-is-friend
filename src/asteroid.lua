@@ -89,17 +89,17 @@ local function clamp(value, low, high)
 end
 
 function Asteroid.update()
-  if gs.gameMode == 'standard' then
-    if gs.frameCount - gs.lastAsteroidAt >= (gs.difficulty == 'ramp-up' and gs.rampUpDifficulty or difficultyLevels[gs.difficulty]) then
+  if gs.mission.mode == 'standard' then
+    if gs.frameCount - gs.lastAsteroidAt >= (gs.rampUpDifficulty or gs.mission.difficulty) then
       Asteroid.spawn()
       gs.lastAsteroidAt = gs.frameCount
-      if gs.difficulty == 'ramp-up' then
+      if gs.rampUpDifficulty then
         Game.updateRampUpDifficulty()
       end
     end
   end
 
-  if gs.gameMode == 'juggling' and pd.buttonJustReleased(pd.kButtonA) then
+  if gs.mission.mode == 'juggling' and pd.buttonJustReleased(pd.kButtonA) then
     Asteroid.spawn()
   end
 
@@ -113,13 +113,13 @@ function Asteroid.update()
       local moonVec = moon.pos - asteroid.pos
       if isOnScreen and moonVec:magnitude() <= moon.gravityRadius then
         local moonMass = moon.mass
-        if gs.gameMode == 'juggling' and pd.buttonIsPressed(pd.kButtonB) then
+        if gs.mission.mode == 'juggling' and pd.buttonIsPressed(pd.kButtonB) then
           moonMass *= 2
         end
         acc += moonVec:scaledBy(moonMass / moonVec:magnitudeSquared())
       end
     end
-    if gs.gameMode == 'juggling' then
+    if gs.mission.mode == 'juggling' then
       if (asteroid.pos.x < sidebarWidth + asteroid.radius and asteroid.vel.x < 0) or (asteroid.pos.x > screenWidth - asteroid.radius and asteroid.vel.x > 0) then
         asteroid.vel.x = -asteroid.vel.x
         asteroid.vel = asteroid.vel:scaledBy(0.65)
@@ -136,6 +136,7 @@ function Asteroid.update()
     elseif asteroid.state == 'active' and not isOnScreen then
       table.insert(idsToRemove, id)
       gs.score += 1
+      gs.asteroidsDiverted += 1
       assets.sfx.point:play()
     end
   end
@@ -209,7 +210,8 @@ function Asteroid.checkCollisions()
         asteroid.state = 'dead'
         asteroid2.state = 'dead'
         gs.score += 5
-        if gs.gameMode == 'juggling' and gs.earth.health < gs.earth.maxHealth then
+        gs.asteroidsCollided += 1
+        if gs.mission.mode == 'juggling' and gs.earth.health < gs.earth.maxHealth then
           gs.earth.health += 1
         end
         Game.flashMessage('2 asteroids collided! +5 points')

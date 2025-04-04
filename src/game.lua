@@ -9,8 +9,7 @@ Game = {}
 
 Game.state = {
   scene = 'title',
-  gameMode = 'standard', -- 'standard' | 'juggling'
-  difficulty = 'ramp-up',
+  missionId = '0-1',
   screenShakeEnabled = not pd.getReduceFlashing()
 }
 local gs = Game.state
@@ -18,6 +17,11 @@ local gs = Game.state
 function Game.reset()
   gs.frameCount = 0
   gs.score = 0
+  gs.asteroidsDiverted = 0
+  gs.asteroidsCollided = 0
+  gs.rocketsCaught = 0
+
+  gs.mission = MISSIONS[gs.missionId]
 
   gs.earth = {
     pos = pd.geometry.point.new(screenWidth // 2 + sidebarWidth // 2, screenHeight // 2),
@@ -30,7 +34,10 @@ function Game.reset()
     hasShield = false,
   }
 
-  gs.moons = { Moon.create() }
+  gs.moons = {}
+  for _ = 1, (gs.mission.numMoons or 1) do
+    table.insert(gs.moons, Moon.create())
+  end
   Moon.update()
 
   gs.bombShockwave = 0
@@ -63,15 +70,21 @@ function Game.reset()
   gs.gameoverSelection = 'retry'
   gs.isHighScore = false
 
-  Game.updateRampUpDifficulty()
+  gs.rampUpDifficulty = nil
+  if type(gs.mission.difficulty) == 'table' then
+    Game.updateRampUpDifficulty()
+  end
 end
 
 function Game.updateRampUpDifficulty()
-  gs.rampUpDifficulty = MAX_RAMP_UP_DIFFICULTY - math.floor(
+  ---@diagnostic disable-next-line: param-type-mismatch
+  local maxDifficulty, minDifficulty = table.unpack(gs.mission.difficulty)
+
+  gs.rampUpDifficulty = maxDifficulty - math.floor(
     pd.easingFunctions.outSine(
       gs.frameCount,
       0,
-      MAX_RAMP_UP_DIFFICULTY - MIN_RAMP_UP_DIFFICULTY,
+      maxDifficulty - minDifficulty,
       22500 -- 7.5 minutes
     )
   )
@@ -80,6 +93,26 @@ end
 function Game.flashMessage(message)
   gs.curMessage = message
   gs.curMessageAt = gs.frameCount
+end
+
+local function checkWin()
+  local win = false
+  if gs.mission.winType == "asteroids" then
+    win = gs.asteroidsDiverted >= gs.mission.winGoal
+  elseif gs.mission.winType == "survive" then
+    win = gs.frameCount // 50 >= gs.mission.winGoal
+  elseif gs.mission.winType == "rocket" then
+    win = gs.rocketsCaught >= gs.mission.winGoal
+  elseif gs.mission.winType == "collide" then
+    win = gs.asteroidsCollided >= gs.mission.winGoal
+  elseif gs.mission.winType == "boss" then
+    win = false -- TODO
+  end
+
+  if win then
+    gs.scene = 'win'
+    gs.frameCount = 0
+  end
 end
 
 local function checkGameOver()
@@ -102,6 +135,7 @@ function Game.update()
     Asteroid.update()
     Rocket.update()
 
+    checkWin()
     checkGameOver()
 
     gs.frameCount += 1
