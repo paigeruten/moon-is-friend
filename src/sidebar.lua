@@ -16,16 +16,19 @@ function Sidebar.draw()
   gfx.fillRect(sidebarWidth - 8, 0, 8, screenHeight)
   gfx.setColor(gfx.kColorWhite)
   gfx.fillRect(0, 0, sidebarWidth - 4, screenHeight)
-  gfx.setImageDrawMode(gfx.kDrawModeInverted)
+
+  -- Mission icon
+  assets.gfx.missionIcons[gs.mission.winType]:draw(9, 6)
 
   -- Hearts
+  gfx.setImageDrawMode(gfx.kDrawModeInverted)
   for i = 1, gs.earth.maxHealth do
-    (gs.earth.health >= i and assets.gfx.heart or assets.gfx.heartEmpty):draw(8, 8 + (i - 1) * 15)
+    (gs.earth.health >= i and assets.gfx.heart or assets.gfx.heartEmpty):draw(8, 42 + (i - 1) * 15)
   end
 
   -- Bombs
   for i = 1, gs.earth.bombs do
-    assets.gfx.bomb:draw(26, 8 + (i - 1) * 15)
+    assets.gfx.bomb:draw(26, 42 + (i - 1) * 15)
   end
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 

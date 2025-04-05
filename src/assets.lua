@@ -30,6 +30,14 @@ Assets = {
 
     arrowUp = gfx.image.new("images/arrow-up"),
     arrowRight = gfx.image.new("images/arrow-right"),
+
+    missionIcons = {
+      asteroids = gfx.image.new("images/mission-asteroids"),
+      boss = gfx.image.new("images/mission-boss"),
+      collide = gfx.image.new("images/mission-collide"),
+      rocket = gfx.image.new("images/mission-rocket"),
+      survive = gfx.image.new("images/mission-survive"),
+    }
   }
 }
 Assets.gfx.rocketEast = Assets.gfx.rocketNorth:rotatedImage(90)

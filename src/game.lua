@@ -27,10 +27,10 @@ function Game.reset()
     pos = pd.geometry.point.new(screenWidth // 2 + sidebarWidth // 2, screenHeight // 2),
     radius = 14,
     mass = 0.75,
-    health = 5,
-    maxHealth = 5,
-    bombs = 2,
-    maxBombs = 5,
+    health = 3,
+    maxHealth = 3,
+    bombs = 1,
+    maxBombs = 3,
     hasShield = false,
   }
 
