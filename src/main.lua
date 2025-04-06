@@ -19,7 +19,7 @@ import "moon"
 import "earth"
 import "bomb"
 import "sidebar"
-import "mission"
+import "mission_tree"
 
 import "menu"
 import "title"
@@ -46,6 +46,8 @@ function pd.update()
     Title.update()
   elseif gs.scene == 'story' or gs.scene == 'instructions' then
     Instructions.update()
+  elseif gs.scene == 'mission-tree' then
+    MissionTree.update()
   elseif gs.scene == 'win' then
     Win.update()
   elseif gs.scene == 'gameover' then

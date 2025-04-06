@@ -73,7 +73,7 @@ function Title.update()
   gs.frameCount += 1
 
   if pd.buttonJustReleased(pd.kButtonA) then
-    gs.scene = 'story'
+    gs.scene = 'mission-tree'
     gs.frameCount = 0
     assets.sfx.boop:play()
   end
