@@ -16,6 +16,9 @@ local gs = Game.state
 
 function Game.reset()
   gs.frameCount = 0
+  gs.menuFrameCount = 0
+  gs.endState = nil
+
   gs.score = 0
   gs.asteroidsDiverted = 0
   gs.asteroidsCollided = 0
@@ -27,7 +30,7 @@ function Game.reset()
     pos = pd.geometry.point.new(screenWidth // 2 + sidebarWidth // 2, screenHeight // 2),
     radius = 14,
     mass = 0.75,
-    health = 3,
+    health = 1, --3,
     maxHealth = 3,
     bombs = 1,
     maxBombs = 3,
@@ -95,7 +98,7 @@ function Game.flashMessage(message)
   gs.curMessageAt = gs.frameCount
 end
 
-local function checkWin()
+local function checkEndState()
   local win = false
   if gs.mission.winType == "asteroids" then
     win = gs.asteroidsDiverted >= gs.mission.winGoal
@@ -110,15 +113,11 @@ local function checkWin()
   end
 
   if win then
-    gs.scene = 'win'
-    gs.frameCount = 0
-  end
-end
-
-local function checkGameOver()
-  if gs.earth.health <= 0 then
-    gs.scene = 'gameover'
-    gs.frameCount = 0
+    gs.endState = 'complete'
+    gs.menuFrameCount = 0
+  elseif gs.earth.health <= 0 then
+    gs.endState = 'failed'
+    gs.menuFrameCount = 0
     if gs.score > SaveData.highScore then
       SaveData.highScore = gs.score
       pd.datastore.write(SaveData)
@@ -128,20 +127,26 @@ local function checkGameOver()
 end
 
 function Game.update()
-  if not pd.isCrankDocked() then
+  if not gs.endState and not pd.isCrankDocked() then
     Moon.update()
     Bomb.update()
     Target.update()
     Asteroid.update()
     Rocket.update()
 
-    checkWin()
-    checkGameOver()
+    checkEndState()
 
     gs.frameCount += 1
   end
 
   Game.draw()
+
+  if gs.endState then
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer2x2)
+    gfx.fillRect(sidebarWidth, 0, screenWidth - sidebarWidth, screenHeight)
+    GameEnd.update()
+  end
 end
 
 function Game.draw()
@@ -168,13 +173,14 @@ function Game.draw()
   end
 
   -- Flash message
-  if gs.curMessage then
+  if gs.curMessage and not gs.endState then
     if gs.frameCount - gs.curMessageAt > 100 then
       gs.curMessage = nil
     else
       gfx.setFont(assets.fonts.large)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-      gfx.drawTextAligned(gs.curMessage, screenWidth // 2, screenHeight - 24, kTextAlignment.center)
+      gfx.drawTextAligned(gs.curMessage, sidebarWidth + (screenWidth - sidebarWidth) // 2, screenHeight - 24,
+        kTextAlignment.center)
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
   end

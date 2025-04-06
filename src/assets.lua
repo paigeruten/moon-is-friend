@@ -37,7 +37,9 @@ Assets = {
       collide = gfx.image.new("images/mission-collide"),
       rocket = gfx.image.new("images/mission-rocket"),
       survive = gfx.image.new("images/mission-survive"),
-    }
+    },
+
+    banner = gfx.image.new("images/banner")
   }
 }
 Assets.gfx.rocketEast = Assets.gfx.rocketNorth:rotatedImage(90)

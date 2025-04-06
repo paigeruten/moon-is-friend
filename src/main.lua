@@ -24,8 +24,7 @@ import "mission_tree"
 import "menu"
 import "title"
 import "instructions"
-import "win"
-import "gameover"
+import "game_end"
 
 local pd = playdate
 local gfx = pd.graphics
@@ -48,10 +47,6 @@ function pd.update()
     Instructions.update()
   elseif gs.scene == 'mission-tree' then
     MissionTree.update()
-  elseif gs.scene == 'win' then
-    Win.update()
-  elseif gs.scene == 'gameover' then
-    GameOver.update()
   else
     Game.update()
   end
