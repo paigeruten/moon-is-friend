@@ -30,7 +30,7 @@ function Game.reset()
     pos = pd.geometry.point.new(screenWidth // 2 + sidebarWidth // 2, screenHeight // 2),
     radius = 14,
     mass = 0.75,
-    health = 1, --3,
+    health = 3,
     maxHealth = 3,
     bombs = 1,
     maxBombs = 3,
@@ -115,12 +115,13 @@ local function checkEndState()
   if win then
     gs.endState = 'complete'
     gs.menuFrameCount = 0
+    SaveData.completeMission(gs.missionId)
   elseif gs.earth.health <= 0 then
     gs.endState = 'failed'
     gs.menuFrameCount = 0
-    if gs.score > SaveData.highScore then
-      SaveData.highScore = gs.score
-      pd.datastore.write(SaveData)
+    if gs.score > SaveData.data.highScore then
+      SaveData.data.highScore = gs.score
+      pd.datastore.write(SaveData.data)
       gs.isHighScore = true
     end
   end

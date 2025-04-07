@@ -39,6 +39,7 @@ Assets = {
       survive = gfx.image.new("images/mission-survive"),
     },
 
+    checkmark = gfx.image.new("images/checkmark"),
     banner = gfx.image.new("images/banner")
   }
 }

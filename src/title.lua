@@ -55,11 +55,11 @@ function Title.update()
   gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4 + perlY,
     kTextAlignment.center)
 
-  if SaveData.highScore > 0 then
-    local hasStar = SaveData.highScore >= STAR_SCORE
+  if SaveData.data.highScore > 0 then
+    local hasStar = SaveData.data.highScore >= STAR_SCORE
     gfx.setFont(assets.fonts.small)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawTextAligned("High score\n" .. SaveData.highScore .. (hasStar and "  " or ""), screenWidth - 7,
+    gfx.drawTextAligned("High score\n" .. SaveData.data.highScore .. (hasStar and "  " or ""), screenWidth - 7,
       screenHeight - 30,
       kTextAlignment.right,
       8)
@@ -74,6 +74,9 @@ function Title.update()
 
   if pd.buttonJustReleased(pd.kButtonA) then
     gs.scene = 'mission-tree'
+    gs.missionRow = 1
+    gs.missionCol = 1
+    gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
     gs.frameCount = 0
     assets.sfx.boop:play()
   end

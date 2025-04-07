@@ -25,14 +25,13 @@ import "menu"
 import "title"
 import "instructions"
 import "game_end"
+import "save_data"
 
 local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
 
 Game.reset()
-
-SaveData = pd.datastore.read() or { highScore = 0 }
 
 math.randomseed(pd.getSecondsSinceEpoch())
 pd.display.setRefreshRate(50)

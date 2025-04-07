@@ -61,13 +61,13 @@
     * [x] Survival (part 3): Ramp-up difficulty, survive for 5 minutes
     * [x] Triple moon: Medium difficulty, survive for 90 seconds
     * [ ] Boss fight (part 2): Expert difficulty, higher health, some other surprise(???)
-* [ ] Show win condition/progress in sidebar
+* [x] Show win condition/progress in sidebar
 * [ ] For survival missions, asteroid collisions should subtract time from the goal
 * [ ] Optimize lua code
     * [ ] Less table allocations (especially for particles)
     * [ ] Pre-draw the moon/earth/asteroid/stars into images
 * [ ] Menu with "Campaign" / "Endless" / "High scores" / "How to play"
-    * [ ] "Campaign" goes to mission selection tree
+    * [x] "Campaign" goes to mission selection tree
     * [ ] "Endless" goes to mode selection (survival vs. juggling vs. target practice, # of moons)
     * [ ] "High scores" shows high score for each endless mode (and each # of moons?)
 * [ ] More legible font
