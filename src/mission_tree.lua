@@ -43,7 +43,7 @@ MISSIONS = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
-    difficulty = 75
+    difficulty = 85
   },
   ["2-1"] = {
     mode = "standard",

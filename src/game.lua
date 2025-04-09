@@ -36,6 +36,9 @@ function Game.reset()
     maxBombs = 3,
     hasShield = false,
   }
+  if gs.mission.winType == "boss" then
+    gs.earth.pos.x -= 50
+  end
 
   gs.moons = {}
   for _ = 1, (gs.mission.numMoons or 1) do
@@ -53,11 +56,15 @@ function Game.reset()
   gs.curExplosionId = 0
 
   gs.asteroids = {}
+  gs.numAsteroids = 0
   gs.curAsteroidId = 0
   gs.lastAsteroidAt = 0
 
   gs.targets = {}
   gs.curTargetId = 0
+  if gs.mission.winType == "boss" then
+    gs.boss = Target.spawn(screenWidth - 20, screenHeight // 2, 75, gs.mission.winGoal)
+  end
 
   gs.particles = {}
   gs.curParticleId = 0
@@ -109,7 +116,7 @@ local function checkEndState()
   elseif gs.mission.winType == "collide" then
     win = gs.asteroidsCollided >= gs.mission.winGoal
   elseif gs.mission.winType == "boss" then
-    win = false -- TODO
+    win = gs.boss.health == 0
   end
 
   if win then
@@ -186,5 +193,5 @@ function Game.draw()
     end
   end
 
-  --pd.drawFPS(screenWidth - 20, screenHeight - 15)
+  -- pd.drawFPS(screenWidth - 20, screenHeight - 15)
 end

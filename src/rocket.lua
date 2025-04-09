@@ -185,7 +185,7 @@ function Rocket.update()
             ):midPoint()
           )
           assets.sfx.goodBoom:play()
-          gs.asteroids[id] = nil
+          Asteroid.despawn(id)
           gs.curRocket = nil
           gs.lastRocketAt = gs.frameCount
           break

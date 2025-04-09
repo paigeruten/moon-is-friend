@@ -8,13 +8,6 @@ local sidebarWidth = SIDEBAR_WIDTH
 
 Asteroid = {}
 
-local difficultyLevels = {
-  easy = 125,   -- asteroid spawns every 2.5 seconds
-  normal = 100, -- asteroid spawns every 2 seconds
-  hard = 75,    -- asteroid spawns every 1.5 seconds
-  aaaah = 50,   -- asteroid spawns every 1 second
-}
-
 local function nextAsteroidId()
   gs.curAsteroidId += 1
   return gs.curAsteroidId
@@ -22,7 +15,25 @@ end
 
 function Asteroid.spawn()
   local id = nextAsteroidId()
-  local angle = math.random() * 360
+  local angle
+  if gs.mission.winType == "boss" then
+    local whichSide = math.random()
+    if whichSide < 0.1 then
+      -- top
+      angle = math.random(316, 390)
+      if angle >= 360 then
+        angle -= 360
+      end
+    elseif whichSide < 0.2 then
+      -- bottom
+      angle = math.random(150, 224)
+    else
+      -- left
+      angle = math.random(225, 315)
+    end
+  else
+    angle = math.random() * 360
+  end
   local pos = gs.earth.pos + pd.geometry.vector2D.newPolar(250, angle)
   local chooseRadius = math.random()
   local asteroidRadius
@@ -53,7 +64,17 @@ function Asteroid.spawn()
     radius = asteroidRadius,
     state = 'entering',
   }
+  gs.numAsteroids += 1
   return id
+end
+
+function Asteroid.despawn(id)
+  gs.asteroids[id] = nil
+  gs.numAsteroids -= 1
+
+  if gs.mission.mode == 'juggling' then
+    gs.lastAsteroidAt = gs.frameCount
+  end
 end
 
 function Asteroid.closestAsteroidDirection()
@@ -97,10 +118,11 @@ function Asteroid.update()
         Game.updateRampUpDifficulty()
       end
     end
-  end
-
-  if gs.mission.mode == 'juggling' and pd.buttonJustReleased(pd.kButtonA) then
-    Asteroid.spawn()
+  elseif gs.mission.mode == 'juggling' then
+    if gs.numAsteroids < gs.mission.difficulty and gs.frameCount - gs.lastAsteroidAt >= 100 then
+      Asteroid.spawn()
+      gs.lastAsteroidAt = gs.frameCount
+    end
   end
 
   local idsToRemove = {}
@@ -141,7 +163,7 @@ function Asteroid.update()
     end
   end
   for _, id in ipairs(idsToRemove) do
-    gs.asteroids[id] = nil
+    Asteroid.despawn(id)
   end
 
   Asteroid.checkCollisions()
@@ -190,13 +212,14 @@ function Asteroid.checkCollisions()
       if areCirclesColliding(asteroid.pos, asteroid.radius, target.pos, target.radius) then
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
-        target.health -= math.max(5, math.floor(asteroid.radius * asteroid.vel:magnitude()))
+        target.health -= math.max(1, math.floor(asteroid.radius * asteroid.vel:magnitude() / 3))
         assets.sfx.goodBoom:play()
         for _ = 1, 32 do
           Particle.spawn(asteroid.pos, pd.geometry.vector2D.newPolar(math.random() + 1, math.random() * 360),
             10, 2, 4, 0.2)
         end
         if target.health <= 0 then
+          target.health = 0
           gs.targets[targetId] = nil
         end
         goto continue
@@ -231,7 +254,7 @@ function Asteroid.checkCollisions()
     ::continue::
   end
   for _, id in ipairs(idsToRemove) do
-    gs.asteroids[id] = nil
+    Asteroid.despawn(id)
   end
 end
 

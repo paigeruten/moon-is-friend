@@ -53,7 +53,9 @@
     * [x] Moon colonization (part 1): Medium difficulty, catch 15 rockets
     * [x] Juggling (part 1): 3 asteroids on screen at once, cause 3 collisions
     * [x] Double moon (part 1): "Easy" difficulty, survive for 1 minute
-    * [ ] Boss fight (part 1): Hard difficulty, but no westward asteroids
+    * [x] Boss fight (part 1): Harder difficulty, but no westward asteroids
+        * [ ] Ominous intro animation
+        * [ ] Victory animation (lots of explosions and/or boss asteroid breaking apart)
     * [x] Survival (part 2): Hard difficulty, survive for 2 minutes
     * [x] Moon colonization (part 1): Hard difficulty, catch 20 rockets
     * [x] Juggling (part 2): 4 asteroids on screen at once, cause 5 collisions
@@ -61,8 +63,11 @@
     * [x] Survival (part 3): Ramp-up difficulty, survive for 5 minutes
     * [x] Triple moon: Medium difficulty, survive for 90 seconds
     * [ ] Boss fight (part 2): Expert difficulty, higher health, some other surprise(???)
+        * [ ] Minion shield that becomes projectiles
+        * [ ] Shield that blocks low-velocity asteroids
 * [x] Show win condition/progress in sidebar
 * [ ] For survival missions, asteroid collisions should subtract time from the goal
+* [ ] Randomly double/triple up asteroids sometimes
 * [ ] Optimize lua code
     * [ ] Less table allocations (especially for particles)
     * [ ] Pre-draw the moon/earth/asteroid/stars into images

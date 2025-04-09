@@ -16,7 +16,7 @@ function Bomb.update()
       if asteroid.state == 'active' and areCirclesColliding(gs.bombShockwavePos, gs.bombShockwave, asteroid.pos, asteroid.radius) then
         Explosion.spawn(asteroid.pos)
         assets.sfx.goodBoom:play()
-        gs.asteroids[id] = nil
+        Asteroid.despawn(id)
       end
     end
     if gs.bombShockwave > screenWidth then

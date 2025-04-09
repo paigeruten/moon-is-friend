@@ -46,8 +46,8 @@ function Sidebar.draw()
     progress = gs.asteroidsCollided
     left = tostring(math.max(0, goal - progress))
   elseif gs.mission.winType == "boss" then
-    progress = 0
-    left = tostring(math.max(0, goal))
+    progress = gs.mission.winGoal - gs.boss.health
+    left = tostring(gs.boss.health)
   elseif gs.mission.winType == "survive" then
     progress = gs.frameCount
     local totalSecondsLeft = math.max(0, goal - progress // 50)
