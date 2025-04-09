@@ -35,8 +35,7 @@ function Menu.addInGameMenuItems()
   end)))
   table.insert(inGameMenuItems, (menu:addMenuItem('back to title', function()
     Game.reset()
-    gs.scene = 'title'
-    Menu.reset()
+    Title.switch()
   end)))
 end
 

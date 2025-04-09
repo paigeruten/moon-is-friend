@@ -80,10 +80,8 @@ function Instructions.update()
       gs.frameCount = 0
       assets.sfx.boop:play()
     else
-      gs.scene = 'game'
-      Game.reset()
-      assets.sfx.boop:play(77)
-      Menu.addInGameMenuItems()
+      Title.switch()
+      assets.sfx.boop:play()
     end
   end
 end

@@ -20,6 +20,7 @@ import "earth"
 import "bomb"
 import "sidebar"
 import "mission_tree"
+import "menu_box"
 
 import "menu"
 import "title"
@@ -31,6 +32,7 @@ local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
 
+Game.init()
 Game.reset()
 
 math.randomseed(pd.getSecondsSinceEpoch())

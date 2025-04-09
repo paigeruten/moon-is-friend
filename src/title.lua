@@ -7,6 +7,23 @@ local screenHeight = SCREEN_HEIGHT
 
 Title = {}
 
+function Title.switch()
+  gs.scene = 'title'
+  gs.frameCount = 0
+  Menu.reset()
+  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Help' }, { width = 120 }, function(selected)
+    if selected == 1 then
+      MissionTree.switch()
+      MissionTree.selectNextMission()
+      assets.sfx.boop:play()
+    elseif selected == 4 then
+      gs.scene = 'story'
+      gs.frameCount = 0
+      assets.sfx.boop:play()
+    end
+  end)
+end
+
 function Title.update()
   gfx.clear()
 
@@ -39,21 +56,23 @@ function Title.update()
   gfx.fillCircleAtPoint(screenWidth / 3 + animFrame / 10, screenHeight * 2 / 3 - animFrame / 20, screenWidth / 3)
 
   gfx.setColor(gfx.kColorBlack)
-  gfx.fillRoundRect(screenWidth // 4, screenHeight // 2 - 12, screenWidth // 2, 24, 5)
+  gfx.fillRoundRect(screenWidth // 4, screenHeight // 4 - 4, screenWidth // 2, 24, 5)
 
   gfx.setFont(assets.fonts.large)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned("*The Moon is our Friend*", screenWidth // 2, screenHeight // 2 - 9, kTextAlignment.center)
+  gfx.drawTextAligned("*The Moon is our Friend*", screenWidth // 2, screenHeight // 4, kTextAlignment.center)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-  local perlY = math.min(3, math.max(-3, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
-  gfx.setFont(assets.fonts.small)
-  gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4 + perlY,
-    kTextAlignment.center)
+  -- local perlY = math.min(3, math.max(-3, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
+  -- gfx.setColor(gfx.kColorWhite)
+  -- gfx.fillRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
+  -- gfx.setColor(gfx.kColorBlack)
+  -- gfx.drawRoundRect(screenWidth // 2 - 70, screenHeight - screenHeight // 4 - 5 + perlY, 140, 17, 5)
+  -- gfx.setFont(assets.fonts.small)
+  -- gfx.drawTextAligned("Press A to start", screenWidth // 2, screenHeight - screenHeight // 4 + perlY,
+  --   kTextAlignment.center)
+
+  MenuBox.update()
 
   if SaveData.data.highScore > 0 then
     local hasStar = SaveData.data.highScore >= STAR_SCORE
@@ -71,11 +90,4 @@ function Title.update()
   end
 
   gs.frameCount += 1
-
-  if pd.buttonJustReleased(pd.kButtonA) then
-    gs.scene = 'mission-tree'
-    gs.frameCount = 0
-    MissionTree.selectNextMission()
-    assets.sfx.boop:play()
-  end
 end

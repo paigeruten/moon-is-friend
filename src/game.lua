@@ -14,6 +14,10 @@ Game.state = {
 }
 local gs = Game.state
 
+function Game.init()
+  Title.switch()
+end
+
 function Game.reset()
   gs.frameCount = 0
   gs.menuFrameCount = 0
@@ -121,16 +125,16 @@ local function checkEndState()
 
   if win then
     gs.endState = 'complete'
-    gs.menuFrameCount = 0
     SaveData.completeMission(gs.missionId)
+    MenuBox.init({ 'Retry', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
   elseif gs.earth.health <= 0 then
     gs.endState = 'failed'
-    gs.menuFrameCount = 0
     if gs.score > SaveData.data.highScore then
       SaveData.data.highScore = gs.score
       pd.datastore.write(SaveData.data)
       gs.isHighScore = true
     end
+    MenuBox.init({ 'Retry', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
   end
 end
 

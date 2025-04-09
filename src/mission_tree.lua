@@ -117,6 +117,12 @@ function MissionTree.selectNextMission()
   gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
 end
 
+function MissionTree.switch()
+  gs.scene = 'mission-tree'
+  gs.frameCount = 0
+  Menu.reset()
+end
+
 function MissionTree.update()
   gfx.clear()
   gfx.setColor(gfx.kColorWhite)
@@ -216,14 +222,14 @@ function MissionTree.update()
   gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
 
   if pd.buttonJustReleased(pd.kButtonA) then
-    gs.scene = 'story'
-    gs.frameCount = 0
-    assets.sfx.boop:play()
+    gs.scene = 'game'
+    Game.reset()
+    assets.sfx.boop:play(77)
+    Menu.addInGameMenuItems()
   end
 
   if pd.buttonJustReleased(pd.kButtonB) then
-    gs.scene = 'title'
-    gs.frameCount = 0
+    Title.switch()
     assets.sfx.boop:play()
   end
 end
