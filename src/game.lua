@@ -9,7 +9,7 @@ Game = {}
 
 Game.state = {
   scene = 'title',
-  missionId = '1-1',
+  missionId = 'endless.s1',
   screenShakeEnabled = not pd.getReduceFlashing()
 }
 local gs = Game.state
@@ -29,6 +29,15 @@ function Game.reset()
   gs.rocketsCaught = 0
 
   gs.mission = MISSIONS[gs.missionId]
+  if gs.mission.winType == 'endless' then
+    if gs.mission.mode == 'standard' then
+      gs.missionIcon = assets.gfx.missionIcons.asteroids
+    else
+      gs.missionIcon = assets.gfx.missionIcons.collide
+    end
+  else
+    gs.missionIcon = assets.gfx.missionIcons[gs.mission.winType]
+  end
 
   gs.earth = {
     pos = pd.geometry.point.new(screenWidth // 2 + sidebarWidth // 2, screenHeight // 2),
@@ -128,13 +137,18 @@ local function checkEndState()
     SaveData.completeMission(gs.missionId)
     MenuBox.init({ 'Retry', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
   elseif gs.earth.health <= 0 then
-    gs.endState = 'failed'
-    if gs.score > SaveData.data.highScore then
-      SaveData.data.highScore = gs.score
-      pd.datastore.write(SaveData.data)
-      gs.isHighScore = true
+    if gs.mission.winType == 'endless' then
+      gs.endState = 'game-over'
+      if gs.score > SaveData.data.highScore then
+        SaveData.data.highScore = gs.score
+        pd.datastore.write(SaveData.data)
+        gs.isHighScore = true
+      end
+      MenuBox.init({ 'Retry', 'Back to title' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
+    else
+      gs.endState = 'failed'
+      MenuBox.init({ 'Retry', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
     end
-    MenuBox.init({ 'Retry', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
   end
 end
 

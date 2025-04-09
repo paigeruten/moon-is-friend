@@ -40,7 +40,8 @@ Assets = {
     },
 
     checkmark = gfx.image.new("images/checkmark"),
-    banner = gfx.image.new("images/banner")
+    banner = gfx.image.new("images/banner"),
+    endless = gfx.image.new("images/endless")
   }
 }
 Assets.gfx.rocketEast = Assets.gfx.rocketNorth:rotatedImage(90)

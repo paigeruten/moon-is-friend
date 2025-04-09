@@ -16,6 +16,12 @@ function Title.switch()
       MissionTree.switch()
       MissionTree.selectNextMission()
       assets.sfx.boop:play()
+    elseif selected == 2 then
+      gs.scene = 'game'
+      gs.missionId = 'endless.s1'
+      Game.reset()
+      Menu.addInGameMenuItems()
+      assets.sfx.boop:play()
     elseif selected == 4 then
       gs.scene = 'story'
       gs.frameCount = 0

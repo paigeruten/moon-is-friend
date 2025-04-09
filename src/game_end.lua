@@ -18,10 +18,12 @@ function GameEnd.menuSelect(which)
     else
       MissionTree.switch()
     end
+    assets.sfx.boop:play()
+  else
+    assets.sfx.boop:play(77)
   end
 
   Game.reset()
-  assets.sfx.boop:play(77)
 end
 
 function GameEnd.update()

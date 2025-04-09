@@ -8,6 +8,38 @@ local screenHeight = SCREEN_HEIGHT
 MissionTree = {}
 
 MISSIONS = {
+  ["endless.s1"] = {
+    mode = "standard",
+    winType = "endless",
+    difficulty = { 125, 50 }
+  },
+  ["endless.s2"] = {
+    mode = "standard",
+    winType = "endless",
+    difficulty = { 125, 50 },
+    numMoons = 2
+  },
+  ["endless.s3"] = {
+    mode = "standard",
+    winType = "endless",
+    difficulty = { 125, 50 },
+    numMoons = 3
+  },
+  ["endless.j3"] = {
+    mode = "juggling",
+    winType = "endless",
+    difficulty = 3
+  },
+  ["endless.j4"] = {
+    mode = "juggling",
+    winType = "endless",
+    difficulty = 4
+  },
+  ["endless.j5"] = {
+    mode = "juggling",
+    winType = "endless",
+    difficulty = 5
+  },
   ["1-1"] = {
     mode = "standard",
     winType = "asteroids",
