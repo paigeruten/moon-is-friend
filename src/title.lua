@@ -74,10 +74,8 @@ function Title.update()
 
   if pd.buttonJustReleased(pd.kButtonA) then
     gs.scene = 'mission-tree'
-    gs.missionRow = 1
-    gs.missionCol = 1
-    gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
     gs.frameCount = 0
+    MissionTree.selectNextMission()
     assets.sfx.boop:play()
   end
 end

@@ -9,7 +9,7 @@ Game = {}
 
 Game.state = {
   scene = 'title',
-  missionId = '0-1',
+  missionId = '1-1',
   screenShakeEnabled = not pd.getReduceFlashing()
 }
 local gs = Game.state

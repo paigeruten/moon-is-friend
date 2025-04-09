@@ -8,82 +8,82 @@ local screenHeight = SCREEN_HEIGHT
 MissionTree = {}
 
 MISSIONS = {
-  ["0-1"] = {
+  ["1-1"] = {
     mode = "standard",
     winType = "asteroids",
     winGoal = 20,
     difficulty = 125
   },
-  ["1-1"] = {
+  ["2-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 60,
     difficulty = 100
   },
-  ["1-2"] = {
+  ["2-2"] = {
     mode = "standard",
     winType = "rocket",
     winGoal = 15,
     difficulty = 100
   },
-  ["1-3"] = {
+  ["2-3"] = {
     mode = "juggling",
     winType = "collide",
     winGoal = 3,
     difficulty = 3
   },
-  ["1-4"] = {
+  ["2-4"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 60,
     difficulty = 125,
     numMoons = 2
   },
-  ["1-B"] = {
+  ["3-B"] = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
     difficulty = 85
   },
-  ["2-1"] = {
+  ["4-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 120,
     difficulty = 75
   },
-  ["2-2"] = {
+  ["4-2"] = {
     mode = "standard",
     winType = "rocket",
     winGoal = 20,
     difficulty = 75
   },
-  ["2-3"] = {
+  ["4-3"] = {
     mode = "juggling",
     winType = "collide",
     winGoal = 5,
     difficulty = 4
   },
-  ["2-4"] = {
+  ["4-4"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 90,
     difficulty = 100,
     numMoons = 2
   },
-  ["3-1"] = {
+  ["5-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 300,
     difficulty = { 125, 50 }
   },
-  ["3-2"] = {
+  ["5-2"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 90,
     difficulty = 100,
     numMoons = 3
   },
-  ["3-B"] = {
+  ["6-B"] = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
@@ -92,13 +92,30 @@ MISSIONS = {
 }
 
 MISSION_TREE = {
-  { "0-1" },
-  { "1-1", "1-2", "1-3", "1-4" },
-  { "1-B" },
+  { "1-1" },
   { "2-1", "2-2", "2-3", "2-4" },
-  { "3-1", "3-2" },
-  { "3-B" }
+  { "3-B" },
+  { "4-1", "4-2", "4-3", "4-4" },
+  { "5-1", "5-2" },
+  { "6-B" }
 }
+
+function MissionTree.selectNextMission()
+  for colIdx, missionCol in ipairs(MISSION_TREE) do
+    for rowIdx, missionId in ipairs(missionCol) do
+      if not SaveData.isMissionComplete(missionId) then
+        gs.missionRow = rowIdx
+        gs.missionCol = colIdx
+        gs.missionId = missionId
+        return
+      end
+    end
+  end
+
+  gs.missionRow = 1
+  gs.missionCol = 1
+  gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
+end
 
 function MissionTree.update()
   gfx.clear()
@@ -200,6 +217,12 @@ function MissionTree.update()
 
   if pd.buttonJustReleased(pd.kButtonA) then
     gs.scene = 'story'
+    gs.frameCount = 0
+    assets.sfx.boop:play()
+  end
+
+  if pd.buttonJustReleased(pd.kButtonB) then
+    gs.scene = 'title'
     gs.frameCount = 0
     assets.sfx.boop:play()
   end

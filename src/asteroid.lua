@@ -159,7 +159,9 @@ function Asteroid.update()
       table.insert(idsToRemove, id)
       gs.score += 1
       gs.asteroidsDiverted += 1
-      assets.sfx.point:play()
+      if gs.mission.winType == 'asteroids' then
+        assets.sfx.point:play()
+      end
     end
   end
   for _, id in ipairs(idsToRemove) do
@@ -234,10 +236,29 @@ function Asteroid.checkCollisions()
         asteroid2.state = 'dead'
         gs.score += 5
         gs.asteroidsCollided += 1
-        if gs.mission.mode == 'juggling' and gs.earth.health < gs.earth.maxHealth then
-          gs.earth.health += 1
+        if gs.mission.mode == 'juggling' then
+          if gs.earth.health < gs.earth.maxHealth then
+            gs.earth.health += 1
+            Game.flashMessage('Nice collision! +1 health')
+          else
+            Game.flashMessage('Nice collision!')
+          end
+        elseif gs.mission.winType == 'asteroids' then
+          gs.asteroidsDiverted += 4
+          Game.flashMessage('2 asteroids collided, that counts double!')
+        elseif gs.mission.winType == 'survive' then
+          gs.mission.winGoal = math.max(0, gs.mission.winGoal - 5)
+          Game.flashMessage('2 asteroids collided! -0:05')
+        elseif gs.mission.winType == 'rocket' then
+          gs.rocketsCaught += 1
+          gs.mission.winGoal = math.max(0, gs.mission.winGoal - 1)
+          Game.flashMessage('2 asteroids collided! -1 rocket needed')
+        elseif gs.mission.winType == 'boss' then
+          gs.boss.health = math.max(0, gs.boss.health - 2)
+          Game.flashMessage('2 asteroids collided! +2 bonus damage')
+        else
+          Game.flashMessage('2 asteroids collided! +5 points')
         end
-        Game.flashMessage('2 asteroids collided! +5 points')
         Explosion.spawn(
           pd.geometry.lineSegment.new(
             asteroid.pos.x,
