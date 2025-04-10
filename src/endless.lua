@@ -2,8 +2,6 @@ local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
 local assets = Assets
-local screenWidth = SCREEN_WIDTH
-local screenHeight = SCREEN_HEIGHT
 
 Endless = {}
 
@@ -46,7 +44,8 @@ function Endless.update()
 
   gfx.setFont(assets.fonts.menu)
   local modeWidth, modeHeight = gfx.drawText("Game Mode", boxX + 15, boxY + 50)
-  local otherWidth, _ = gfx.drawText(gs.endlessMode == 'standard' and 'Moons' or 'Asteroids', boxX + 15, boxY + 50 + 20)
+  local otherWidth, otherHeight = gfx.drawText(gs.endlessMode == 'standard' and 'Moons' or 'Asteroids', boxX + 15,
+    boxY + 50 + 20)
 
   gfx.drawText(arrowWrapIf(gs.endlessSelected == 'mode', gs.endlessMode == 'standard' and 'Standard' or 'Juggling'), 220,
     boxY + 50)
@@ -58,17 +57,23 @@ function Endless.update()
     gfx.drawText(arrowWrapIf(gs.endlessSelected == 'other', tostring(gs.endlessAsteroids)), 220, boxY + 50 + 20)
   end
 
-  local selectedWidth, selectedY
-  if gs.endlessSelected == 'mode' then
-    selectedWidth = modeWidth
-    selectedY = boxY + 50
-  else
-    selectedWidth = otherWidth
-    selectedY = boxY + 50 + 20
-  end
   local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
-  gfx.setColor(gfx.kColorBlack)
-  gfx.fillRect(boxX + 15, selectedY + modeHeight + 4 + perlY, selectedWidth, 2)
+
+  if gs.endlessSelected == 'mode' then
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 4 + perlY, modeWidth, 3)
+
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 2, otherWidth, 2)
+  else
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 4 + perlY, otherWidth, 3)
+
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 2, modeWidth, 2)
+  end
 
   gfx.setFont(assets.fonts.menu)
   gfx.drawText("Ⓐ Start", boxX + boxWidth - 57, boxY + boxHeight - 20)

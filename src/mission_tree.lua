@@ -207,7 +207,11 @@ function MissionTree.update()
       if missionId == gs.missionId then
         local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
         gfx.setColor(gfx.kColorBlack)
-        gfx.fillRect(missionX + 3, missionY + 26 + textHeight + 2 + perlY, textWidth, 2)
+        gfx.fillRect(missionX + 3, missionY + 26 + textHeight + 2 + perlY, textWidth, 3)
+      else
+        gfx.setColor(gfx.kColorBlack)
+        gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+        gfx.fillRect(missionX + 3, missionY + 26 + textHeight, textWidth, 2)
       end
       missionY += missionSpacing
     end

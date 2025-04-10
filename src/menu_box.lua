@@ -50,7 +50,11 @@ function MenuBox.update()
     if gs.menuSelected == itemId then
       local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.menuFrameCount % 100) / 100, 0, 0) * 20 - 10))
       gfx.setColor(gfx.kColorBlack)
-      gfx.fillRect(itemX, itemY + itemHeight + 2 + perlY, itemWidth, 2)
+      gfx.fillRect(itemX, itemY + itemHeight + 2 + perlY, itemWidth, 3)
+    else
+      gfx.setColor(gfx.kColorBlack)
+      gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+      gfx.fillRect(itemX, itemY + itemHeight, itemWidth, 2)
     end
   end
 
