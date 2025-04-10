@@ -6,7 +6,9 @@ local gfx = pd.graphics
 Assets = {
   fonts = {
     large = gfx.getSystemFont(),
-    small = gfx.font.new("fonts/font-rains-1x")
+    medium = gfx.font.new("fonts/Newsleak-Serif-Bold"),
+    small = gfx.font.new("fonts/font-Cuberick-Bold"),
+    menu = gfx.font.new("fonts/Roobert-10-Bold")
   },
   sfx = {
     boop = pdfxr.synth.new("sounds/boop"),

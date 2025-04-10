@@ -66,21 +66,19 @@
         * [ ] Minion shield that becomes projectiles
         * [ ] Shield that blocks low-velocity asteroids
 * [x] Show win condition/progress in sidebar
-* [ ] For survival missions, asteroid collisions should subtract time from the goal
-* [ ] Randomly double/triple up asteroids sometimes
+* [x] For survival missions, asteroid collisions should subtract time from the goal
 * [ ] Optimize lua code
     * [ ] Less table allocations (especially for particles)
     * [ ] Pre-draw the moon/earth/asteroid/stars into images
-* [ ] Menu with "Campaign" / "Endless" / "High scores" / "How to play"
+* [ ] Menu with "Missions" / "Endless" / "High scores" / "How to play"
     * [x] "Campaign" goes to mission selection tree
-    * [ ] "Endless" goes to mode selection (survival vs. juggling vs. target practice, # of moons)
+    * [x] "Endless" goes to mode selection (survival vs. juggling vs. target practice, # of moons)
     * [ ] "High scores" shows high score for each endless mode (and each # of moons?)
-* [ ] More legible font
+* [x] More legible font
 * [ ] Music
 * [ ] New sound for triggering bomb
 * [ ] Quieter coin sound
 * [ ] Explain bombs in "How to play"
-* [ ] Light mode
 * [ ] Achievements
     * [ ] X amount of asteroid-asteroid collisions
     * [ ] Revenge: Diverted asteroid got pulled back (after ~2 seconds) and hit moon/earth
@@ -97,3 +95,5 @@
     * [ ] Make Moon orbit more of an ellipse?
     * [ ] Targets you have to try to hit on the edges of the screen (the default way to score points? Or like a boss fight where asteroids to damage against a giant planet just poking into one side of the screen?)
     * [ ] Minimap/radar
+    * [ ] Randomly double/triple up asteroids sometimes
+    * [ ] Light mode

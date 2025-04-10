@@ -163,7 +163,7 @@ function MissionTree.update()
   gfx.drawRoundRect(1, 1, screenWidth - 2, screenHeight - 2, 15)
 
   gfx.setFont(assets.fonts.large)
-  gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 12, kTextAlignment.center)
+  gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 10, kTextAlignment.center)
 
   local highestUnlocked = 1
   for _, missionCol in ipairs(MISSION_TREE) do
@@ -184,7 +184,7 @@ function MissionTree.update()
   gfx.setFont(assets.fonts.small)
   local missionX = 40
   for columnNum, missionCol in ipairs(MISSION_TREE) do
-    local missionY = 10
+    local missionY = 6
     local missionSpacing = 0
     if #missionCol == 1 then
       missionY += screenHeight // 2 - 13
@@ -203,21 +203,21 @@ function MissionTree.update()
       if SaveData.isMissionComplete(missionId) then
         assets.gfx.checkmark:draw(missionX + 20, missionY - 3)
       end
-      local textWidth, textHeight = gfx.drawText(missionId, missionX + 2, missionY + 28)
+      local textWidth, textHeight = gfx.drawText(missionId, missionX + 3, missionY + 26)
       if missionId == gs.missionId then
         local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
         gfx.setColor(gfx.kColorBlack)
-        gfx.fillRect(missionX + 2, missionY + 28 + textHeight + 4 + perlY, textWidth, 2)
+        gfx.fillRect(missionX + 3, missionY + 26 + textHeight + 2 + perlY, textWidth, 2)
       end
       missionY += missionSpacing
     end
 
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawRect(missionX + 13 - 30, 40, 61, 190)
+    gfx.drawRect(missionX + 13 - 30, 36, 61, 198)
     if columnNum > highestUnlocked then
       gfx.setColor(gfx.kColorBlack)
       gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-      gfx.fillRect(missionX + 13 - 30 + 1, 40 + 1, 61 - 2, 190 - 2)
+      gfx.fillRect(missionX + 13 - 30 + 1, 36 + 1, 61 - 2, 198 - 2)
     end
 
     missionX += 60

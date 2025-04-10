@@ -45,11 +45,12 @@ function Instructions.update()
 
   local maxChars = math.floor(gs.frameCount * 1.5)
 
-  gfx.setFont(assets.fonts.large)
-
   if title then
+    gfx.setFont(assets.fonts.large)
     gfx.drawTextAligned('*' .. title .. '*', screenWidth // 2, titleY, kTextAlignment.center)
   end
+
+  gfx.setFont(assets.fonts.medium)
 
   local done = true
   local textY = paddingY
@@ -68,6 +69,7 @@ function Instructions.update()
   end
 
   local perlY = math.min(3, math.max(-3, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
+  gfx.setFont(assets.fonts.large)
   gfx.drawText("Ⓐ", screenWidth - 28, screenHeight - 28 + perlY)
 
   gs.frameCount += 1

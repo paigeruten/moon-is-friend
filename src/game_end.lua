@@ -32,7 +32,7 @@ function GameEnd.update()
     local highScoreBoxWidth = pd.easingFunctions.outExpo(gs.menuFrameCount, 0, 136, 50)
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(screenWidth - highScoreBoxWidth, 26, highScoreBoxWidth + 5, 24, 5)
-    gfx.setFont(assets.fonts.large)
+    gfx.setFont(assets.fonts.menu)
     gfx.drawText("New high score!", screenWidth - highScoreBoxWidth + 11, 29)
   end
 

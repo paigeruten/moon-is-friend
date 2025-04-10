@@ -102,7 +102,7 @@ function Title.update()
 
   if SaveData.data.highScore > 0 then
     local hasStar = SaveData.data.highScore >= STAR_SCORE
-    gfx.setFont(assets.fonts.small)
+    gfx.setFont(assets.fonts.menu)
     gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
     gfx.drawTextAligned("High score\n" .. SaveData.data.highScore .. (hasStar and "  " or ""), screenWidth - 7,
       screenHeight - 30,

@@ -15,7 +15,7 @@ function MenuBox.init(items, options, selectCallback)
   gs.menuSelected = 1
   gs.menuOptions = options
   gs.menuCallback = selectCallback
-  gs.menuHeight = 10 + 20 * #items
+  gs.menuHeight = 15 + 20 * #items
 end
 
 function MenuBox.update()
@@ -40,7 +40,7 @@ function MenuBox.update()
   gfx.setColor(gfx.kColorWhite)
   gfx.fillRect(menuBoxX + 3, menuBoxY + 3, menuBoxWidth - 6, gs.menuHeight - 6)
 
-  gfx.setFont(assets.fonts.small)
+  gfx.setFont(assets.fonts.menu)
   for itemId, itemText in ipairs(gs.menuItems) do
     local itemWidth, itemHeight = gfx.getTextSize(itemText)
     local itemX = menuCenterX - itemWidth // 2
@@ -50,7 +50,7 @@ function MenuBox.update()
     if gs.menuSelected == itemId then
       local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.menuFrameCount % 100) / 100, 0, 0) * 20 - 10))
       gfx.setColor(gfx.kColorBlack)
-      gfx.fillRect(itemX, itemY + itemHeight + 4 + perlY, itemWidth, 2)
+      gfx.fillRect(itemX, itemY + itemHeight + 2 + perlY, itemWidth, 2)
     end
   end
 

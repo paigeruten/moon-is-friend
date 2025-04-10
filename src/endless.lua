@@ -44,7 +44,7 @@ function Endless.update()
   gfx.setColor(gfx.kColorWhite)
   gfx.fillRect(boxX + 3, boxY + 3, boxWidth - 6, boxHeight - 6)
 
-  gfx.setFont(assets.fonts.small)
+  gfx.setFont(assets.fonts.menu)
   local modeWidth, modeHeight = gfx.drawText("Game Mode", boxX + 15, boxY + 50)
   local otherWidth, _ = gfx.drawText(gs.endlessMode == 'standard' and 'Moons' or 'Asteroids', boxX + 15, boxY + 50 + 20)
 
@@ -70,10 +70,8 @@ function Endless.update()
   gfx.setColor(gfx.kColorBlack)
   gfx.fillRect(boxX + 15, selectedY + modeHeight + 4 + perlY, selectedWidth, 2)
 
-  gfx.setFont(assets.fonts.large)
-  gfx.drawText("Ⓐ", boxX + boxWidth - 67, boxY + boxHeight - 25)
-  gfx.setFont(assets.fonts.small)
-  gfx.drawText("Start", boxX + boxWidth - 45, boxY + boxHeight - 19)
+  gfx.setFont(assets.fonts.menu)
+  gfx.drawText("Ⓐ Start", boxX + boxWidth - 57, boxY + boxHeight - 20)
 
   if pd.buttonJustPressed(pd.kButtonDown) or pd.buttonJustPressed(pd.kButtonUp) then
     if gs.endlessSelected == 'mode' then

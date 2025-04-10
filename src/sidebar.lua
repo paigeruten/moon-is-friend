@@ -9,7 +9,9 @@ Sidebar = {}
 
 local missionIconY = 6
 local missionTextY = 35
-local goalY = 59
+local heartsY = 64
+local goalY = 185
+local scoreY = 205
 
 function Sidebar.draw()
   -- Sidebar
@@ -22,75 +24,73 @@ function Sidebar.draw()
   gfx.fillRect(0, 0, sidebarWidth - 4, screenHeight)
 
   -- Mission / game mode
-  gs.missionIcon:draw(9, missionIconY)
+  gs.missionIcon:draw(11, missionIconY)
 
   if gs.mission.winType == 'endless' then
-    assets.gfx.endless:draw(10, missionTextY + 2)
+    assets.gfx.endless:draw(12, missionTextY + 2)
 
     -- Score
     gfx.setFont(assets.fonts.small)
-    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText("" .. gs.score, 7, 215)
-    gfx.drawText("PTS", 7, 225)
-    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    gfx.drawText("Score", 6, scoreY)
+    gfx.drawText("" .. gs.score, 6, scoreY + 13)
   else
     gfx.setFont(assets.fonts.small)
-    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText('LVL', 12, missionTextY)
-    gfx.drawText(gs.missionId, 12, missionTextY + 10)
+    gfx.drawText(gs.missionId, 14, missionTextY)
 
     -- Goal outline
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(3, goalY, 37, 40, 3)
+    -- gfx.drawRoundRect(3, goalY, 37, 47, 3)
 
     -- Goal
     local goal = gs.mission.winGoal
-    local progress, left
+    local progress, progressText, leftText
     if gs.mission.winType == "asteroids" then
       progress = gs.asteroidsDiverted
-      left = tostring(math.max(0, goal - progress))
+      progressText = table.concat({ progress, '/', goal })
     elseif gs.mission.winType == "rocket" then
       progress = gs.rocketsCaught
-      left = tostring(math.max(0, goal - progress))
+      progressText = table.concat({ progress, '/', goal })
     elseif gs.mission.winType == "collide" then
       progress = gs.asteroidsCollided
-      left = tostring(math.max(0, goal - progress))
+      progressText = table.concat({ progress, '/', goal })
     elseif gs.mission.winType == "boss" then
       progress = gs.mission.winGoal - gs.boss.health
-      left = tostring(gs.boss.health)
+      progressText = table.concat({ gs.boss.health, ' HP' })
     elseif gs.mission.winType == "survive" then
       progress = gs.frameCount
       local totalSecondsLeft = math.max(0, goal - progress // 50)
       local minutesLeft = totalSecondsLeft // 60
       local secondsLeft = totalSecondsLeft % 60
-      left = table.concat({ minutesLeft, ":", secondsLeft < 10 and "0" or "", secondsLeft })
+      leftText = table.concat({ minutesLeft, ":", secondsLeft < 10 and "0" or "", secondsLeft })
       goal *= 50
     end
     gfx.setFont(assets.fonts.small)
     gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    gfx.drawText(left, 7, goalY + 19)
-    gfx.drawText("LEFT", 7, goalY + 29)
+    if leftText then
+      gfx.drawText(leftText, 10, goalY + 17)
+      gfx.drawText("Left", 10, goalY + 30)
+    elseif progressText then
+      gfx.drawTextAligned(progressText, (sidebarWidth - 4) // 2, goalY + 17, kTextAlignment.center)
+    end
 
     -- Goal progress bar
     gfx.setColor(gfx.kColorBlack)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRoundRect(7, goalY + 4, 30, 10, 2)
+    gfx.fillRoundRect(4, goalY + 4, 40, 10, 2)
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(7, goalY + 4, 30, 10, 2)
-    gfx.fillRoundRect(7, goalY + 4, progress / goal * 30, 10, 2)
+    gfx.drawRoundRect(4, goalY + 4, 40, 10, 2)
+    gfx.fillRoundRect(4, goalY + 4, progress / goal * 40, 10, 2)
   end
-
-  local heartsY = gs.mission.winType == 'endless' and 64 or 110
 
   -- Hearts
   gfx.setImageDrawMode(gfx.kDrawModeInverted)
   for i = 1, gs.earth.maxHealth do
-    (gs.earth.health >= i and assets.gfx.heart or assets.gfx.heartEmpty):draw(8, heartsY + (i - 1) * 15)
+    (gs.earth.health >= i and assets.gfx.heart or assets.gfx.heartEmpty):draw(10, heartsY + (i - 1) * 15)
   end
 
   -- Bombs
   for i = 1, gs.earth.bombs do
-    assets.gfx.bomb:draw(26, heartsY + (i - 1) * 15)
+    assets.gfx.bomb:draw(28, heartsY + (i - 1) * 15)
   end
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 end

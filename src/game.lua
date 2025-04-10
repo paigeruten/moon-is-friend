@@ -203,7 +203,7 @@ function Game.draw()
     if gs.frameCount - gs.curMessageAt > 100 then
       gs.curMessage = nil
     else
-      gfx.setFont(assets.fonts.large)
+      gfx.setFont(assets.fonts.menu)
       gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
       gfx.drawTextAligned(gs.curMessage, sidebarWidth + (screenWidth - sidebarWidth) // 2, screenHeight - 24,
         kTextAlignment.center)
