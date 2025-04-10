@@ -3,6 +3,7 @@ local gfx = pd.graphics
 local gs = Game.state
 local assets = Assets
 local screenWidth = SCREEN_WIDTH
+local screenHeight = SCREEN_HEIGHT
 local sidebarWidth = SIDEBAR_WIDTH
 
 GameEnd = {}
@@ -27,15 +28,6 @@ function GameEnd.menuSelect(which)
 end
 
 function GameEnd.update()
-  -- Todo: move to bottom left
-  if gs.isHighScore then
-    local highScoreBoxWidth = pd.easingFunctions.outExpo(gs.menuFrameCount, 0, 136, 50)
-    gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(screenWidth - highScoreBoxWidth, 26, highScoreBoxWidth + 5, 24, 5)
-    gfx.setFont(assets.fonts.menu)
-    gfx.drawText("New high score!", screenWidth - highScoreBoxWidth + 11, 29)
-  end
-
   local bannerText
   if gs.endState == "complete" then
     bannerText = "*Mission Complete!*"
@@ -49,6 +41,15 @@ function GameEnd.update()
   assets.gfx.banner:draw(bannerX, bannerY)
   gfx.setFont(assets.fonts.large)
   gfx.drawTextAligned(bannerText, bannerCenterX, bannerY + 5, kTextAlignment.center)
+
+  if true or gs.isHighScore then
+    local highScoreY = pd.easingFunctions.outExpo(gs.menuFrameCount, screenHeight, -22, 50)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(sidebarWidth + 5, highScoreY, 120, 18, 2)
+    assets.gfx.arrowRight:draw(sidebarWidth + 1, highScoreY + 9 - 3, gfx.kImageFlippedX)
+    gfx.setFont(assets.fonts.small)
+    gfx.drawText("New high score!", sidebarWidth + 13, highScoreY + 2)
+  end
 
   MenuBox.update()
 end

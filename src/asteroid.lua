@@ -159,7 +159,7 @@ function Asteroid.update()
       table.insert(idsToRemove, id)
       gs.score += 1
       gs.asteroidsDiverted += 1
-      if gs.mission.winType == 'asteroids' then
+      if gs.mission.winType == 'asteroids' or (gs.mission.winType == 'endless' and gs.mission.mode == 'standard') then
         assets.sfx.point:play()
       end
     end

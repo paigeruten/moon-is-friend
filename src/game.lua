@@ -139,11 +139,7 @@ local function checkEndState()
   elseif gs.earth.health <= 0 then
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
-      if gs.score > SaveData.data.highScore then
-        SaveData.data.highScore = gs.score
-        pd.datastore.write(SaveData.data)
-        gs.isHighScore = true
-      end
+      gs.isHighScore = SaveData.checkAndSaveHighScore(gs.missionId, gs.score)
       MenuBox.init({ 'Retry', 'Back to title' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
     else
       gs.endState = 'failed'
