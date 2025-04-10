@@ -27,6 +27,7 @@ import "title"
 import "instructions"
 import "game_end"
 import "save_data"
+import "endless"
 
 local pd = playdate
 local gfx = pd.graphics
@@ -48,6 +49,8 @@ function pd.update()
     Instructions.update()
   elseif gs.scene == 'mission-tree' then
     MissionTree.update()
+  elseif gs.scene == 'endless' then
+    Endless.update()
   else
     Game.update()
   end
