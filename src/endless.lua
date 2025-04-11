@@ -23,8 +23,8 @@ local function arrowWrapIf(cond, str)
   end
 end
 
-local boxX, boxY = 80, 60
-local boxWidth, boxHeight = 240, 120
+local boxX, boxY = 80, 50
+local boxWidth, boxHeight = 240, 140
 
 function Endless.update()
   gfx.clear()
@@ -43,7 +43,7 @@ function Endless.update()
   gfx.fillRect(boxX + 3, boxY + 3, boxWidth - 6, boxHeight - 6)
 
   gfx.setFont(assets.fonts.menu)
-  local modeWidth, modeHeight = gfx.drawText("Game Mode", boxX + 15, boxY + 50)
+  local modeWidth, modeHeight = gfx.drawText("Game mode", boxX + 15, boxY + 50)
   local otherWidth, otherHeight = gfx.drawText(gs.endlessMode == 'standard' and 'Moons' or 'Asteroids', boxX + 15,
     boxY + 50 + 20)
 
@@ -75,8 +75,35 @@ function Endless.update()
     gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 2, modeWidth, 2)
   end
 
+  if gs.endlessMode == 'standard' then
+    if gs.endlessMoons == 1 then
+      gs.missionId = 'endless.s1'
+    elseif gs.endlessMoons == 2 then
+      gs.missionId = 'endless.s2'
+    else
+      gs.missionId = 'endless.s3'
+    end
+  else
+    if gs.endlessAsteroids == 3 then
+      gs.missionId = 'endless.j3'
+    elseif gs.endlessAsteroids == 4 then
+      gs.missionId = 'endless.j4'
+    else
+      gs.missionId = 'endless.j5'
+    end
+  end
+
+  local highScore = SaveData.getHighScore(gs.missionId)
+  if highScore then
+    gfx.setFont(assets.fonts.small)
+    local highScoreWidth, highScoreHeight = gfx.drawText("High score: " .. highScore, boxX + 12, boxY + boxHeight - 24)
+
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(boxX + 7, boxY + boxHeight - 28, highScoreWidth + 10, highScoreHeight + 8, 3)
+  end
+
   gfx.setFont(assets.fonts.menu)
-  gfx.drawText("Ⓐ Start", boxX + boxWidth - 57, boxY + boxHeight - 20)
+  gfx.drawTextAligned("Ⓐ Start", boxX + boxWidth - 10, boxY + boxHeight - 22, kTextAlignment.right)
 
   if pd.buttonJustPressed(pd.kButtonDown) or pd.buttonJustPressed(pd.kButtonUp) then
     if gs.endlessSelected == 'mode' then
@@ -132,23 +159,6 @@ function Endless.update()
 
   if pd.buttonJustReleased(pd.kButtonA) then
     gs.scene = 'game'
-    if gs.endlessMode == 'standard' then
-      if gs.endlessMoons == 1 then
-        gs.missionId = 'endless.s1'
-      elseif gs.endlessMoons == 2 then
-        gs.missionId = 'endless.s2'
-      else
-        gs.missionId = 'endless.s3'
-      end
-    else
-      if gs.endlessAsteroids == 3 then
-        gs.missionId = 'endless.j3'
-      elseif gs.endlessAsteroids == 4 then
-        gs.missionId = 'endless.j4'
-      else
-        gs.missionId = 'endless.j5'
-      end
-    end
     Game.reset()
     assets.sfx.boop:play(77)
     Menu.addInGameMenuItems()

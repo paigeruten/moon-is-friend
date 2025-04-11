@@ -42,7 +42,7 @@ function GameEnd.update()
   gfx.setFont(assets.fonts.large)
   gfx.drawTextAligned(bannerText, bannerCenterX, bannerY + 5, kTextAlignment.center)
 
-  if true or gs.isHighScore then
+  if gs.isHighScore then
     local highScoreY = pd.easingFunctions.outExpo(gs.menuFrameCount, screenHeight, -22, 50)
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(sidebarWidth + 5, highScoreY, 120, 18, 2)

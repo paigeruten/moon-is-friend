@@ -65,12 +65,10 @@ function HighScores.update()
   end
 
   gfx.setFont(assets.fonts.menu)
-  gfx.drawTextAligned("Ⓐ Done", boxX + boxWidth - 12, boxY + boxHeight - 22, kTextAlignment.right)
+  gfx.drawTextAligned("Ⓐ Done", boxX + boxWidth - 10, boxY + boxHeight - 22, kTextAlignment.right)
 
   if pd.buttonJustReleased(pd.kButtonA) or pd.buttonJustReleased(pd.kButtonB) then
     Title.switch()
     assets.sfx.boop:play()
   end
-
-  -- gs.frameCount += 1
 end
