@@ -28,6 +28,7 @@ import "instructions"
 import "game_end"
 import "save_data"
 import "endless"
+import "high_scores"
 
 local pd = playdate
 local gfx = pd.graphics
@@ -51,6 +52,8 @@ function pd.update()
     MissionTree.update()
   elseif gs.scene == 'endless' then
     Endless.update()
+  elseif gs.scene == 'high-scores' then
+    HighScores.update()
   else
     Game.update()
   end

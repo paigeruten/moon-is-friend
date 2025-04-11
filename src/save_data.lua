@@ -22,6 +22,10 @@ function SaveData.isMissionComplete(missionId)
   return SaveData.data.missions[missionId] and SaveData.data.missions[missionId].complete
 end
 
+function SaveData.getHighScore(missionId)
+  return SaveData.data.highScores[missionId]
+end
+
 function SaveData.checkAndSaveHighScore(missionId, score)
   if not SaveData.data.highScores[missionId] or score > SaveData.data.highScores[missionId] then
     SaveData.data.highScores[missionId] = score

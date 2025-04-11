@@ -19,6 +19,9 @@ function Title.switch()
     elseif selected == 2 then
       Endless.switch()
       assets.sfx.boop:play()
+    elseif selected == 3 then
+      HighScores.switch()
+      assets.sfx.boop:play()
     elseif selected == 4 then
       gs.scene = 'story'
       gs.frameCount = 0
@@ -99,21 +102,6 @@ function Title.update()
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   MenuBox.update()
-
-  if SaveData.data.highScore > 0 then
-    local hasStar = SaveData.data.highScore >= STAR_SCORE
-    gfx.setFont(assets.fonts.menu)
-    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-    gfx.drawTextAligned("High score\n" .. SaveData.data.highScore .. (hasStar and "  " or ""), screenWidth - 7,
-      screenHeight - 30,
-      kTextAlignment.right,
-      8)
-    gfx.setImageDrawMode(gfx.kDrawModeCopy)
-
-    if hasStar then
-      assets.gfx.star:draw(screenWidth - 19, screenHeight - 18)
-    end
-  end
 
   gs.frameCount += 1
 end
