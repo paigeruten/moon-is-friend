@@ -21,6 +21,26 @@ function GameEnd.menuSelect(which)
     end
     assets.sfx.boop:play()
   else
+    if gs.endState == "complete" then
+      local lastMissionId = nil
+      local nextMissionId = nil
+      for _, row in ipairs(MISSION_TREE) do
+        for _, curMissionId in ipairs(row) do
+          if lastMissionId == gs.missionId then
+            nextMissionId = curMissionId
+            goto foundNextMission
+          end
+          lastMissionId = curMissionId
+        end
+      end
+      ::foundNextMission::
+
+      if nextMissionId then
+        gs.missionId = nextMissionId
+      else
+        return
+      end
+    end
     assets.sfx.boop:play(77)
   end
 

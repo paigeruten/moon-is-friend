@@ -135,7 +135,7 @@ local function checkEndState()
   if win then
     gs.endState = 'complete'
     SaveData.completeMission(gs.missionId)
-    MenuBox.init({ 'Retry', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
+    MenuBox.init({ 'Next mission', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
   elseif gs.earth.health <= 0 then
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
