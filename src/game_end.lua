@@ -71,5 +71,25 @@ function GameEnd.update()
     gfx.drawText("New high score!", sidebarWidth + 13, highScoreY + 2)
   end
 
+  if gs.firstTimeCompleted then
+    local unlockText = gs.mission.unlockMessage
+    if not unlockText and gs.newMissionsUnlocked then
+      unlockText = "You've unlocked new missions!"
+    end
+
+    if unlockText then
+      local unlockBoxY = pd.easingFunctions.outExpo(gs.menuFrameCount, screenHeight, -20, 50)
+
+      gfx.setFont(assets.fonts.menu)
+      local unlockTextWidth, _ = gfx.getTextSize(unlockText)
+      local unlockBoxX = bannerCenterX - unlockTextWidth // 2 - 10
+
+      gfx.setColor(gfx.kColorWhite)
+      gfx.fillRoundRect(unlockBoxX, unlockBoxY, unlockTextWidth + 20, 25, 4)
+
+      gfx.drawText(unlockText, unlockBoxX + 10, unlockBoxY + 4)
+    end
+  end
+
   MenuBox.update()
 end

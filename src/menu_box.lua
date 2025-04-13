@@ -8,7 +8,7 @@ local sidebarWidth = SIDEBAR_WIDTH
 
 MenuBox = {}
 
--- options: { withSidebar = boolean, animated = boolean, width = number }
+-- options: { withSidebar = boolean, animated = boolean, width = number, adjustY = number }
 function MenuBox.init(items, options, selectCallback)
   gs.menuFrameCount = 0
   gs.menuItems = items
@@ -28,7 +28,7 @@ function MenuBox.update()
 
   local menuBoxWidth = gs.menuOptions.width or 200
   local menuBoxX = menuCenterX - menuBoxWidth // 2
-  local menuBoxY = screenHeight - gs.menuHeight - 30
+  local menuBoxY = screenHeight - gs.menuHeight - 30 + (gs.menuOptions.adjustY or 0)
   if gs.menuOptions.animated then
     menuBoxY = pd.easingFunctions.outExpo(gs.menuFrameCount, screenHeight, menuBoxY - screenHeight, 50)
   end

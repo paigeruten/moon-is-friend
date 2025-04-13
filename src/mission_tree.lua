@@ -44,7 +44,8 @@ MISSIONS = {
     mode = "standard",
     winType = "asteroids",
     winGoal = 20,
-    difficulty = 125
+    difficulty = 125,
+    unlockMessage = "You've unlocked Endless mode!"
   },
   ["2-1"] = {
     mode = "standard",
@@ -62,14 +63,16 @@ MISSIONS = {
     mode = "juggling",
     winType = "collide",
     winGoal = 3,
-    difficulty = 3
+    difficulty = 3,
+    unlockMessage = "You've unlocked Endless Juggling!"
   },
   ["2-4"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 60,
     difficulty = 125,
-    numMoons = 2
+    numMoons = 2,
+    unlockMessage = "You've unlocked Endless mode (2 Moons)!"
   },
   ["3-B"] = {
     mode = "standard",
@@ -93,7 +96,8 @@ MISSIONS = {
     mode = "juggling",
     winType = "collide",
     winGoal = 5,
-    difficulty = 4
+    difficulty = 4,
+    unlockMessage = "You've unlocked Endless Juggling (4 Meteors)!"
   },
   ["4-4"] = {
     mode = "standard",
@@ -113,13 +117,15 @@ MISSIONS = {
     winType = "survive",
     winGoal = 90,
     difficulty = 100,
-    numMoons = 3
+    numMoons = 3,
+    unlockMessage = "You've unlocked Endless mode (3 Moons)!"
   },
   ["6-B"] = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
-    difficulty = 50
+    difficulty = 50,
+    unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!"
   },
 }
 
@@ -149,22 +155,7 @@ function MissionTree.selectNextMission()
   gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
 end
 
-function MissionTree.switch()
-  gs.scene = 'mission-tree'
-  gs.frameCount = 0
-  Menu.reset()
-end
-
-function MissionTree.update()
-  gfx.clear()
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(0, 0, screenWidth, screenHeight, 15)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(1, 1, screenWidth - 2, screenHeight - 2, 15)
-
-  gfx.setFont(assets.fonts.large)
-  gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 10, kTextAlignment.center)
-
+function MissionTree.highestUnlockedColumn()
   local highestUnlocked = 1
   for _, missionCol in ipairs(MISSION_TREE) do
     local numCompleted = 0
@@ -179,7 +170,25 @@ function MissionTree.update()
       break
     end
   end
-  highestUnlocked = math.min(highestUnlocked, #MISSION_TREE)
+  return math.min(highestUnlocked, #MISSION_TREE)
+end
+
+function MissionTree.switch()
+  gs.scene = 'mission-tree'
+  gs.frameCount = 0
+  gs.highestUnlocked = MissionTree.highestUnlockedColumn()
+  Menu.reset()
+end
+
+function MissionTree.update()
+  gfx.clear()
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRoundRect(0, 0, screenWidth, screenHeight, 15)
+  gfx.setColor(gfx.kColorBlack)
+  gfx.drawRoundRect(1, 1, screenWidth - 2, screenHeight - 2, 15)
+
+  gfx.setFont(assets.fonts.large)
+  gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 10, kTextAlignment.center)
 
   gfx.setFont(assets.fonts.small)
   local missionX = 40
@@ -218,7 +227,7 @@ function MissionTree.update()
 
     gfx.setColor(gfx.kColorBlack)
     gfx.drawRect(missionX + 13 - 30, 36, 61, 198)
-    if columnNum > highestUnlocked then
+    if columnNum > gs.highestUnlocked then
       gfx.setColor(gfx.kColorBlack)
       gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
       gfx.fillRect(missionX + 13 - 30 + 1, 36 + 1, 61 - 2, 198 - 2)
@@ -232,7 +241,7 @@ function MissionTree.update()
   if pd.buttonJustPressed(pd.kButtonDown) then
     if gs.missionRow < #MISSION_TREE[gs.missionCol] then
       gs.missionRow += 1
-    elseif gs.missionCol < highestUnlocked then
+    elseif gs.missionCol < gs.highestUnlocked then
       gs.missionCol += 1
       gs.missionRow = 1
     end
@@ -249,7 +258,7 @@ function MissionTree.update()
       gs.missionRow = 1
     end
   elseif pd.buttonJustPressed(pd.kButtonRight) then
-    if gs.missionCol < highestUnlocked then
+    if gs.missionCol < gs.highestUnlocked then
       gs.missionCol += 1
       gs.missionRow = 1
     end

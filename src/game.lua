@@ -22,6 +22,8 @@ function Game.reset()
   gs.frameCount = 0
   gs.menuFrameCount = 0
   gs.endState = nil
+  gs.firstTimeCompleted = nil
+  gs.newMissionsUnlocked = nil
 
   gs.score = 0
   gs.asteroidsDiverted = 0
@@ -132,18 +134,27 @@ local function checkEndState()
     win = gs.boss.health == 0
   end
 
+  local menuOptions = {
+    withSidebar = true,
+    animated = true,
+    adjustY = -10
+  }
+
   if win then
     gs.endState = 'complete'
+    gs.firstTimeCompleted = not SaveData.isMissionComplete(gs.missionId)
+    local prevHighestUnlocked = MissionTree.highestUnlockedColumn()
     SaveData.completeMission(gs.missionId)
-    MenuBox.init({ 'Next mission', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
+    gs.newMissionsUnlocked = MissionTree.highestUnlockedColumn() > prevHighestUnlocked
+    MenuBox.init({ 'Next mission', 'Back to missions' }, menuOptions, GameEnd.menuSelect)
   elseif gs.earth.health <= 0 then
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
       gs.isHighScore = SaveData.checkAndSaveHighScore(gs.missionId, gs.score)
-      MenuBox.init({ 'Retry', 'Back to title' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
+      MenuBox.init({ 'Retry', 'Back to title' }, menuOptions, GameEnd.menuSelect)
     else
       gs.endState = 'failed'
-      MenuBox.init({ 'Retry', 'Back to missions' }, { withSidebar = true, animated = true }, GameEnd.menuSelect)
+      MenuBox.init({ 'Retry', 'Back to missions' }, menuOptions, GameEnd.menuSelect)
     end
   end
 end
