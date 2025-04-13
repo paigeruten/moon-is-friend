@@ -44,24 +44,38 @@ function HighScores.update()
 
   gfx.setFont(assets.fonts.menu)
   local standardWidth, _ = gfx.drawText("Standard", standardColX, boxY + 68)
-  local jugglingWidth, _ = gfx.drawText("Juggling", jugglingColX, boxY + 68)
+  local jugglingWidth, _ = gfx.drawText(SaveData.isAnyEndlessModeUnlocked('juggling') and "Juggling" or "???",
+    jugglingColX, boxY + 68)
 
   assets.gfx.missionIcons.asteroids:drawAnchored(standardColX + standardWidth // 2, boxY + 40, 0.5, 0)
   assets.gfx.missionIcons.collide:drawAnchored(jugglingColX + jugglingWidth // 2, boxY + 40, 0.5, 0)
 
   gfx.setFont(assets.fonts.small)
   for numMoons = 1, 3 do
-    gfx.drawText(moonText[numMoons], boxX + 15, boxY + 100 + 20 * (numMoons - 1))
-    gfx.drawTextAligned(tostring(SaveData.getHighScore("endless.s" .. numMoons) or "(n/a)"), screenWidth // 2 - 15,
-      boxY + 100 + 20 * (numMoons - 1),
-      kTextAlignment.right)
+    local isUnlocked = SaveData.isEndlessModeUnlocked('standard', numMoons)
+    local text, score
+    if isUnlocked then
+      text = moonText[numMoons]
+      score = tostring(SaveData.getHighScore("endless.s" .. numMoons) or "(n/a)")
+    else
+      text = "???:"
+      score = "(n/a)"
+    end
+    gfx.drawText(text, boxX + 15, boxY + 100 + 20 * (numMoons - 1))
+    gfx.drawTextAligned(score, screenWidth // 2 - 15, boxY + 100 + 20 * (numMoons - 1), kTextAlignment.right)
   end
   for numAsteroids = 3, 5 do
-    gfx.drawText(asteroidText[numAsteroids], screenWidth // 2 + 15,
-      boxY + 100 + 20 * (numAsteroids - 3))
-    gfx.drawTextAligned(tostring(SaveData.getHighScore("endless.j" .. numAsteroids) or "(n/a)"), boxX + boxWidth - 15,
-      boxY + 100 + 20 * (numAsteroids - 3),
-      kTextAlignment.right)
+    local isUnlocked = SaveData.isEndlessModeUnlocked('juggling', numAsteroids)
+    local text, score
+    if isUnlocked then
+      text = asteroidText[numAsteroids]
+      score = tostring(SaveData.getHighScore("endless.j" .. numAsteroids) or "(n/a)")
+    else
+      text = "???:"
+      score = "(n/a)"
+    end
+    gfx.drawText(text, screenWidth // 2 + 15, boxY + 100 + 20 * (numAsteroids - 3))
+    gfx.drawTextAligned(score, boxX + boxWidth - 15, boxY + 100 + 20 * (numAsteroids - 3), kTextAlignment.right)
   end
 
   gfx.setFont(assets.fonts.menu)

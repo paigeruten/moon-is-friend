@@ -22,6 +22,40 @@ function SaveData.isMissionComplete(missionId)
   return SaveData.data.missions[missionId] and SaveData.data.missions[missionId].complete
 end
 
+function SaveData.isEndlessModeUnlocked(mode, n)
+  if mode == 'standard' then
+    if n == 1 then
+      return SaveData.isMissionComplete('1-1'), '1-1'
+    elseif n == 2 then
+      return SaveData.isMissionComplete('2-4'), '2-4'
+    elseif n == 3 then
+      return SaveData.isMissionComplete('5-2'), '5-2'
+    end
+  elseif mode == 'juggling' then
+    if n == 3 then
+      return SaveData.isMissionComplete('2-3'), '2-3'
+    elseif n == 4 then
+      return SaveData.isMissionComplete('4-3'), '4-3'
+    elseif n == 5 then
+      return SaveData.isMissionComplete('6-B'), '6-B'
+    end
+  end
+  return false, nil
+end
+
+function SaveData.isAnyEndlessModeUnlocked(mode)
+  if mode == 'standard' then
+    return SaveData.isEndlessModeUnlocked(mode, 1) or
+        SaveData.isEndlessModeUnlocked(mode, 2) or
+        SaveData.isEndlessModeUnlocked(mode, 3)
+  elseif mode == 'juggling' then
+    return SaveData.isEndlessModeUnlocked(mode, 3) or
+        SaveData.isEndlessModeUnlocked(mode, 4) or
+        SaveData.isEndlessModeUnlocked(mode, 5)
+  end
+  return false
+end
+
 function SaveData.getHighScore(missionId)
   return SaveData.data.highScores[missionId]
 end
