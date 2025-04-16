@@ -22,10 +22,21 @@ function Moon.update()
     gs.moons[2].pos = gs.earth.pos + pd.geometry.vector2D.newPolar(MOON_DISTANCE_FROM_EARTH, pd.getCrankPosition() + 120)
     gs.moons[3].pos = gs.earth.pos + pd.geometry.vector2D.newPolar(MOON_DISTANCE_FROM_EARTH, pd.getCrankPosition() + 240)
   end
+
+  if gs.earth.maxBombs == 0 then
+    gs.extraSuction = pd.buttonIsPressed(pd.kButtonB)
+  end
 end
 
 function Moon.draw()
   for _, moon in ipairs(gs.moons) do
+    if gs.extraSuction then
+      gfx.setColor(gfx.kColorWhite)
+      for _ = 1, 20 do
+        gfx.drawPixel(moon.pos + pd.geometry.vector2D.newPolar(moon.radius + 3, math.random() * 360))
+      end
+    end
+
     gfx.setColor(gfx.kColorWhite)
     gfx.fillCircleAtPoint(moon.pos, moon.radius)
     gfx.setColor(gfx.kColorBlack)

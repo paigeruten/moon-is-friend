@@ -54,6 +54,10 @@ function Game.reset()
   if gs.mission.winType == "boss" then
     gs.earth.pos.x -= 50
   end
+  if gs.mission.mode == "juggling" or gs.mission.winType == "boss" then
+    gs.earth.bombs = 0
+    gs.earth.maxBombs = 0
+  end
 
   gs.moons = {}
   for _ = 1, (gs.mission.numMoons or 1) do
@@ -63,6 +67,7 @@ function Game.reset()
 
   gs.bombShockwave = 0
   gs.bombShockwavePos = nil
+  gs.extraSuction = false
 
   gs.curRocket = nil
   gs.lastRocketAt = 0

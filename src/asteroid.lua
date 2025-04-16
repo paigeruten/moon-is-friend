@@ -135,7 +135,7 @@ function Asteroid.update()
       local moonVec = moon.pos - asteroid.pos
       if isOnScreen and moonVec:magnitude() <= moon.gravityRadius then
         local moonMass = moon.mass
-        if gs.mission.mode == 'juggling' and pd.buttonIsPressed(pd.kButtonB) then
+        if gs.extraSuction then
           moonMass *= 2
         end
         acc += moonVec:scaledBy(moonMass / moonVec:magnitudeSquared())
