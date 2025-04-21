@@ -37,6 +37,7 @@ function GameEnd.menuSelect(which)
 
       if nextMissionId then
         gs.missionId = nextMissionId
+        MissionIntro.switch()
       else
         return
       end

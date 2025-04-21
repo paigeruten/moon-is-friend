@@ -25,6 +25,7 @@ import "menu_box"
 import "menu"
 import "title"
 import "instructions"
+import "mission_intro"
 import "game_end"
 import "save_data"
 import "endless"
@@ -50,6 +51,8 @@ function pd.update()
     Instructions.update()
   elseif gs.scene == 'mission-tree' then
     MissionTree.update()
+  elseif gs.scene == 'mission-intro' then
+    MissionIntro.update()
   elseif gs.scene == 'endless' then
     Endless.update()
   elseif gs.scene == 'high-scores' then

@@ -45,13 +45,24 @@ MISSIONS = {
     winType = "asteroids",
     winGoal = 20,
     difficulty = 125,
-    unlockMessage = "You've unlocked Endless mode!"
+    unlockMessage = "You've unlocked Endless mode!",
+    introText = {
+      "After a large-scale asteroid mining expedition gone wrong, "
+      .. "the Earth is now under a barrage of asteroids, and is very scared.",
+      "You are the Moon. Your mission is to protect your best friend by "
+      .. "diverting 20 asteroids off-screen using your gravitational pull.",
+      "Good luck!"
+    }
   },
   ["2-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 60,
-    difficulty = 100
+    difficulty = 100,
+    introText = {
+      "The asteroids just keep coming.",
+      "Protect yourself and the Earth for 60 seconds to complete this mission."
+    }
   },
   ["2-2"] = {
     mode = "standard",
@@ -267,10 +278,8 @@ function MissionTree.update()
   gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
 
   if pd.buttonJustReleased(pd.kButtonA) then
-    gs.scene = 'game'
-    Game.reset()
+    MissionIntro.switch()
     assets.sfx.boop:play(77)
-    Menu.addInGameMenuItems()
   end
 
   if pd.buttonJustReleased(pd.kButtonB) then
