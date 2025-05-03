@@ -34,6 +34,8 @@ import "high_scores"
 local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
+local screenWidth = SCREEN_WIDTH
+local screenHeight = SCREEN_HEIGHT
 
 Game.init()
 Game.reset()
@@ -60,4 +62,6 @@ function pd.update()
   else
     Game.update()
   end
+
+  pd.drawFPS(screenWidth - 20, screenHeight - 15)
 end

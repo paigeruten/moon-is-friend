@@ -222,6 +222,4 @@ function Game.draw()
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
   end
-
-  -- pd.drawFPS(screenWidth - 20, screenHeight - 15)
 end
