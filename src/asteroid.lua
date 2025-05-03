@@ -99,7 +99,8 @@ end
 local isAsteroidOnScreen = Asteroid.isOnScreen
 
 function Asteroid.areCirclesColliding(centerA, radiusA, centerB, radiusB)
-  local distance = (centerB - centerA):magnitude()
+  local dx, dy = centerB.x - centerA.x, centerB.y - centerA.y
+  local distance = math.sqrt(dx * dx + dy * dy)
   return distance <= radiusA + radiusB
 end
 
@@ -132,13 +133,16 @@ function Asteroid.update()
     local earthMass = gs.earth.mass
     local acc = earthVec:scaledBy(earthMass / earthVec:magnitudeSquared())
     for _, moon in ipairs(gs.moons) do
-      local moonVec = moon.pos - asteroid.pos
-      if isOnScreen and moonVec:magnitude() <= moon.gravityRadius then
+      local moonVecX, moonVecY = moon.pos.x - asteroid.pos.x, moon.pos.y - asteroid.pos.y
+      local moonDistanceSquared = moonVecX * moonVecX + moonVecY * moonVecY
+      local moonDistance = math.sqrt(moonDistanceSquared)
+      if isOnScreen and moonDistance <= moon.gravityRadius then
         local moonMass = moon.mass
         if gs.extraSuction then
           moonMass *= 2
         end
-        acc += moonVec:scaledBy(moonMass / moonVec:magnitudeSquared())
+        acc.dx += moonVecX * (moonMass / moonDistanceSquared)
+        acc.dy += moonVecY * (moonMass / moonDistanceSquared)
       end
     end
     if gs.mission.mode == 'juggling' then

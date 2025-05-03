@@ -9,6 +9,7 @@ import "vendor/pdfxr"
 import "constants"
 import "assets"
 import "game"
+import "util"
 
 import "asteroid"
 import "particle"
