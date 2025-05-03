@@ -112,8 +112,16 @@ function Rocket.update()
       gs.curRocket.acc = pd.geometry.vector2D.newPolar(0.005, gs.curRocket.info.angle)
     end
     if gs.frameCount % 2 == 0 then
-      Particle.spawn(gs.curRocket.pos,
-        -gs.curRocket.vel + pd.geometry.vector2D.new(math.random() - 0.5, math.random() - 0.5), 5, 1, 2, 0.2)
+      Particle.spawn(
+        gs.curRocket.pos.x,
+        gs.curRocket.pos.y,
+        -gs.curRocket.vel.dx + (math.random() - 0.5),
+        -gs.curRocket.vel.dy + (math.random() - 0.5),
+        5,
+        1,
+        2,
+        0.2
+      )
     end
     gs.curRocket.vel += gs.curRocket.acc
     gs.curRocket.pos += gs.curRocket.vel

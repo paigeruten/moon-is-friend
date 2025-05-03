@@ -2,7 +2,7 @@ local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
 
-local polarCoordinates = Util.polarCoordinates;
+local polarCoordinates = Util.polarCoordinates
 
 Moon = {}
 

@@ -6,6 +6,8 @@ local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
 local sidebarWidth = SIDEBAR_WIDTH
 
+local polarCoordinates = Util.polarCoordinates
+
 Asteroid = {}
 
 local function nextAsteroidId()
@@ -221,8 +223,8 @@ function Asteroid.checkCollisions()
         target.health -= math.max(1, math.floor(asteroid.radius * asteroid.vel:magnitude() / 3))
         assets.sfx.goodBoom:play()
         for _ = 1, 32 do
-          Particle.spawn(asteroid.pos, pd.geometry.vector2D.newPolar(math.random() + 1, math.random() * 360),
-            10, 2, 4, 0.2)
+          local pVelX, pVelY = polarCoordinates(math.random() + 1, math.random() * 360)
+          Particle.spawn(asteroid.pos.x, asteroid.pos.y, pVelX, pVelY, 10, 2, 4, 0.2)
         end
         if target.health <= 0 then
           target.health = 0
@@ -291,6 +293,11 @@ function Asteroid.draw()
       gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
       if gs.frameCount % 2 == 0 or gs.frameCount % 3 == 0 then
         local velAngle = -asteroid.vel:angleBetween(pd.geometry.vector2D.new(0, -1))
+        local pX, pY = polarCoordinates(asteroid.radius, velAngle + math.random(-35, 35))
+        local velX, velY = polarCoordinates(
+          math.random(1, asteroid.radius) / 10,
+          -velAngle + math.random(-15, 15)
+        )
         local minRadius, maxRadius = 1, 2
         if asteroid.radius > 6 then
           minRadius, maxRadius = 2, 5
@@ -302,9 +309,10 @@ function Asteroid.draw()
           minRadius, maxRadius = 1, 3
         end
         Particle.spawn(
-          asteroid.pos - pd.geometry.vector2D.newPolar(asteroid.radius, velAngle + math.random(-35, 35)),
-          pd.geometry.vector2D.newPolar(math.random(1, asteroid.radius) / 10,
-            -velAngle + math.random(-15, 15)),
+          asteroid.pos.x - pX,
+          asteroid.pos.y - pY,
+          velX,
+          velY,
           7,
           minRadius,
           maxRadius,
