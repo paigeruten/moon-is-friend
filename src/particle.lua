@@ -10,7 +10,7 @@ for i = 1, maxParticles do
   particlePool[i] = {}
 end
 
-function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha)
+function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha, decay)
   gs.curParticleId = (gs.curParticleId % maxParticles) + 1
   local id = gs.curParticleId
 
@@ -20,6 +20,7 @@ function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha
   particle.velX = velX
   particle.velY = velY
   particle.ttl = ttl
+  particle.decay = decay or 0.9
   particle.radius = math.random(minRadius, maxRadius)
   particle.ditherAlpha = ditherAlpha
 
@@ -42,7 +43,7 @@ function Particle.draw()
       particle.ttl -= 1
       particle.x += particle.velX
       particle.y += particle.velY
-      particle.radius *= 0.9
+      particle.radius *= particle.decay
     end
   end
   for _, id in ipairs(idsToRemove) do

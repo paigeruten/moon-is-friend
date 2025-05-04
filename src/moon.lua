@@ -40,12 +40,35 @@ end
 
 function Moon.draw()
   for _, moon in ipairs(gs.moons) do
-    if gs.extraSuction then
+    if gs.extraSuction and not gs.endState then
       gfx.setColor(gfx.kColorWhite)
       for _ = 1, 20 do
         local suctionX, suctionY = polarCoordinates(moon.radius + 3, math.random() * 360)
         gfx.drawPixel(moon.pos.x + suctionX, moon.pos.y + suctionY)
       end
+
+      -- for _ = 1, 2 do
+      --   local pX, pY = polarCoordinates(moon.radius + 5, math.random() * 360)
+      --   Particle.spawn(
+      --     moon.pos.x + pX,
+      --     moon.pos.y + pY,
+      --     -pX / moon.radius / 10,
+      --     -pY / moon.radius / 10,
+      --     30,
+      --     1,
+      --     1,
+      --     0.6,
+      --     1
+      --   )
+      -- end
+
+      -- local animFrame = (gs.frameCount / 2) % 6
+      -- local n = 5 - animFrame
+      -- if n < 4 then
+      --   gfx.setColor(gfx.kColorWhite)
+      --   gfx.setDitherPattern(0.8, gfx.image.kDitherTypeBayer8x8)
+      --   gfx.drawCircleAtPoint(moon.pos.x, moon.pos.y, moon.radius + 2 + n * 10)
+      -- end
     end
 
     gfx.setColor(gfx.kColorWhite)

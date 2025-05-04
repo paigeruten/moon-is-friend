@@ -47,35 +47,48 @@ MISSIONS = {
     difficulty = 125,
     unlockMessage = "You've unlocked Endless mode!",
     introText = {
-      "After a large-scale asteroid mining expedition gone wrong, "
-      .. "the Earth is now under a barrage of asteroids, and is very scared.",
-      "You are the Moon. Your mission is to protect your best friend by "
-      .. "diverting 20 asteroids off-screen using your gravitational pull.",
+      "You are the Moon. After a large-scale asteroid mining expedition gone wrong, "
+      .. "your best friend the Earth is now under a barrage of meteors, and is very scared.",
+      "You must use the crank to orbit the Earth, and "
+      .. "divert 20 meteors off-screen using your gravitational pull.",
       "Good luck!"
     }
   },
   ["2-1"] = {
     mode = "standard",
     winType = "survive",
-    winGoal = 60,
+    winGoal = 120,
     difficulty = 100,
     introText = {
-      "The asteroids just keep coming.",
-      "Protect yourself and the Earth for 60 seconds to complete this mission."
+      "The meteors are coming in even faster now.",
+      "Protect the Earth and survive for 2 minutes to complete this mission."
     }
   },
   ["2-2"] = {
     mode = "standard",
     winType = "rocket",
-    winGoal = 15,
-    difficulty = 100
+    winGoal = 10,
+    difficulty = 100,
+    introText = {
+      "Earth is sending a large team of scientists and astronauts up to the Moon "
+      .. "to help resupply and bolster your defenses.",
+      "Catch 10 rocket-fuls of Moon colonizers to complete this mission."
+      .. " Remember to use your bombs (by pressing B)!"
+    }
   },
   ["2-3"] = {
     mode = "juggling",
     winType = "collide",
     winGoal = 3,
     difficulty = 3,
-    unlockMessage = "You've unlocked Endless Juggling!"
+    unlockMessage = "You've unlocked Endless Juggling!",
+    introText = {
+      "Some asteroids got captured in Earth's orbit, and just won't leave."
+      .. " In this mission you must obliterate 3 pairs of asteroids by making"
+      .. " them collide with each other.",
+      "There are no power-ups in this mode, but collisions give you +1 Health, and you can boost your"
+      .. " gravitational pull at any time by holding B."
+    }
   },
   ["2-4"] = {
     mode = "standard",
@@ -100,7 +113,7 @@ MISSIONS = {
   ["4-2"] = {
     mode = "standard",
     winType = "rocket",
-    winGoal = 20,
+    winGoal = 15,
     difficulty = 75
   },
   ["4-3"] = {
@@ -121,7 +134,7 @@ MISSIONS = {
     mode = "standard",
     winType = "survive",
     winGoal = 300,
-    difficulty = { 125, 50 }
+    difficulty = { 100, 50 }
   },
   ["5-2"] = {
     mode = "standard",
@@ -135,7 +148,7 @@ MISSIONS = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
-    difficulty = 50,
+    difficulty = 75,
     unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!"
   },
 }

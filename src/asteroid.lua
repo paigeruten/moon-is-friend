@@ -154,10 +154,12 @@ function Asteroid.update()
     if gs.mission.mode == 'juggling' then
       if (asteroid.pos.x < sidebarWidth + asteroid.radius and asteroid.vel.x < 0) or (asteroid.pos.x > screenWidth - asteroid.radius and asteroid.vel.x > 0) then
         asteroid.vel.x = -asteroid.vel.x
-        asteroid.vel = asteroid.vel:scaledBy(0.65)
+        asteroid.vel.x *= 0.65
+        asteroid.vel.y *= 0.65
       elseif (asteroid.pos.y < asteroid.radius and asteroid.vel.y < 0) or (asteroid.pos.y > screenHeight - asteroid.radius and asteroid.vel.y > 0) then
         asteroid.vel.y = -asteroid.vel.y
-        asteroid.vel = asteroid.vel:scaledBy(0.65)
+        asteroid.vel.x *= 0.65
+        asteroid.vel.y *= 0.65
       end
     end
     asteroid.vel.x += accX
@@ -258,19 +260,15 @@ function Asteroid.checkCollisions()
           end
         elseif gs.mission.winType == 'asteroids' then
           gs.asteroidsDiverted += 4
-          Game.flashMessage('2 asteroids collided, that counts double!')
+          Game.flashMessage('2 meteors collided, they count double!')
         elseif gs.mission.winType == 'survive' then
           gs.mission.winGoal = math.max(0, gs.mission.winGoal - 5)
-          Game.flashMessage('2 asteroids collided! -0:05')
+          Game.flashMessage('2 meteors collided! -0:05')
         elseif gs.mission.winType == 'rocket' then
           gs.rocketsCaught += 1
-          gs.mission.winGoal = math.max(0, gs.mission.winGoal - 1)
-          Game.flashMessage('2 asteroids collided! -1 rocket needed')
-        elseif gs.mission.winType == 'boss' then
-          gs.boss.health = math.max(0, gs.boss.health - 2)
-          Game.flashMessage('2 asteroids collided! +2 bonus damage')
+          Game.flashMessage('2 meteors collided! -1 rocket needed')
         else
-          Game.flashMessage('2 asteroids collided! +5 points')
+          Game.flashMessage('2 meteors collided! +5 points')
         end
         local explosionPos = pd.geometry.lineSegment.new(
           asteroid.pos.x,
