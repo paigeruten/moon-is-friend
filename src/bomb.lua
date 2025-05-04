@@ -14,7 +14,7 @@ function Bomb.update()
     gs.bombShockwave += 10
     for id, asteroid in pairs(gs.asteroids) do
       if asteroid.state == 'active' and areCirclesColliding(gs.bombShockwavePos, gs.bombShockwave, asteroid.pos, asteroid.radius) then
-        Explosion.spawn(asteroid.pos)
+        Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
         assets.sfx.goodBoom:play()
         Asteroid.despawn(id)
       end

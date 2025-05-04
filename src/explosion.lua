@@ -4,11 +4,12 @@ local assets = Assets
 
 Explosion = {}
 
-function Explosion.spawn(pos)
+function Explosion.spawn(x, y)
   gs.curExplosionId += 1
   local id = gs.curExplosionId
   gs.explosions[id] = {
-    pos = pos,
+    x = x,
+    y = y,
     frame = 0,
   }
 end
@@ -39,7 +40,7 @@ function Explosion.draw()
   for id, explosion in pairs(gs.explosions) do
     local animFrame = explosion.frame // 5 + 1
     if animFrame <= #assets.gfx.explosion then
-      assets.gfx.explosion:getImage(animFrame):drawAnchored(explosion.pos.x, explosion.pos.y, 0.5, 0.5)
+      assets.gfx.explosion:getImage(animFrame):drawAnchored(explosion.x, explosion.y, 0.5, 0.5)
       explosion.frame += 1
     else
       table.insert(idsToRemove, id)

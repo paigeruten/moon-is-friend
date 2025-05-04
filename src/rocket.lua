@@ -184,14 +184,13 @@ function Rocket.update()
     else
       for id, asteroid in pairs(gs.asteroids) do
         if asteroid.state == 'active' and isRocketCollidingWithCircle(gs.curRocket, asteroid.pos, asteroid.radius) then
-          Explosion.spawn(
-            pd.geometry.lineSegment.new(
-              asteroid.pos.x,
-              asteroid.pos.y,
-              gs.curRocket.pos.x,
-              gs.curRocket.pos.y
-            ):midPoint()
-          )
+          local explosionPos = pd.geometry.lineSegment.new(
+            asteroid.pos.x,
+            asteroid.pos.y,
+            gs.curRocket.pos.x,
+            gs.curRocket.pos.y
+          ):midPoint()
+          Explosion.spawn(explosionPos.x, explosionPos.y)
           assets.sfx.goodBoom:play()
           Asteroid.despawn(id)
           gs.curRocket = nil

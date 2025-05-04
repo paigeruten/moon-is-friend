@@ -7,6 +7,7 @@ local screenHeight = SCREEN_HEIGHT
 local sidebarWidth = SIDEBAR_WIDTH
 
 local polarCoordinates = Util.polarCoordinates
+local angleFromVec = Util.angleFromVec
 
 Asteroid = {}
 
@@ -36,7 +37,9 @@ function Asteroid.spawn()
   else
     angle = math.random() * 360
   end
-  local pos = gs.earth.pos + pd.geometry.vector2D.newPolar(250, angle)
+  local posX, posY = polarCoordinates(250, angle)
+  posX += gs.earth.pos.x
+  posY += gs.earth.pos.y
   local chooseRadius = math.random()
   local asteroidRadius
   if chooseRadius < 0.6 then
@@ -51,18 +54,16 @@ function Asteroid.spawn()
     asteroidRadius = 7
   end
   local speed
-  if pos.x < 0 or pos.x >= screenWidth then
+  if posX < 0 or posX >= screenWidth then
     speed = math.random(5, 14) / 10
   else
     speed = math.random(5, 9) / 10
   end
+  local velX, velY = polarCoordinates(speed, angle + (math.random() * 40 - 20))
   gs.asteroids[id] = {
     id = id,
-    pos = pos,
-    vel = -pd.geometry.vector2D.newPolar(
-      speed,
-      angle + (math.random() * 40 - 20) -- vary angle from -20 to +20
-    ),
+    pos = { x = posX, y = posY },
+    vel = { x = -velX, y = -velY },
     radius = asteroidRadius,
     state = 'entering',
   }
@@ -80,17 +81,18 @@ function Asteroid.despawn(id)
 end
 
 function Asteroid.closestAsteroidDirection()
-  local direction = pd.geometry.vector2D.new(0, 0)
+  local dirX, dirY = 0, 0
   local minDistance = nil
   for _, asteroid in pairs(gs.asteroids) do
-    local earthVec = asteroid.pos - gs.earth.pos
-    local distance = earthVec:magnitudeSquared()
-    if minDistance == nil or distance < minDistance then
-      minDistance = distance
-      direction = earthVec:normalized()
+    local earthVecX, earthVecY = asteroid.pos.x - gs.earth.pos.x, asteroid.pos.y - gs.earth.pos.y
+    local distanceSquared = earthVecX * earthVecX + earthVecY * earthVecY
+    if minDistance == nil or distanceSquared < minDistance then
+      minDistance = distanceSquared
+      local distance = math.sqrt(distanceSquared)
+      dirX, dirY = earthVecX / distance, earthVecY / distance
     end
   end
-  return direction
+  return dirX, dirY
 end
 
 function Asteroid.isOnScreen(asteroid)
@@ -131,9 +133,11 @@ function Asteroid.update()
   local idsToRemove = {}
   for id, asteroid in pairs(gs.asteroids) do
     local isOnScreen = isAsteroidOnScreen(asteroid)
-    local earthVec = gs.earth.pos - asteroid.pos
+    local earthVecX, earthVecY = gs.earth.pos.x - asteroid.pos.x, gs.earth.pos.y - asteroid.pos.y
     local earthMass = gs.earth.mass
-    local acc = earthVec:scaledBy(earthMass / earthVec:magnitudeSquared())
+    local earthDistanceSquared = earthVecX * earthVecX + earthVecY * earthVecY
+    local accX = earthVecX * (earthMass / earthDistanceSquared)
+    local accY = earthVecY * (earthMass / earthDistanceSquared)
     for _, moon in ipairs(gs.moons) do
       local moonVecX, moonVecY = moon.pos.x - asteroid.pos.x, moon.pos.y - asteroid.pos.y
       local moonDistanceSquared = moonVecX * moonVecX + moonVecY * moonVecY
@@ -143,8 +147,8 @@ function Asteroid.update()
         if gs.extraSuction then
           moonMass *= 2
         end
-        acc.dx += moonVecX * (moonMass / moonDistanceSquared)
-        acc.dy += moonVecY * (moonMass / moonDistanceSquared)
+        accX += moonVecX * (moonMass / moonDistanceSquared)
+        accY += moonVecY * (moonMass / moonDistanceSquared)
       end
     end
     if gs.mission.mode == 'juggling' then
@@ -156,8 +160,10 @@ function Asteroid.update()
         asteroid.vel = asteroid.vel:scaledBy(0.65)
       end
     end
-    asteroid.vel += acc
-    asteroid.pos += asteroid.vel
+    asteroid.vel.x += accX
+    asteroid.vel.y += accY
+    asteroid.pos.x += asteroid.vel.x
+    asteroid.pos.y += asteroid.vel.y
 
     if asteroid.state == 'entering' and isOnScreen then
       asteroid.state = 'active'
@@ -190,7 +196,7 @@ function Asteroid.checkCollisions()
         assets.sfx.shieldDown:play()
       else
         gs.earth.health -= 1
-        Explosion.spawn(asteroid.pos)
+        Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
         Explosion.screenShake(500, 5)
         assets.sfx.boom:play()
       end
@@ -206,7 +212,7 @@ function Asteroid.checkCollisions()
           assets.sfx.shieldDown:play()
         else
           gs.earth.health -= 1
-          Explosion.spawn(asteroid.pos)
+          Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
           Explosion.screenShake(500, 5)
           assets.sfx.boom:play()
         end
@@ -220,7 +226,8 @@ function Asteroid.checkCollisions()
       if areCirclesColliding(asteroid.pos, asteroid.radius, target.pos, target.radius) then
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
-        target.health -= math.max(1, math.floor(asteroid.radius * asteroid.vel:magnitude() / 3))
+        local asteroidSpeed = math.sqrt(asteroid.vel.x * asteroid.vel.x + asteroid.vel.y * asteroid.vel.y)
+        target.health -= math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3))
         assets.sfx.goodBoom:play()
         for _ = 1, 32 do
           local pVelX, pVelY = polarCoordinates(math.random() + 1, math.random() * 360)
@@ -265,14 +272,13 @@ function Asteroid.checkCollisions()
         else
           Game.flashMessage('2 asteroids collided! +5 points')
         end
-        Explosion.spawn(
-          pd.geometry.lineSegment.new(
-            asteroid.pos.x,
-            asteroid.pos.y,
-            asteroid2.pos.x,
-            asteroid2.pos.y
-          ):midPoint()
-        )
+        local explosionPos = pd.geometry.lineSegment.new(
+          asteroid.pos.x,
+          asteroid.pos.y,
+          asteroid2.pos.x,
+          asteroid2.pos.y
+        ):midPoint()
+        Explosion.spawn(explosionPos.x, explosionPos.y)
         assets.sfx.goodBoom:play()
         break
       end
@@ -290,13 +296,13 @@ function Asteroid.draw()
   gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
   for _, asteroid in pairs(gs.asteroids) do
     if Asteroid.isOnScreen(asteroid) then
-      gfx.fillCircleAtPoint(asteroid.pos, asteroid.radius)
+      gfx.fillCircleAtPoint(asteroid.pos.x, asteroid.pos.y, asteroid.radius)
       if gs.frameCount % 2 == 0 or gs.frameCount % 3 == 0 then
-        local velAngle = -asteroid.vel:angleBetween(pd.geometry.vector2D.new(0, -1))
+        local velAngle = angleFromVec(asteroid.vel.x, asteroid.vel.y)
         local pX, pY = polarCoordinates(asteroid.radius, velAngle + math.random(-35, 35))
         local velX, velY = polarCoordinates(
           math.random(1, asteroid.radius) / 10,
-          -velAngle + math.random(-15, 15)
+          velAngle + math.random(-15, 15)
         )
         local minRadius, maxRadius = 1, 2
         if asteroid.radius > 6 then
