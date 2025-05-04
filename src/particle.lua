@@ -4,18 +4,26 @@ local gs = Game.state
 
 Particle = {}
 
+local maxParticles = 100
+local particlePool = {}
+for i = 1, maxParticles do
+  particlePool[i] = {}
+end
+
 function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha)
-  gs.curParticleId += 1
+  gs.curParticleId = (gs.curParticleId % maxParticles) + 1
   local id = gs.curParticleId
-  gs.particles[id] = {
-    x = x,
-    y = y,
-    velX = velX,
-    velY = velY,
-    ttl = ttl,
-    radius = math.random(minRadius, maxRadius),
-    ditherAlpha = ditherAlpha,
-  }
+
+  local particle = particlePool[id]
+  particle.x = x
+  particle.y = y
+  particle.velX = velX
+  particle.velY = velY
+  particle.ttl = ttl
+  particle.radius = math.random(minRadius, maxRadius)
+  particle.ditherAlpha = ditherAlpha
+
+  gs.particles[id] = particle
 end
 
 function Particle.draw()
