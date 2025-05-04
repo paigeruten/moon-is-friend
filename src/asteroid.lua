@@ -297,34 +297,34 @@ function Asteroid.draw()
   for _, asteroid in pairs(gs.asteroids) do
     if Asteroid.isOnScreen(asteroid) then
       gfx.fillCircleAtPoint(asteroid.pos.x, asteroid.pos.y, asteroid.radius)
-      if gs.frameCount % 2 == 0 or gs.frameCount % 3 == 0 then
-        local velAngle = angleFromVec(asteroid.vel.x, asteroid.vel.y)
-        local pX, pY = polarCoordinates(asteroid.radius, velAngle + math.random(-35, 35))
-        local velX, velY = polarCoordinates(
-          math.random(1, asteroid.radius) / 10,
-          velAngle + math.random(-15, 15)
-        )
-        local minRadius, maxRadius = 1, 2
-        if asteroid.radius > 6 then
-          minRadius, maxRadius = 2, 5
-        elseif asteroid.radius > 5 then
-          minRadius, maxRadius = 2, 4
-        elseif asteroid.radius > 4 then
-          minRadius, maxRadius = 1, 4
-        elseif asteroid.radius > 3 then
-          minRadius, maxRadius = 1, 3
-        end
-        Particle.spawn(
-          asteroid.pos.x - pX,
-          asteroid.pos.y - pY,
-          velX,
-          velY,
-          7,
-          minRadius,
-          maxRadius,
-          0.5
-        )
+
+      -- Spawn a particle for the asteroid tail every frame
+      local velAngle = angleFromVec(asteroid.vel.x, asteroid.vel.y)
+      local pX, pY = polarCoordinates(asteroid.radius, velAngle + math.random(-35, 35))
+      local velX, velY = polarCoordinates(
+        math.random(1, asteroid.radius) / 10,
+        velAngle + math.random(-15, 15)
+      )
+      local minRadius, maxRadius = 1, 2
+      if asteroid.radius > 6 then
+        minRadius, maxRadius = 2, 5
+      elseif asteroid.radius > 5 then
+        minRadius, maxRadius = 2, 4
+      elseif asteroid.radius > 4 then
+        minRadius, maxRadius = 1, 4
+      elseif asteroid.radius > 3 then
+        minRadius, maxRadius = 1, 3
       end
+      Particle.spawn(
+        asteroid.pos.x - pX,
+        asteroid.pos.y - pY,
+        velX,
+        velY,
+        7,
+        minRadius,
+        maxRadius,
+        0.5
+      )
     elseif (gs.frameCount // 10) % 3 ~= 0 then
       if asteroid.pos.y < 0 then
         assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, sidebarWidth, screenWidth - 1), 0, 0.5, 0)

@@ -13,8 +13,7 @@ function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha
     velX = velX,
     velY = velY,
     ttl = ttl,
-    minRadius = minRadius,
-    maxRadius = maxRadius,
+    radius = math.random(minRadius, maxRadius),
     ditherAlpha = ditherAlpha,
   }
 end
@@ -28,13 +27,14 @@ function Particle.draw()
       gfx.setColor(gfx.kColorWhite)
     end
     gfx.setDitherPattern(particle.ditherAlpha, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillCircleAtPoint(particle.x, particle.y, math.random(particle.minRadius, particle.maxRadius))
-    if particle.ttl <= 0 then
+    gfx.fillCircleAtPoint(particle.x, particle.y, particle.radius)
+    if particle.ttl <= 0 or particle.radius < 1 then
       table.insert(idsToRemove, id)
     else
       particle.ttl -= 1
       particle.x += particle.velX
       particle.y += particle.velY
+      particle.radius *= 0.9
     end
   end
   for _, id in ipairs(idsToRemove) do
