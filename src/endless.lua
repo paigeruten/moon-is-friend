@@ -32,7 +32,7 @@ function Endless.update()
 
   gfx.setColor(gfx.kColorWhite)
   for _, star in ipairs(gs.stars) do
-    gfx.drawPixel(star)
+    gfx.drawPixel(star.x, star.y)
   end
 
   gfx.setColor(gfx.kColorBlack)

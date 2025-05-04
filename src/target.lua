@@ -9,8 +9,8 @@ function Target.spawn(x, y, r, health)
   local id = gs.curTargetId
   gs.targets[id] = {
     id = id,
-    pos = pd.geometry.point.new(x, y),
-    basePos = pd.geometry.point.new(x, y),
+    pos = { x = x, y = y },
+    basePos = { x = x, y = y },
     radius = r,
     health = health,
   }
@@ -30,13 +30,13 @@ function Target.draw()
   for _, target in pairs(gs.targets) do
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.7, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillCircleAtPoint(target.pos, target.radius)
+    gfx.fillCircleAtPoint(target.pos.x, target.pos.y, target.radius)
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillCircleAtPoint(target.pos + pd.geometry.vector2D.new(-2, -2), target.radius - 2)
+    gfx.fillCircleAtPoint(target.pos.x - 2, target.pos.y - 2, target.radius - 2)
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.2, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillCircleAtPoint(target.pos + pd.geometry.vector2D.new(-4, -4), target.radius - 4)
+    gfx.fillCircleAtPoint(target.pos.x - 4, target.pos.y - 4, target.radius - 4)
 
     -- if target.health < 100 then
     gfx.setColor(gfx.kColorWhite)

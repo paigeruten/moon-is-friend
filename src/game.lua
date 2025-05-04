@@ -42,7 +42,7 @@ function Game.reset()
   end
 
   gs.earth = {
-    pos = pd.geometry.point.new(screenWidth // 2 + sidebarWidth // 2, screenHeight // 2),
+    pos = { x = screenWidth // 2 + sidebarWidth // 2, y = screenHeight // 2 },
     radius = 14,
     mass = 0.75,
     health = 3,
@@ -89,9 +89,14 @@ function Game.reset()
   gs.particles = {}
   gs.curParticleId = 0
 
-  gs.stars = {}
-  for _ = 1, 100 do
-    table.insert(gs.stars, pd.geometry.point.new(math.random() * screenWidth, math.random() * screenHeight))
+  gs.stars = gs.stars or {}
+  for i = 1, 100 do
+    local starX, starY = math.random() * screenWidth, math.random() * screenHeight
+    if gs.stars[i] then
+      gs.stars[i].x, gs.stars[i].y = starX, starY
+    else
+      gs.stars[i] = { x = starX, y = starY }
+    end
   end
 
   gs.curMessage = nil
@@ -193,7 +198,7 @@ function Game.draw()
   -- Stars
   gfx.setColor(gfx.kColorWhite)
   for _, star in ipairs(gs.stars) do
-    gfx.drawPixel(star)
+    gfx.drawPixel(star.x, star.y)
   end
 
   Earth.draw()

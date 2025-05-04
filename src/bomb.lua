@@ -40,7 +40,7 @@ function Bomb.draw()
       if radius > 0 then
         gfx.setColor(gfx.kColorWhite)
         gfx.setDitherPattern(alpha, gfx.image.kDitherTypeBayer8x8)
-        gfx.drawCircleAtPoint(gs.bombShockwavePos, radius)
+        gfx.drawCircleAtPoint(gs.bombShockwavePos.x, gs.bombShockwavePos.y, radius)
       end
     end
   end
