@@ -7,6 +7,7 @@ local screenHeight = SCREEN_HEIGHT
 local sidebarWidth = SIDEBAR_WIDTH
 
 local areCirclesColliding = Asteroid.areCirclesColliding
+local polarCoordinates = Util.polarCoordinates
 
 Rocket = {}
 
@@ -68,12 +69,12 @@ end
 function Rocket.spawn()
   local direction = rocketDirections[math.random(#rocketDirections)]
   local directionInfo = rocketDirectionInfo[direction]
-  local pos = gs.earth.pos + pd.geometry.vector2D.newPolar(gs.earth.radius + 1, directionInfo.angle)
+  local pX, pY = polarCoordinates(gs.earth.radius + 1, directionInfo.angle)
   gs.curRocket = {
     frame = 0,
-    pos = pos,
-    vel = pd.geometry.vector2D.new(0, 0),
-    acc = pd.geometry.vector2D.new(0, 0),
+    pos = { x = gs.earth.pos.x + pX, y = gs.earth.pos.y + pY },
+    vel = { x = 0, y = 0 },
+    acc = { x = 0, y = 0 },
     direction = direction,
     info = directionInfo
   }
@@ -84,12 +85,14 @@ local function isRocketOnScreen(rocket)
   return x + r >= sidebarWidth and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
 end
 
+local tempPos = {}
 local function isRocketCollidingWithCircle(rocket, center, radius)
-  local direction = pd.geometry.vector2D.newPolar(1, rocket.info.angle)
+  local dirX, dirY = polarCoordinates(1, rocket.info.angle)
   -- Collision zone consists of three small circles along the length of the rocket
   for section = 0, 2 do
-    local pos = rocket.pos + direction:scaledBy(section * 2)
-    if areCirclesColliding(pos, 1.5, center, radius) then
+    tempPos.x = rocket.pos.x + dirX * section * 2
+    tempPos.y = rocket.pos.y + dirY * section * 2
+    if areCirclesColliding(tempPos, 1.5, center, radius) then
       return true
     end
   end
@@ -109,22 +112,24 @@ function Rocket.update()
   if gs.curRocket then
     if gs.curRocket.frame == 100 then
       -- Liftoff!
-      gs.curRocket.acc = pd.geometry.vector2D.newPolar(0.005, gs.curRocket.info.angle)
+      gs.curRocket.acc.x, gs.curRocket.acc.y = polarCoordinates(0.005, gs.curRocket.info.angle)
     end
     if gs.frameCount % 2 == 0 then
       Particle.spawn(
         gs.curRocket.pos.x,
         gs.curRocket.pos.y,
-        -gs.curRocket.vel.dx + (math.random() - 0.5),
-        -gs.curRocket.vel.dy + (math.random() - 0.5),
+        -gs.curRocket.vel.x + (math.random() - 0.5),
+        -gs.curRocket.vel.y + (math.random() - 0.5),
         5,
         1,
         2,
         0.2
       )
     end
-    gs.curRocket.vel += gs.curRocket.acc
-    gs.curRocket.pos += gs.curRocket.vel
+    gs.curRocket.vel.x += gs.curRocket.acc.x
+    gs.curRocket.vel.y += gs.curRocket.acc.y
+    gs.curRocket.pos.x += gs.curRocket.vel.x
+    gs.curRocket.pos.y += gs.curRocket.vel.y
 
     gs.curRocket.frame += 1
 
