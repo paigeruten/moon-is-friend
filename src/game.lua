@@ -83,7 +83,7 @@ function Game.reset()
   gs.targets = {}
   gs.curTargetId = 0
   if gs.mission.winType == "boss" then
-    gs.boss = Target.spawn(screenWidth - 20, screenHeight // 2, 75, gs.mission.winGoal)
+    Target.spawn(screenWidth - 20, screenHeight // 2, 75, gs.mission.winGoal)
   end
 
   gs.particles = {}
@@ -141,7 +141,7 @@ local function checkEndState()
   elseif gs.mission.winType == "collide" then
     win = gs.asteroidsCollided >= gs.mission.winGoal
   elseif gs.mission.winType == "boss" then
-    win = gs.boss.health == 0
+    win = #gs.targets == 0
   end
 
   local menuOptions = {
