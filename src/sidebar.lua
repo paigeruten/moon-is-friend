@@ -54,11 +54,9 @@ function Sidebar.draw()
       progress = gs.asteroidsCollided
       progressText = table.concat({ progress, '/', goal })
     elseif gs.mission.winType == "boss" then
-      local bossHealth = 0
-      for _, target in pairs(gs.targets) do
-        bossHealth += target.health
-      end
-      progress = gs.mission.winGoal - bossHealth
+      local bossHealth, bossMaxHealth = Target.totalHealth()
+      goal = bossMaxHealth
+      progress = bossMaxHealth - bossHealth
       progressText = table.concat({ bossHealth, ' HP' })
     elseif gs.mission.winType == "survive" then
       progress = gs.frameCount

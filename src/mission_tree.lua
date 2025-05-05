@@ -147,7 +147,8 @@ MISSIONS = {
   ["6-B"] = {
     mode = "standard",
     winType = "boss",
-    winGoal = 100,
+    winGoal = 10,
+    winGoal2 = 50,
     difficulty = 75,
     unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!"
   },

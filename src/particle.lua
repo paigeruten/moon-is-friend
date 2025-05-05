@@ -10,7 +10,7 @@ for i = 1, maxParticles do
   particlePool[i] = {}
 end
 
-function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha, decay)
+function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha, decay, color)
   gs.curParticleId = (gs.curParticleId % maxParticles) + 1
   local id = gs.curParticleId
 
@@ -23,6 +23,7 @@ function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha
   particle.decay = decay or 0.9
   particle.radius = math.random(minRadius, maxRadius)
   particle.ditherAlpha = ditherAlpha
+  particle.color = color or gfx.kColorWhite
 
   gs.particles[id] = particle
 end
@@ -33,7 +34,7 @@ function Particle.draw()
     if math.random(1, 4) == 1 then
       gfx.setColor(gfx.kColorXOR)
     else
-      gfx.setColor(gfx.kColorWhite)
+      gfx.setColor(particle.color)
     end
     gfx.setDitherPattern(particle.ditherAlpha, gfx.image.kDitherTypeBayer8x8)
     gfx.fillCircleAtPoint(particle.x, particle.y, particle.radius)

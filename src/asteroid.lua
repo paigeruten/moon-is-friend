@@ -224,20 +224,25 @@ function Asteroid.checkCollisions()
       end
     end
 
-    for targetId, target in pairs(gs.targets) do
+    for _, target in pairs(gs.targets) do
       if areCirclesColliding(asteroid.pos, asteroid.radius, target.pos, target.radius) then
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
-        local asteroidSpeed = math.sqrt(asteroid.vel.x * asteroid.vel.x + asteroid.vel.y * asteroid.vel.y)
-        target.health -= math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3))
-        assets.sfx.goodBoom:play()
         for _ = 1, 32 do
           local pVelX, pVelY = polarCoordinates(math.random() + 1, math.random() * 360)
           Particle.spawn(asteroid.pos.x, asteroid.pos.y, pVelX, pVelY, 10, 2, 4, 0.2)
         end
-        if target.health <= 0 then
-          target.health = 0
-          gs.targets[targetId] = nil
+        if target.state == 'active' then
+          local asteroidSpeed = math.sqrt(asteroid.vel.x * asteroid.vel.x + asteroid.vel.y * asteroid.vel.y)
+          local damage = math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3))
+          target.health -= damage
+          target.shakeTtl = damage * 2
+          assets.sfx.goodBoom:play()
+
+          if target.health <= 0 then
+            target.state = 'splode'
+            target.splodeTtl = 100
+          end
         end
         goto continue
       end
@@ -267,7 +272,7 @@ function Asteroid.checkCollisions()
         elseif gs.mission.winType == 'rocket' then
           gs.rocketsCaught += 1
           Game.flashMessage('2 meteors collided! -1 rocket needed')
-        else
+        elseif gs.mission.mode == 'standard' and gs.mission.winType == 'endless' then
           Game.flashMessage('2 meteors collided! +5 points')
         end
         local explosionPos = pd.geometry.lineSegment.new(
