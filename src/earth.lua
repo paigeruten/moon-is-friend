@@ -38,6 +38,15 @@ function Earth.draw()
   gfx.drawCircleAtPoint(leftEyeX, leftEyeY, 5)
   gfx.drawCircleAtPoint(rightEyeX, rightEyeY, 5)
   local lookAtX, lookAtY = Asteroid.closestAsteroidDirection()
+  if gs.mission.winType == "boss" and gs.bossPhase == 0 then
+    if gs.bossPhaseFrame < 30 then
+      lookAtX, lookAtY = 0, 0
+    elseif gs.bossPhaseFrame < 60 then
+      lookAtX, lookAtY = 1, 0
+    else
+      lookAtX, lookAtY = 2, 0
+    end
+  end
   gfx.setColor(gfx.kColorBlack)
   gfx.fillCircleAtPoint(leftEyeX + lookAtX, leftEyeY + lookAtY, 2)
   gfx.fillCircleAtPoint(rightEyeX + lookAtX, rightEyeY + lookAtY, 2)

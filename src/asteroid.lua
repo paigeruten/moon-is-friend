@@ -82,6 +82,9 @@ end
 
 function Asteroid.closestAsteroidDirection()
   local dirX, dirY = 0, 0
+  if gs.mission.winType == 'boss' then
+    dirX = 1
+  end
   local minDistance = nil
   for _, asteroid in pairs(gs.asteroids) do
     local earthVecX, earthVecY = asteroid.pos.x - gs.earth.pos.x, asteroid.pos.y - gs.earth.pos.y
@@ -240,6 +243,7 @@ function Asteroid.checkCollisions()
           assets.sfx.goodBoom:play()
 
           if target.health <= 0 then
+            target.health = 0
             target.state = 'splode'
             target.splodeTtl = 100
           end

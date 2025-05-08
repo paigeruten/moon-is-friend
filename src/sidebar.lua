@@ -37,51 +37,56 @@ function Sidebar.draw()
     gfx.setFont(assets.fonts.small)
     gfx.drawText(gs.missionId, 14, missionTextY)
 
-    -- Goal outline
-    gfx.setColor(gfx.kColorBlack)
-    -- gfx.drawRoundRect(3, goalY, 37, 47, 3)
+    if not (gs.mission.winType == 'boss' and gs.bossPhase == 0) then
+      -- Goal outline
+      gfx.setColor(gfx.kColorBlack)
+      -- gfx.drawRoundRect(3, goalY, 37, 47, 3)
 
-    -- Goal
-    local goal = gs.mission.winGoal
-    local progress, progressText, leftText
-    if gs.mission.winType == "asteroids" then
-      progress = gs.asteroidsDiverted
-      progressText = table.concat({ progress, '/', goal })
-    elseif gs.mission.winType == "rocket" then
-      progress = gs.rocketsCaught
-      progressText = table.concat({ progress, '/', goal })
-    elseif gs.mission.winType == "collide" then
-      progress = gs.asteroidsCollided
-      progressText = table.concat({ progress, '/', goal })
-    elseif gs.mission.winType == "boss" then
-      local bossHealth, bossMaxHealth = Target.totalHealth()
-      goal = bossMaxHealth
-      progress = bossMaxHealth - bossHealth
-      progressText = table.concat({ bossHealth, ' HP' })
-    elseif gs.mission.winType == "survive" then
-      progress = gs.frameCount
-      local totalSecondsLeft = math.max(0, goal - progress // 50)
-      local minutesLeft = totalSecondsLeft // 60
-      local secondsLeft = totalSecondsLeft % 60
-      leftText = table.concat({ minutesLeft, ":", secondsLeft < 10 and "0" or "", secondsLeft })
-      goal *= 50
-    end
-    gfx.setFont(assets.fonts.small)
-    gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-    if leftText then
-      gfx.drawText(leftText, 10, goalY + 17)
-      gfx.drawText("Left", 10, goalY + 30)
-    elseif progressText then
-      gfx.drawTextAligned(progressText, (sidebarWidth - 4) // 2, goalY + 17, kTextAlignment.center)
-    end
+      -- Goal
+      local goal = gs.mission.winGoal
+      local progress, progressText, leftText
+      if gs.mission.winType == "asteroids" then
+        progress = math.min(goal, gs.asteroidsDiverted)
+        progressText = table.concat({ progress, '/', goal })
+      elseif gs.mission.winType == "rocket" then
+        progress = math.min(goal, gs.rocketsCaught)
+        progressText = table.concat({ progress, '/', goal })
+      elseif gs.mission.winType == "collide" then
+        progress = math.min(goal, gs.asteroidsCollided)
+        progressText = table.concat({ progress, '/', goal })
+      elseif gs.mission.winType == "boss" then
+        local bossHealth = Target.totalHealth()
+        goal = gs.bossMaxHealth
+        progress = bossHealth
+        progressText = table.concat({ bossHealth, 'hp' })
+      elseif gs.mission.winType == "survive" then
+        progress = math.min(goal, gs.frameCount)
+        local totalSecondsLeft = goal - progress // 50
+        local minutesLeft = totalSecondsLeft // 60
+        local secondsLeft = totalSecondsLeft % 60
+        leftText = table.concat({ minutesLeft, ":", secondsLeft < 10 and "0" or "", secondsLeft })
+        goal *= 50
+      end
+      gfx.setFont(assets.fonts.small)
+      gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+      if leftText then
+        gfx.drawText(leftText, 10, goalY + 17)
+        gfx.drawText("Left", 10, goalY + 30)
+      elseif progressText then
+        gfx.drawTextAligned(progressText, (sidebarWidth - 4) // 2, goalY + 17, kTextAlignment.center)
+      end
+      if gs.mission.winType == "boss" then
+        gfx.drawText("Boss", 10, goalY - 12)
+      end
 
-    -- Goal progress bar
-    gfx.setColor(gfx.kColorBlack)
-    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRoundRect(4, goalY + 4, 40, 10, 2)
-    gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(4, goalY + 4, 40, 10, 2)
-    gfx.fillRoundRect(4, goalY + 4, progress / goal * 40, 10, 2)
+      -- Goal progress bar
+      gfx.setColor(gfx.kColorBlack)
+      gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+      gfx.fillRoundRect(4, goalY + 4, 40, 10, 2)
+      gfx.setColor(gfx.kColorBlack)
+      gfx.drawRoundRect(4, goalY + 4, 40, 10, 2)
+      gfx.fillRoundRect(4, goalY + 4, progress / goal * 40, 10, 2)
+    end
   end
 
   -- Hearts

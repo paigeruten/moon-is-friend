@@ -51,9 +51,6 @@ function Game.reset()
     maxBombs = 3,
     hasShield = false,
   }
-  if gs.mission.winType == "boss" then
-    gs.earth.pos.x -= 50
-  end
   if gs.mission.mode == "juggling" or gs.mission.winType == "boss" then
     gs.earth.bombs = 0
     gs.earth.maxBombs = 0
@@ -82,9 +79,11 @@ function Game.reset()
 
   gs.targets = {}
   gs.curTargetId = 0
-  gs.bossPhase = 1
+  gs.bossPhase = 0
+  gs.bossPhaseFrame = 0
+  gs.bossMaxHealth = gs.mission.winGoal
   if gs.mission.winType == "boss" then
-    Target.spawn(screenWidth - 20, screenHeight // 2, 75, gs.mission.winGoal)
+    Target.spawn(screenWidth - 20 + 100, screenHeight // 2, 75, gs.mission.winGoal)
   end
 
   gs.particles = {}
@@ -142,8 +141,7 @@ local function checkEndState()
   elseif gs.mission.winType == "collide" then
     win = gs.asteroidsCollided >= gs.mission.winGoal
   elseif gs.mission.winType == "boss" then
-    local _, maxHealth = Target.totalHealth()
-    win = maxHealth <= 0 and (not gs.mission.winGoal2 or gs.bossPhase == 2)
+    win = Target.count() == 0 and (not gs.mission.winGoal2 or gs.bossPhase == 2)
   end
 
   local menuOptions = {
@@ -176,12 +174,18 @@ function Game.update()
     Moon.update()
     Bomb.update()
     Target.update()
-    Asteroid.update()
-    Rocket.update()
+    if gs.mission.winType == 'boss' and gs.bossPhase == 0 then
+      gs.lastAsteroidAt = gs.frameCount
+      gs.lastRocketAt = gs.frameCount
+    else
+      Asteroid.update()
+      Rocket.update()
+    end
 
     checkEndState()
 
     gs.frameCount += 1
+    gs.bossPhaseFrame += 1
   end
 
   Game.draw()

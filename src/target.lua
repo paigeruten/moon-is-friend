@@ -3,6 +3,7 @@ local gfx = pd.graphics
 local gs = Game.state
 local assets = Assets
 local screenWidth = SCREEN_WIDTH
+local screenHeight = SCREEN_HEIGHT
 
 local polarCoordinates = Util.polarCoordinates
 
@@ -24,16 +25,46 @@ function Target.spawn(x, y, r, health)
   return gs.targets[id]
 end
 
+function Target.count()
+  local count = 0
+  for _, _ in pairs(gs.targets) do
+    count += 1
+  end
+  return count
+end
+
 function Target.totalHealth()
-  local totalHealth, totalMaxHealth = 0, 0
+  local totalHealth = 0
   for _, target in pairs(gs.targets) do
     totalHealth += target.health
-    totalMaxHealth += target.maxHealth
   end
-  return totalHealth, totalMaxHealth
+  return totalHealth
 end
 
 function Target.update()
+  if gs.mission.winType == "boss" and gs.bossPhase == 0 then
+    if gs.bossPhaseFrame > 100 then
+      if gs.bossPhaseFrame % 4 == 0 then
+        gs.earth.pos.x -= 1
+        for _, star in ipairs(gs.stars) do
+          star.x -= 1
+          if star.x < 0 then
+            star.x = screenWidth - 1
+          end
+        end
+      end
+      if gs.bossPhaseFrame % 2 == 0 then
+        for _, target in pairs(gs.targets) do
+          target.basePos.x -= 1
+        end
+      end
+    end
+
+    if gs.bossPhaseFrame == 300 then
+      gs.bossPhase = 1
+    end
+  end
+
   for id, target in pairs(gs.targets) do
     local perlX = math.min(2, math.max(-2, gfx.perlin((gs.frameCount % 200) / 200, 0, 0, 0) * 20 - 10))
     local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 200) / 200, 0, 0) * 20 - 10))
@@ -51,9 +82,10 @@ function Target.update()
       if target.splodeTtl <= 0 then
         gs.targets[id] = nil
 
-        local totalHealth, _ = Target.totalHealth()
+        local totalHealth = Target.totalHealth()
         if totalHealth <= 0 and gs.mission.winGoal2 and gs.bossPhase == 1 then
           gs.bossPhase = 2
+          gs.bossMaxHealth = gs.mission.winGoal2 * 3
           Target.spawn(screenWidth - 40, 120, 20, gs.mission.winGoal2)
           Target.spawn(screenWidth - 65, 40, 20, gs.mission.winGoal2)
           Target.spawn(screenWidth - 65, 200, 20, gs.mission.winGoal2)
@@ -65,7 +97,7 @@ function Target.update()
         end
         for _ = 1, 32 do
           local pVelX, pVelY = polarCoordinates(math.random() + 1, math.random() * 360)
-          local minRadius = math.floor((100 - target.splodeTtl) / 20) + 2
+          local minRadius = math.floor((100 - target.splodeTtl) / 20) * 2 + 2
           Particle.spawn(
             target.pos.x + math.random(-target.radius, target.radius),
             target.pos.y + math.random(-target.radius, target.radius),
@@ -85,6 +117,12 @@ function Target.update()
 end
 
 function Target.draw()
+  if gs.mission.winType == "boss" and gs.bossPhase == 0 then
+    if gs.bossPhaseFrame < 100 and (gs.frameCount // 10) % 3 ~= 0 then
+      assets.gfx.arrowRight:drawAnchored(screenWidth - 1, screenHeight // 2, 1, 0.5)
+    end
+  end
+
   for _, target in pairs(gs.targets) do
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.7, gfx.image.kDitherTypeBayer8x8)

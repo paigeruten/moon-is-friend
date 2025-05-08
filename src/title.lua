@@ -79,6 +79,8 @@ function Title.update()
   local moonX = screenWidth / 3 + animFrame / 10
   local moonY = screenHeight * 2 / 3 - animFrame / 20
   local moonRadius = screenWidth // 3
+  gfx.setColor(gfx.kColorBlack)
+  gfx.fillCircleAtPoint(moonX, moonY, moonRadius)
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(moonX, moonY, moonRadius)
