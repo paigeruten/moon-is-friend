@@ -163,6 +163,17 @@ MISSION_TREE = {
   { "6-B" }
 }
 
+local columnUnlockText = { "Finish", "1 more", "mission", "from", "previous", "column", "to", "unlock" }
+local columnUnlockNumMissions = 1
+
+local function setColumnUnlockText(numMissions)
+  if numMissions ~= columnUnlockNumMissions then
+    columnUnlockNumMissions = numMissions
+    columnUnlockText[2] = tostring(numMissions) .. " more"
+    columnUnlockText[3] = numMissions == 1 and "mission" or "missions"
+  end
+end
+
 function MissionTree.selectNextMission()
   for colIdx, missionCol in ipairs(MISSION_TREE) do
     for rowIdx, missionId in ipairs(missionCol) do
@@ -198,11 +209,14 @@ function MissionTree.highestUnlockedColumn()
   return math.min(highestUnlocked, #MISSION_TREE)
 end
 
+local showUnlockMessage = false
+
 function MissionTree.switch()
   gs.scene = 'mission-tree'
   gs.frameCount = 0
   gs.highestUnlocked = MissionTree.highestUnlockedColumn()
   Menu.reset()
+  showUnlockMessage = false
 end
 
 function MissionTree.update()
@@ -257,6 +271,26 @@ function MissionTree.update()
       gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
       gfx.fillRect(missionX + 13 - 30 + 1, 36 + 1, 61 - 2, 198 - 2)
     end
+    if showUnlockMessage and columnNum == gs.highestUnlocked + 1 then
+      local missionsNeeded = 0
+      for _, missionId in ipairs(MISSION_TREE[gs.highestUnlocked]) do
+        if not SaveData.isMissionComplete(missionId) then
+          missionsNeeded += 1
+        end
+      end
+      setColumnUnlockText(math.max(1, missionsNeeded - 1))
+      local textX = missionX + 13
+      for i, text in ipairs(columnUnlockText) do
+        local textWidth, _ = gfx.getTextSize(text)
+        local textY = 70 + i * 14
+        gfx.setColor(gfx.kColorWhite)
+        gfx.fillRect(textX - textWidth / 2 - 1, textY - 1, textWidth + 2, 14 + 1)
+      end
+      for i, text in ipairs(columnUnlockText) do
+        local textY = 70 + i * 14
+        gfx.drawTextAligned(text, textX, textY, kTextAlignment.center)
+      end
+    end
 
     missionX += 60
   end
@@ -264,13 +298,18 @@ function MissionTree.update()
   gs.frameCount += 1
 
   if pd.buttonJustPressed(pd.kButtonDown) then
+    showUnlockMessage = false
     if gs.missionRow < #MISSION_TREE[gs.missionCol] then
       gs.missionRow += 1
     elseif gs.missionCol < gs.highestUnlocked then
       gs.missionCol += 1
       gs.missionRow = 1
+    else
+      showUnlockMessage = true
+      assets.sfx.boop:play(55)
     end
   elseif pd.buttonJustPressed(pd.kButtonUp) then
+    showUnlockMessage = false
     if gs.missionRow > 1 then
       gs.missionRow -= 1
     elseif gs.missionCol > 1 then
@@ -278,14 +317,19 @@ function MissionTree.update()
       gs.missionRow = #MISSION_TREE[gs.missionCol]
     end
   elseif pd.buttonJustPressed(pd.kButtonLeft) then
+    showUnlockMessage = false
     if gs.missionCol > 1 then
       gs.missionCol -= 1
       gs.missionRow = 1
     end
   elseif pd.buttonJustPressed(pd.kButtonRight) then
+    showUnlockMessage = false
     if gs.missionCol < gs.highestUnlocked then
       gs.missionCol += 1
       gs.missionRow = 1
+    else
+      showUnlockMessage = true
+      assets.sfx.boop:play(55)
     end
   end
 
