@@ -62,18 +62,18 @@ function Title.update()
   gfx.fillCircleAtPoint(earthX + 18, earthY + 8, 8)
 
   -- Earth eyes
-  local leftEyeX, leftEyeY = earthX - 10, earthY - 10
-  local rightEyeX, rightEyeY = earthX + 10, earthY - 10
+  local leftEyeX, leftEyeY = earthX - 9, earthY - 9
+  local rightEyeX, rightEyeY = earthX + 9, earthY - 9
   gfx.setColor(gfx.kColorWhite)
-  gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 10)
-  gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 10)
+  gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 8)
+  gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 8)
   gfx.setColor(gfx.kColorBlack)
   gfx.setDitherPattern(0.25, gfx.image.kDitherTypeBayer8x8)
-  gfx.drawCircleAtPoint(leftEyeX, leftEyeY, 10)
-  gfx.drawCircleAtPoint(rightEyeX, rightEyeY, 10)
+  gfx.drawCircleAtPoint(leftEyeX, leftEyeY, 8)
+  gfx.drawCircleAtPoint(rightEyeX, rightEyeY, 8)
   gfx.setColor(gfx.kColorBlack)
-  gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 4)
-  gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 4)
+  gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 3)
+  gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 3)
 
   -- Moon
   local moonX = screenWidth / 3 + animFrame / 10
