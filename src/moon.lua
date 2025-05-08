@@ -34,7 +34,17 @@ function Moon.update()
   end
 
   if gs.earth.maxBombs == 0 then
-    gs.extraSuction = pd.buttonIsPressed(pd.kButtonB)
+    if pd.buttonIsPressed(pd.kButtonB) and ((gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and gs.extraSuctionFuel == gs.extraSuctionMaxFuel)) then
+      gs.extraSuction = true
+      gs.extraSuctionFuel = math.max(0, gs.extraSuctionFuel - 2)
+    elseif gs.extraSuctionFuel < gs.extraSuctionMaxFuel then
+      gs.extraSuction = false
+      if gs.frameCount % 3 < 2 then
+        gs.extraSuctionFuel += 1
+      end
+    else
+      gs.extraSuction = false
+    end
   end
 end
 

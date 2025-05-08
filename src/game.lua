@@ -65,6 +65,8 @@ function Game.reset()
   gs.bombShockwave = 0
   gs.bombShockwavePos = nil
   gs.extraSuction = false
+  gs.extraSuctionMaxFuel = 50
+  gs.extraSuctionFuel = gs.extraSuctionMaxFuel
 
   gs.curRocket = nil
   gs.lastRocketAt = 0

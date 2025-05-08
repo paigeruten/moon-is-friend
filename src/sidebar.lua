@@ -60,7 +60,7 @@ function Sidebar.draw()
         progress = bossHealth
         progressText = table.concat({ bossHealth, 'hp' })
       elseif gs.mission.winType == "survive" then
-        progress = math.min(goal, gs.frameCount)
+        progress = math.min(goal * 50, gs.frameCount)
         local totalSecondsLeft = goal - progress // 50
         local minutesLeft = totalSecondsLeft // 60
         local secondsLeft = totalSecondsLeft % 60
@@ -100,4 +100,19 @@ function Sidebar.draw()
     assets.gfx.bomb:draw(28, heartsY + (i - 1) * 15)
   end
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  -- Extra suction fuel
+  if gs.earth.maxBombs == 0 then
+    local height = 43
+    local fuelHeight = math.floor(height * gs.extraSuctionFuel / gs.extraSuctionMaxFuel)
+    local isReady = gs.extraSuctionFuel == gs.extraSuctionMaxFuel or gs.extraSuction
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setLineWidth(isReady and 2 or 1)
+    gfx.setStrokeLocation(gfx.kStrokeInside)
+    gfx.drawRoundRect(28, heartsY, 12, height, 3)
+    gfx.setLineWidth(1)
+    gfx.setStrokeLocation(gfx.kStrokeCentered)
+    gfx.setDitherPattern(0.6, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRoundRect(28, heartsY + (height - fuelHeight), 12, fuelHeight, 3)
+  end
 end
