@@ -60,7 +60,7 @@ function Sidebar.draw()
         progress = bossHealth
         progressText = table.concat({ bossHealth, 'hp' })
       elseif gs.mission.winType == "survive" then
-        progress = math.min(goal * 50, gs.frameCount)
+        progress = math.min(goal * 50, gs.surviveFrameCount)
         local totalSecondsLeft = goal - progress // 50
         local minutesLeft = totalSecondsLeft // 60
         local secondsLeft = totalSecondsLeft % 60

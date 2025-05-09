@@ -292,7 +292,7 @@ function Asteroid.checkCollisions()
           gs.asteroidsDiverted += 4
           Game.flashMessage('2 meteors collided, they count double!')
         elseif gs.mission.winType == 'survive' then
-          gs.mission.winGoal = math.max(0, gs.mission.winGoal - 5)
+          gs.surviveFrameCount += 50 * 5
           Game.flashMessage('2 meteors collided! -0:05')
         elseif gs.mission.winType == 'rocket' then
           gs.rocketsCaught += 1

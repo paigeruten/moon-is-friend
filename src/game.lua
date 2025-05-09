@@ -23,6 +23,7 @@ function Game.reset()
 
   gs.frameCount = 0
   gs.menuFrameCount = 0
+  gs.surviveFrameCount = 0
   gs.endState = nil
   gs.firstTimeCompleted = nil
   gs.newMissionsUnlocked = nil
@@ -142,7 +143,7 @@ local function checkEndState()
   if gs.mission.winType == "asteroids" then
     win = gs.asteroidsDiverted >= gs.mission.winGoal
   elseif gs.mission.winType == "survive" then
-    win = gs.frameCount // 50 >= gs.mission.winGoal
+    win = gs.surviveFrameCount // 50 >= gs.mission.winGoal
   elseif gs.mission.winType == "rocket" then
     win = gs.rocketsCaught >= gs.mission.winGoal
   elseif gs.mission.winType == "collide" then
@@ -210,6 +211,7 @@ function Game.update()
     checkEndState()
 
     gs.frameCount += 1
+    gs.surviveFrameCount += 1
     gs.bossPhaseFrame += 1
   end
 

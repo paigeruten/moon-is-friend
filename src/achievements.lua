@@ -33,7 +33,7 @@ achievements.initialize({
     },
     {
       id = "chaos_averted",
-      name = "Chaos averted",
+      name = "Disaster averted",
       description = "Destroy 5 or more meteors with a single bomb.",
     },
     {
