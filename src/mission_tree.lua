@@ -221,17 +221,23 @@ end
 
 function MissionTree.update()
   gfx.clear()
+
   gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(0, 0, screenWidth, screenHeight, 15)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(1, 1, screenWidth - 2, screenHeight - 2, 15)
+  for _, star in ipairs(gs.stars) do
+    gfx.drawPixel(star.x, star.y)
+  end
 
   gfx.setFont(assets.fonts.large)
+  gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
   gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 10, kTextAlignment.center)
+  gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   gfx.setFont(assets.fonts.small)
-  local missionX = 40
+  local missionX = 25
   for columnNum, missionCol in ipairs(MISSION_TREE) do
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(missionX + 13 - 30 + 1, 36 + 1, 61 - 2, 198 - 2, 5)
+
     local missionY = 6
     local missionSpacing = 0
     if #missionCol == 1 then
@@ -249,9 +255,12 @@ function MissionTree.update()
       local mission = MISSIONS[missionId]
       assets.gfx.missionIcons[mission.winType]:draw(missionX, missionY)
       if SaveData.isMissionComplete(missionId) then
-        assets.gfx.checkmark:draw(missionX + 20, missionY - 3)
+        assets.gfx.checkmark:draw(missionX + 16, missionY - 2)
       end
       local textWidth, textHeight = gfx.drawText(missionId, missionX + 3, missionY + 26)
+      if string.sub(missionId, 1, 1) == "1" or string.sub(missionId, -1, -1) == "1" then
+        textWidth += 1
+      end
       if missionId == gs.missionId then
         local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
         gfx.setColor(gfx.kColorBlack)
@@ -264,8 +273,6 @@ function MissionTree.update()
       missionY += missionSpacing
     end
 
-    gfx.setColor(gfx.kColorBlack)
-    gfx.drawRect(missionX + 13 - 30, 36, 61, 198)
     if columnNum > gs.highestUnlocked then
       gfx.setColor(gfx.kColorBlack)
       gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
@@ -292,7 +299,7 @@ function MissionTree.update()
       end
     end
 
-    missionX += 60
+    missionX += 64
   end
 
   gs.frameCount += 1

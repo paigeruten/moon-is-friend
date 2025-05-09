@@ -19,6 +19,7 @@ function SaveData.completeMission(missionId)
 end
 
 function SaveData.isMissionComplete(missionId)
+  --return missionId == "1-1"
   return SaveData.data.missions[missionId] and SaveData.data.missions[missionId].complete
 end
 
