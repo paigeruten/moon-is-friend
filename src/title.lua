@@ -11,23 +11,25 @@ function Title.switch()
   gs.scene = 'title'
   gs.frameCount = 0
   Menu.reset()
-  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Help' }, { width = 120 }, function(selected)
-    if selected == 1 then
-      MissionTree.switch()
-      MissionTree.selectNextMission()
-      assets.sfx.boop:play()
-    elseif selected == 2 then
-      Endless.switch()
-      assets.sfx.boop:play()
-    elseif selected == 3 then
-      HighScores.switch()
-      assets.sfx.boop:play()
-    elseif selected == 4 then
-      gs.scene = 'story'
-      gs.frameCount = 0
-      assets.sfx.boop:play()
-    end
-  end)
+  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Help' }, { width = 120, selected = gs.titleSelected },
+    function(selected)
+      gs.titleSelected = selected
+      if selected == 1 then
+        MissionTree.switch()
+        MissionTree.selectNextMission()
+        assets.sfx.boop:play()
+      elseif selected == 2 then
+        Endless.switch()
+        assets.sfx.boop:play()
+      elseif selected == 3 then
+        HighScores.switch()
+        assets.sfx.boop:play()
+      elseif selected == 4 then
+        gs.scene = 'story'
+        gs.frameCount = 0
+        assets.sfx.boop:play()
+      end
+    end)
 end
 
 function Title.update()

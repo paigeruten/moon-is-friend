@@ -8,11 +8,11 @@ local sidebarWidth = SIDEBAR_WIDTH
 
 MenuBox = {}
 
--- options: { withSidebar = boolean, animated = boolean, width = number, adjustY = number }
+-- options: { withSidebar = boolean, animated = boolean, width = number, adjustY = number, selected = number }
 function MenuBox.init(items, options, selectCallback)
   gs.menuFrameCount = 0
   gs.menuItems = items
-  gs.menuSelected = 1
+  gs.menuSelected = options.selected or 1
   gs.menuOptions = options
   gs.menuCallback = selectCallback
   gs.menuHeight = 15 + 20 * #items
