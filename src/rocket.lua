@@ -184,6 +184,32 @@ function Rocket.update()
         assets.sfx.powerup:play()
       end
 
+      -- Check for shield achievements
+      if powerup == 'moon-shield' or powerup == 'earth-shield' then
+        local numShields = gs.earth.hasShield and 1 or 0
+        for _, moon in ipairs(gs.moons) do
+          if moon.hasShield then
+            numShields += 1
+          end
+        end
+
+        if numShields == 2 then
+          if achievements.grant("double_shield") then
+            Achievement.queue("double_shield", true)
+          end
+        end
+        if numShields == 3 then
+          if achievements.grant("triple_shield") then
+            Achievement.queue("double_shield", true)
+          end
+        end
+        if numShields == 4 then
+          if achievements.grant("quadruple_shield") then
+            Achievement.queue("double_shield", true)
+          end
+        end
+      end
+
       gs.curRocket = nil
       gs.lastRocketAt = gs.frameCount
     else
@@ -200,6 +226,9 @@ function Rocket.update()
           Asteroid.despawn(id)
           gs.curRocket = nil
           gs.lastRocketAt = gs.frameCount
+          if achievements.grant("rocket_collision") then
+            Achievement.queue("rocket_collision", true)
+          end
           break
         end
       end

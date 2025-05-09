@@ -43,7 +43,9 @@ Assets = {
 
     checkmark = gfx.image.new("images/checkmark"),
     banner = gfx.image.new("images/banner"),
-    endless = gfx.image.new("images/endless")
+    endless = gfx.image.new("images/endless"),
+
+    achievement = gfx.image.new("vendor/achievements/assets/default_icon")
   }
 }
 Assets.gfx.rocketEast = Assets.gfx.rocketNorth:rotatedImage(90)

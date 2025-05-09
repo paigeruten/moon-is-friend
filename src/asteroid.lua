@@ -64,6 +64,7 @@ function Asteroid.spawn()
     id = id,
     pos = { x = posX, y = posY },
     vel = { x = -velX, y = -velY },
+    initialVel = { x = -velX, y = -velY },
     radius = asteroidRadius,
     state = 'entering',
   }
@@ -201,6 +202,7 @@ function Asteroid.checkCollisions()
         assets.sfx.shieldDown:play()
       else
         gs.earth.health -= 1
+        gs.earth.pristine = false
         Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
         Explosion.screenShake(500, 5)
         assets.sfx.boom:play()
@@ -217,6 +219,7 @@ function Asteroid.checkCollisions()
           assets.sfx.shieldDown:play()
         else
           gs.earth.health -= 1
+          gs.earth.pristine = false
           Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
           Explosion.screenShake(500, 5)
           assets.sfx.boom:play()
@@ -242,6 +245,12 @@ function Asteroid.checkCollisions()
           target.shakeTtl = damage * 2
           assets.sfx.goodBoom:play()
 
+          if damage > 10 then
+            if achievements.grant("big_damage") then
+              Achievement.queue("big_damage", true)
+            end
+          end
+
           if target.health <= 0 then
             target.health = 0
             target.state = 'splode'
@@ -260,6 +269,18 @@ function Asteroid.checkCollisions()
         asteroid2.state = 'dead'
         gs.score += 5
         gs.asteroidsCollided += 1
+
+        if achievements.grant("first_collision") then
+          Achievement.queue("first_collision", true)
+        end
+
+        if not achievements.isGranted("asteroid_collisions") then
+          achievements.advance("asteroid_collisions", 1)
+          if achievements.isGranted("asteroid_collisions") then
+            Achievement.queue("asteroid_collisions", true)
+          end
+        end
+
         if gs.mission.mode == 'juggling' then
           if gs.earth.health < gs.earth.maxHealth then
             gs.earth.health += 1

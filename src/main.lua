@@ -10,6 +10,7 @@ import "constants"
 import "assets"
 import "game"
 import "util"
+import "achievements"
 
 import "asteroid"
 import "particle"
@@ -62,6 +63,10 @@ function pd.update()
     HighScores.update()
   else
     Game.update()
+  end
+
+  if gs.scene ~= 'game' or gs.endState then
+    Achievement.displayToasts()
   end
 
   pd.drawFPS(screenWidth - 20, screenHeight - 15)

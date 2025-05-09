@@ -18,8 +18,19 @@ function SaveData.completeMission(missionId)
   pd.datastore.write(SaveData.data)
 end
 
+function SaveData.countMissionsComplete()
+  local count = 0
+  for _, row in ipairs(MISSION_TREE) do
+    for _, missionId in ipairs(row) do
+      if SaveData.isMissionComplete(missionId) then
+        count += 1
+      end
+    end
+  end
+  return count
+end
+
 function SaveData.isMissionComplete(missionId)
-  --return missionId == "1-1"
   return SaveData.data.missions[missionId] and SaveData.data.missions[missionId].complete
 end
 

@@ -24,6 +24,7 @@ function Menu.addInGameMenuItems()
 end
 
 function Menu.reset()
+  achievements.save()
   for _, menuItem in ipairs(inGameMenuItems) do
     menu:removeMenuItem(menuItem)
   end

@@ -19,6 +19,8 @@ function Game.init()
 end
 
 function Game.reset()
+  achievements.save()
+
   gs.frameCount = 0
   gs.menuFrameCount = 0
   gs.endState = nil
@@ -45,6 +47,7 @@ function Game.reset()
     pos = { x = screenWidth // 2 + sidebarWidth // 2, y = screenHeight // 2 },
     radius = 14,
     mass = 0.75,
+    pristine = true,
     health = 3,
     maxHealth = 3,
     bombs = 1,
@@ -104,6 +107,8 @@ function Game.reset()
   gs.curMessage = nil
   gs.curMessageAt = nil
 
+  gs.achievementTtl = 0
+
   gs.gameoverSelection = 'retry'
   gs.isHighScore = false
 
@@ -158,6 +163,24 @@ local function checkEndState()
     local prevHighestUnlocked = MissionTree.highestUnlockedColumn()
     SaveData.completeMission(gs.missionId)
     gs.newMissionsUnlocked = MissionTree.highestUnlockedColumn() > prevHighestUnlocked
+
+    if gs.missionId == "6-B" then
+      if achievements.grant("beat_the_game") then
+        achievements.toasts.toast("beat_the_game")
+      end
+    end
+    if gs.earth.pristine then
+      if achievements.grant("no_damage_" .. gs.missionId) then
+        achievements.toasts.toast("no_damage_" .. gs.missionId)
+      end
+    end
+    if not achievements.isGranted("complete_all_missions") then
+      achievements.advanceTo("complete_all_missions", SaveData.countMissionsComplete())
+      if achievements.isGranted("complete_all_missions") then
+        achievements.toasts.toast("complete_all_missions")
+      end
+    end
+
     MenuBox.init({ 'Next mission', 'Back to missions' }, menuOptions, GameEnd.menuSelect)
   elseif gs.earth.health <= 0 then
     if gs.mission.winType == 'endless' then
@@ -218,6 +241,7 @@ function Game.draw()
   Explosion.draw()
   Bomb.draw()
   Sidebar.draw()
+  Achievement.draw()
 
   if pd.isCrankDocked() then
     pd.ui.crankIndicator:draw()

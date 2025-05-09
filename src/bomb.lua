@@ -17,11 +17,22 @@ function Bomb.update()
         Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
         assets.sfx.goodBoom:play()
         Asteroid.despawn(id)
+        gs.bombedAsteroids += 1
       end
     end
     if gs.bombShockwave > screenWidth then
-      gs.bombShockwave = 0
+      for _, _ in pairs(gs.asteroids) do
+        gs.bombedAsteroids += 1
+      end
+      if gs.bombedAsteroids >= 5 then
+        if achievements.grant("chaos_averted") then
+          Achievement.queue("chaos_averted", true)
+        end
+      end
+
       gs.asteroids = {}
+      gs.bombShockwave = 0
+      gs.bombedAsteroids = 0
     end
   end
 
@@ -29,6 +40,7 @@ function Bomb.update()
     gs.earth.bombs -= 1
     gs.bombShockwave = 1
     gs.bombShockwavePos = gs.earth.pos
+    gs.bombedAsteroids = 0
     Explosion.screenShake(500, 5)
   end
 end
