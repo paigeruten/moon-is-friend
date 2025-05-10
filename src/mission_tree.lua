@@ -46,6 +46,7 @@ MISSIONS = {
     winGoal = 20,
     difficulty = 125,
     unlockMessage = "You've unlocked Endless mode!",
+    card = "Type: Divert\nGoal: 20 meteors\nDifficulty: **\nMoons: 1",
     introText = {
       "You are the Moon. After a large-scale asteroid mining expedition gone wrong, "
       .. "your best friend the Earth is now under a barrage of meteors, and is very scared.",
@@ -59,6 +60,7 @@ MISSIONS = {
     winType = "survive",
     winGoal = 120,
     difficulty = 100,
+    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 1",
     introText = {
       "The meteors are coming in even faster now.",
       "Protect the Earth and survive for 2 minutes to complete this mission."
@@ -69,6 +71,7 @@ MISSIONS = {
     winType = "rocket",
     winGoal = 10,
     difficulty = 100,
+    card = "Type: Colonize\nGoal: 10 rockets\nDifficulty: ****\nMoons: 1",
     introText = {
       "Earth is sending a large team of scientists and astronauts up to the Moon "
       .. "to help resupply and bolster your defenses.",
@@ -82,6 +85,7 @@ MISSIONS = {
     winGoal = 3,
     difficulty = 3,
     unlockMessage = "You've unlocked Endless Juggling!",
+    card = "Type: Juggling\nGoal: 3 collisions\nDifficulty: ****\nMoons: 1",
     introText = {
       "Some asteroids got captured in Earth's orbit, and just won't leave."
       .. " In this mission you must obliterate 3 pairs of asteroids by making"
@@ -96,45 +100,52 @@ MISSIONS = {
     winGoal = 120,
     difficulty = 125,
     numMoons = 2,
-    unlockMessage = "You've unlocked Endless mode (2 Moons)!"
+    unlockMessage = "You've unlocked Endless mode (2 Moons)!",
+    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 2"
   },
   ["3-B"] = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
-    difficulty = 85
+    difficulty = 85,
+    card = "Type: Boss\nGoal: ???\nDifficulty: ******\nMoons: 1"
   },
   ["4-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 120,
-    difficulty = 75
+    difficulty = 75,
+    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ******\nMoons: 1"
   },
   ["4-2"] = {
     mode = "standard",
     winType = "rocket",
     winGoal = 15,
-    difficulty = 75
+    difficulty = 75,
+    card = "Type: Colonize\nGoal: 15 rockets\nDifficulty: ******\nMoons: 1"
   },
   ["4-3"] = {
     mode = "juggling",
     winType = "collide",
     winGoal = 5,
     difficulty = 4,
-    unlockMessage = "You've unlocked Endless Juggling (4 Meteors)!"
+    unlockMessage = "You've unlocked Endless Juggling (4 Meteors)!",
+    card = "Type: Juggling\nGoal: 5 collisions\nDifficulty: ******\nMoons: 1"
   },
   ["4-4"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 120,
     difficulty = 100,
-    numMoons = 2
+    numMoons = 2,
+    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 2"
   },
   ["5-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 90,
-    difficulty = 50
+    difficulty = 50,
+    card = "Type: Survive\nGoal: 90 seconds\nDifficulty: ********\nMoons: 1"
   },
   ["5-2"] = {
     mode = "standard",
@@ -142,7 +153,8 @@ MISSIONS = {
     winGoal = 120,
     difficulty = 100,
     numMoons = 3,
-    unlockMessage = "You've unlocked Endless mode (3 Moons)!"
+    unlockMessage = "You've unlocked Endless mode (3 Moons)!",
+    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 3"
   },
   ["6-B"] = {
     mode = "standard",
@@ -150,7 +162,8 @@ MISSIONS = {
     winGoal = 100,
     winGoal2 = 50,
     difficulty = 75,
-    unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!"
+    unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!",
+    card = "Type: Boss\nGoal: ???\nDifficulty: ********\nMoons: 1"
   },
 }
 
@@ -210,6 +223,7 @@ function MissionTree.highestUnlockedColumn()
 end
 
 local showUnlockMessage = false
+local unlockShakeTtl = 0
 
 function MissionTree.switch()
   gs.scene = 'mission-tree'
@@ -235,8 +249,21 @@ function MissionTree.update()
   gfx.setFont(assets.fonts.small)
   local missionX = 25
   for columnNum, missionCol in ipairs(MISSION_TREE) do
+    local shakeX = 0
+    if unlockShakeTtl > 0 and columnNum == gs.highestUnlocked + 1 then
+      shakeX = (unlockShakeTtl // 2) % 3 - 1
+      unlockShakeTtl -= 1
+    end
+
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(missionX + 13 - 30 + 1, 36 + 1, 61 - 2, 198 - 2, 5)
+    gfx.fillRoundRect(missionX + 13 - 28 + 1 + shakeX, 32 + 1, 61 - 2, 204 - 2, 5)
+
+    if gs.missionCol == columnNum then
+      gfx.setColor(gfx.kColorBlack)
+      gfx.setLineWidth(2)
+      gfx.drawRoundRect(missionX + 13 - 28 + 1 + 3 + shakeX, 32 + 1 + 3, 61 - 2 - 6, 204 - 2 - 6, 5)
+      gfx.setLineWidth(1)
+    end
 
     local missionY = 6
     local missionSpacing = 0
@@ -253,22 +280,32 @@ function MissionTree.update()
     end
     for _, missionId in ipairs(missionCol) do
       local mission = MISSIONS[missionId]
-      assets.gfx.missionIcons[mission.winType]:draw(missionX, missionY)
-      if SaveData.isMissionComplete(missionId) then
-        assets.gfx.checkmark:draw(missionX + 16, missionY - 2)
+      if mission.winType == "survive" then
+        for i = 1, (mission.numMoons or 1) do
+          gfx.setColor(gfx.kColorBlack)
+          gfx.fillCircleAtPoint(missionX + shakeX, missionY + i * 4, 1)
+        end
       end
-      local textWidth, textHeight = gfx.drawText(missionId, missionX + 3, missionY + 26)
+      assets.gfx.missionIcons[mission.winType]:draw(missionX + 2 + shakeX, missionY)
+      if SaveData.isMissionComplete(missionId) then
+        if achievements.isGranted("no_damage_" .. missionId) then
+          assets.gfx.starIcon:draw(missionX + 19 + shakeX, missionY - 3)
+        else
+          assets.gfx.checkmark:draw(missionX + 19 + shakeX, missionY - 3)
+        end
+      end
+      local textWidth, textHeight = gfx.drawText(missionId, missionX + 5 + shakeX, missionY + 26)
       if string.sub(missionId, 1, 1) == "1" or string.sub(missionId, -1, -1) == "1" then
         textWidth += 1
       end
       if missionId == gs.missionId then
         local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
         gfx.setColor(gfx.kColorBlack)
-        gfx.fillRect(missionX + 3, missionY + 26 + textHeight + 2 + perlY, textWidth, 3)
+        gfx.fillRect(missionX + 5 + shakeX, missionY + 26 + textHeight + 2 + perlY, textWidth, 3)
       else
         gfx.setColor(gfx.kColorBlack)
         gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-        gfx.fillRect(missionX + 3, missionY + 26 + textHeight, textWidth, 2)
+        gfx.fillRect(missionX + 5 + shakeX, missionY + 26 + textHeight, textWidth, 2)
       end
       missionY += missionSpacing
     end
@@ -276,7 +313,7 @@ function MissionTree.update()
     if columnNum > gs.highestUnlocked then
       gfx.setColor(gfx.kColorBlack)
       gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-      gfx.fillRect(missionX + 13 - 30 + 1, 36 + 1, 61 - 2, 198 - 2)
+      gfx.fillRect(missionX + 13 - 30 + 1 + shakeX, 26 + 1, 63 - 2, 210 - 2)
     end
     if showUnlockMessage and columnNum == gs.highestUnlocked + 1 then
       local missionsNeeded = 0
@@ -286,7 +323,7 @@ function MissionTree.update()
         end
       end
       setColumnUnlockText(math.max(1, missionsNeeded - 1))
-      local textX = missionX + 13
+      local textX = missionX + 15 + shakeX
       for i, text in ipairs(columnUnlockText) do
         local textWidth, _ = gfx.getTextSize(text)
         local textY = 70 + i * 14
@@ -302,6 +339,48 @@ function MissionTree.update()
     missionX += 64
   end
 
+  local cardWidth, cardHeight = 130, 70
+  local cardX, cardY = screenWidth - cardWidth - 8, screenHeight - cardHeight - 6
+  if gs.missionCol >= 4 then
+    cardX = 8
+  end
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRoundRect(cardX - 3, cardY - 18, cardWidth + 6, cardHeight + 21, 10)
+  gfx.setColor(gfx.kColorBlack)
+  gfx.setDitherPattern(0.5, gfx.image.kDitherTypeDiagonalLine)
+  gfx.fillRoundRect(cardX - 3, cardY - 18, cardWidth + 6, cardHeight + 21, 10)
+
+  gfx.setColor(gfx.kColorBlack)
+  gfx.drawRoundRect(cardX, cardY, cardWidth, cardHeight, 5)
+  gfx.setColor(gfx.kColorBlack)
+  gfx.drawRoundRect(cardX + 15, cardY - 15, 40, 20, 5)
+  gfx.setColor(gfx.kColorBlack)
+  gfx.drawRoundRect(cardX + cardWidth - 44, cardY - 15, 17, 20, 5)
+  gfx.setColor(gfx.kColorBlack)
+  gfx.drawRoundRect(cardX + cardWidth - 24, cardY - 15, 17, 20, 5)
+
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRoundRect(cardX + 15 + 1, cardY - 15 + 1, 40 - 2, 20, 5)
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRoundRect(cardX + cardWidth - 44 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
+  if SaveData.isMissionComplete(gs.missionId) then
+    assets.gfx.checkmark:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 5, gfx.kImageUnflipped, 2, 2, 9, 9)
+  else
+    assets.gfx.emptyCircle:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 4)
+  end
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRoundRect(cardX + cardWidth - 24 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
+  if achievements.isGranted("no_damage_" .. gs.missionId) then
+    assets.gfx.starIcon:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
+  else
+    assets.gfx.emptyCircle:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4)
+  end
+
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
+  gfx.drawText(gs.missionId, cardX + 15 + 9, cardY - 15 + 2)
+  gfx.drawText(MISSIONS[gs.missionId].card, cardX + 5, cardY + 5)
+
   gs.frameCount += 1
 
   if pd.buttonJustPressed(pd.kButtonDown) then
@@ -313,6 +392,7 @@ function MissionTree.update()
       gs.missionRow = 1
     else
       showUnlockMessage = true
+      unlockShakeTtl = 20
       assets.sfx.boop:play(55)
     end
   elseif pd.buttonJustPressed(pd.kButtonUp) then
@@ -336,6 +416,7 @@ function MissionTree.update()
       gs.missionRow = 1
     else
       showUnlockMessage = true
+      unlockShakeTtl = 20
       assets.sfx.boop:play(55)
     end
   end

@@ -81,9 +81,12 @@
 * [ ] Explain bombs in "How to play"
 * [ ] Achievements
     * [ ] Create card image for trophy case
-    * [x] X amount of asteroid-asteroid collisions
+    * [ ] Beat the first boss
     * [ ] Revenge: Diverted asteroid got pulled back (after ~2 seconds) and hit moon/earth
     * [ ] Return to Sender: Asteroid was sent off the same side of the screen that it entered from
+    * [ ] Get 100 points in each endless mode
+    * [ ] Complete every mission without taking damage
+    * [x] X amount of asteroid-asteroid collisions
     * [x] X amount of asteroids cleared at once from a bomb
     * [x] Max out damage done to boss (large asteroid + high velocity)
     * [x] Asteroid collided with rocket
@@ -93,7 +96,6 @@
     * [x] Double Shield: Have 2 shields up at once (between moon(s) and Earth)
     * [x] Triple Shield: Have 3 shields up at once (between moon(s) and Earth)
     * [x] Quadruple Shield: Have 4 shields up at once (between moon(s) and Earth)
-    * [ ] Get 100 points in each endless mode
 * [ ] Possibly bad ideas
     * [ ] Roguelike mode? (randomized mission trees)
     * [ ] Moon colonization mode (goal is to catch every rocket which is full of people)

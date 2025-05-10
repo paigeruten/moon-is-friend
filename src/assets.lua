@@ -42,6 +42,9 @@ Assets = {
     },
 
     checkmark = gfx.image.new("images/checkmark"),
+    starIcon = gfx.image.new("images/star-icon"),
+    emptyCircle = gfx.image.new("images/empty-circle"),
+
     banner = gfx.image.new("images/banner"),
     endless = gfx.image.new("images/endless"),
 

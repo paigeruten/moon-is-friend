@@ -69,5 +69,7 @@ function pd.update()
     Achievement.displayToasts()
   end
 
-  pd.drawFPS(screenWidth - 20, screenHeight - 15)
+  if gs.scene ~= 'mission-tree' then
+    pd.drawFPS(screenWidth - 20, screenHeight - 15)
+  end
 end
