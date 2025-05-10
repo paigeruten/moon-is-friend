@@ -51,7 +51,7 @@ function pd.update()
 
   if gs.scene == 'title' then
     Title.update()
-  elseif gs.scene == 'story' or gs.scene == 'instructions' then
+  elseif gs.scene == 'instructions' then
     Instructions.update()
   elseif gs.scene == 'mission-tree' then
     MissionTree.update()

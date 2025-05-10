@@ -11,7 +11,7 @@ function Title.switch()
   gs.scene = 'title'
   gs.frameCount = 0
   Menu.reset()
-  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Achievements', 'Help' },
+  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Achievements', 'Manual' },
     { width = 120, adjustY = 10, selected = gs.titleSelected },
     function(selected)
       gs.titleSelected = selected
@@ -29,8 +29,7 @@ function Title.switch()
         assets.sfx.boop:play()
         achievements.viewer.launch()
       elseif selected == 5 then
-        gs.scene = 'story'
-        gs.frameCount = 0
+        Instructions.switch()
         assets.sfx.boop:play()
       end
     end)

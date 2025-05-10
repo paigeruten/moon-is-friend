@@ -7,54 +7,84 @@ local screenHeight = SCREEN_HEIGHT
 
 Instructions = {}
 
+local pages = {
+  {
+    title = "Story",
+    text = { "After a large-scale asteroid mining expedition gone wrong, "
+    .. "the Earth is now under a barrage of meteors, and is very scared.",
+      "Desparate to help its best friend, "
+      .. "the Moon wakes up from its deep slumber "
+      .. "and springs into action to protect the Earth." }
+  },
+  {
+    title = "How to play",
+    text = {
+      "Use the crank to control the Moon and pull incoming meteors away from the Earth.",
+      "Press B to use a bomb and clear the screen of meteors.",
+      "Try to grab any supplies the Earth sends your way - they may contain extra health or various powerups."
+    }
+  },
+  {
+    title = "Game modes",
+    text = {
+      "Todo"
+    }
+  },
+  {
+    title = "Tips",
+    text = {
+      "Todo"
+    }
+  },
+  {
+    title = "About",
+    text = {
+      "Made by Paige Ruten (aka pailey)",
+      "Source code:\n  github.com/paigeruten/moon-is-friend"
+    }
+  }
+}
+
+local boxX, boxY = 50, 20
+local boxWidth, boxHeight = 300, 200
+local curPage = 1
+
+function Instructions.switch()
+  gs.scene = 'instructions'
+  gs.frameCount = 0
+  curPage = 1
+end
+
 function Instructions.update()
   gfx.clear()
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(0, 0, screenWidth, screenHeight, 15)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(1, 1, screenWidth - 2, screenHeight - 2, 15)
 
-  local text
-  local paddingX, paddingY = 10, 10
-  local titleY
-  local title
-  if gs.scene == 'story' then
-    title = "2038: The Moon Wakes Up"
-    titleY = 16
-    paddingY = 50
-    text = {
-      "After a large-scale asteroid mining expedition\ngone wrong, "
-      .. "the Earth is now under a barrage of\nasteroids, and is very scared.",
-      "Desparate to help its best friend, "
-      .. "the Moon wakes\nup from its deep slumber "
-      .. "and springs into action\nto protect the Earth." }
-  else
-    title = "How to play"
-    titleY = 10
-    paddingY = 36
-    text = {
-      "Use the crank to control the Moon and "
-      .. "pull\nincoming asteroids away from the Earth. "
-      .. "Get\n*+1 point* per asteroid averted, "
-      .. "and *+5 points* for\ngetting two asteroids to collide with each other!",
-      "Try to grab any supplies the Earth sends your\nway - "
-      .. "they may contain extra health or various\npowerups.",
-      "If you get *100 points*, you get a little gold star on\nthe title screen. Good luck!"
-    }
+  gfx.setColor(gfx.kColorWhite)
+  for _, star in ipairs(gs.stars) do
+    gfx.drawPixel(star.x, star.y)
   end
+
+  gfx.setColor(gfx.kColorBlack)
+  gfx.fillRect(boxX, boxY, boxWidth, boxHeight)
+  gfx.setColor(gfx.kColorWhite)
+  gfx.setDitherPattern(0.4, gfx.image.kDitherTypeDiagonalLine)
+  gfx.fillRect(boxX, boxY, boxWidth, boxHeight)
+  gfx.setColor(gfx.kColorWhite)
+  gfx.fillRect(boxX + 3, boxY + 3, boxWidth - 6, boxHeight - 6)
+
+  local titleY = boxY + 12
+  local paddingX, paddingY = boxX + 10, titleY + 24
+  local page = pages[curPage]
 
   local maxChars = math.floor(gs.frameCount * 1.5)
 
-  if title then
-    gfx.setFont(assets.fonts.large)
-    gfx.drawTextAligned('*' .. title .. '*', screenWidth // 2, titleY, kTextAlignment.center)
-  end
+  gfx.setFont(assets.fonts.large)
+  gfx.drawTextAligned('*' .. page.title .. '*', screenWidth // 2, titleY, kTextAlignment.center)
 
-  gfx.setFont(assets.fonts.medium)
+  gfx.setFont(assets.fonts.small)
 
   local done = true
   local textY = paddingY
-  for _, para in ipairs(text) do
+  for _, para in ipairs(page.text) do
     if maxChars < #para then
       para = string.sub(para, 1, maxChars)
       done = false
@@ -70,16 +100,31 @@ function Instructions.update()
 
   local perlY = math.min(3, math.max(-3, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
   gfx.setFont(assets.fonts.large)
-  gfx.drawText("Ⓐ", screenWidth - 28, screenHeight - 28 + perlY)
+  gfx.drawText("Ⓐ", boxX + boxWidth - 28, boxY + boxHeight - 28 + perlY)
+
+  gfx.setFont(assets.fonts.menu)
+  gfx.drawText(table.concat({ curPage, "/", #pages }), boxX + 10, boxY + boxHeight - 22)
 
   gs.frameCount += 1
 
   if pd.buttonJustReleased(pd.kButtonA) then
     if not done then
       gs.frameCount = 1000000
-    elseif gs.scene == 'story' then
-      gs.scene = 'instructions'
+    elseif curPage < #pages then
+      curPage += 1
       gs.frameCount = 0
+      assets.sfx.boop:play()
+    else
+      curPage = 1
+      Title.switch()
+      assets.sfx.boop:play()
+    end
+  end
+
+  if pd.buttonJustReleased(pd.kButtonB) then
+    if curPage > 1 then
+      curPage -= 1
+      gs.frameCount = 1000000
       assets.sfx.boop:play()
     else
       Title.switch()
