@@ -4,6 +4,7 @@ local gs = Game.state
 local assets = Assets
 local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
+local sidebarWidth = SIDEBAR_WIDTH
 
 local polarCoordinates = Util.polarCoordinates
 
@@ -63,6 +64,37 @@ function Target.update()
     if gs.bossPhaseFrame == 300 then
       gs.bossPhase = 1
     end
+  elseif gs.mission.winType == "boss" and gs.bossPhase == 3 then
+    if gs.bossPhaseFrame < 200 then
+      if gs.bossPhaseFrame % 4 == 0 then
+        gs.earth.pos.x += 1
+        for _, star in ipairs(gs.stars) do
+          star.x += 1
+          if star.x >= screenWidth then
+            star.x = 0
+          end
+        end
+      end
+    elseif gs.bossPhaseFrame == 230 then
+      gs.earth.isSafe = true
+    end
+
+    if gs.bossPhaseFrame >= 100 then
+      local moon = gs.moons[1]
+      if moon.holdAngle then
+        moon.holdAngle += 0.75
+        if moon.holdAngle >= 360 then
+          moon.holdAngle -= 360
+        end
+      else
+        moon.holdAngle = math.floor(Util.angleFromVec(moon.pos.x - gs.earth.pos.x, moon.pos.y - gs.earth.pos.y))
+      end
+    end
+
+    if gs.bossPhaseFrame >= 500 and pd.buttonJustReleased(pd.kButtonA) then
+      gs.bossPhase = 4
+      gs.bossPhaseFrame = 0
+    end
   end
 
   for id, target in pairs(gs.targets) do
@@ -89,8 +121,23 @@ function Target.update()
           Target.spawn(screenWidth - 40, 120, 20, gs.mission.winGoal2)
           Target.spawn(screenWidth - 65, 40, 20, gs.mission.winGoal2)
           Target.spawn(screenWidth - 65, 200, 20, gs.mission.winGoal2)
+        elseif totalHealth <= 0 and gs.bossPhase == 2 then
+          gs.bossPhase = 3
+          gs.bossPhaseFrame = 0
+          gs.extraSuction = false
+          gs.earth.hasShield = false
+          for _, moon in ipairs(gs.moons) do
+            moon.hasShield = false
+          end
+          gs.curRocket = nil
+          gs.curMessage = nil
+
+          for asteroidId, asteroid in pairs(gs.asteroids) do
+            Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
+            Asteroid.despawn(asteroidId)
+          end
+          gs.asteroids = {}
         end
-        --elseif target.splodeTtl % 10 == 0 then
       elseif math.random(1, 5) == 1 then
         if math.random(1, 2) == 1 then
           assets.sfx.boom:play()
@@ -121,6 +168,46 @@ function Target.draw()
     if gs.bossPhaseFrame < 100 and (gs.frameCount // 10) % 3 ~= 0 then
       assets.gfx.arrowRight:drawAnchored(screenWidth - 1, screenHeight // 2, 1, 0.5)
     end
+  end
+
+  if gs.bossPhase == 3 and gs.bossPhaseFrame >= 300 then
+    local fadeAmount = (gs.bossPhaseFrame - 300) / 60
+    local fadeAmount2 = (gs.bossPhaseFrame - 400) / 60
+
+    gfx.setFont(assets.fonts.large)
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    local textWidth, textHeight = gfx.getTextSize("*The Earth is safe.")
+    local textX = sidebarWidth + (screenWidth - sidebarWidth) // 2 - textWidth // 2
+    local textY = 15
+    gfx.drawText("*The Earth is safe.*", textX, textY)
+    if fadeAmount < 1.0 then
+      gfx.setColor(gfx.kColorBlack)
+      gfx.setDitherPattern(fadeAmount, gfx.image.kDitherTypeBayer8x8)
+      gfx.fillRect(textX, textY, textWidth, textHeight)
+    end
+
+    if fadeAmount2 >= 0.0 then
+      gfx.setFont(assets.fonts.menu)
+      textWidth, textHeight = gfx.getTextSize("Thank you for playing!")
+      textX = sidebarWidth + (screenWidth - sidebarWidth) // 2 - textWidth // 2
+      textY = screenHeight - 30
+      gfx.drawText("Thank you for playing!", textX, textY)
+      if fadeAmount2 < 1.0 then
+        gfx.setColor(gfx.kColorBlack)
+        gfx.setDitherPattern(fadeAmount2, gfx.image.kDitherTypeBayer8x8)
+        gfx.fillRect(textX, textY, textWidth, textHeight)
+      end
+    end
+
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+  end
+
+  if gs.bossPhase == 3 and gs.bossPhaseFrame >= 500 then
+    local perlY = math.min(3, math.max(-3, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
+    gfx.setFont(assets.fonts.menu)
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.drawText("Ⓐ", screenWidth - 16, screenHeight - 16 + perlY)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
   end
 
   for _, target in pairs(gs.targets) do

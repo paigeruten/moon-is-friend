@@ -17,23 +17,24 @@ function Moon.create()
 end
 
 function Moon.update()
-  local moonX, moonY = polarCoordinates(MOON_DISTANCE_FROM_EARTH, pd.getCrankPosition())
+  local crankAngle = gs.moons[1].holdAngle or pd.getCrankPosition()
+  local moonX, moonY = polarCoordinates(MOON_DISTANCE_FROM_EARTH, crankAngle)
   gs.moons[1].pos.x = gs.earth.pos.x + moonX
   gs.moons[1].pos.y = gs.earth.pos.y + moonY
   if #gs.moons == 2 then
     gs.moons[2].pos.x = gs.earth.pos.x - moonX
     gs.moons[2].pos.y = gs.earth.pos.y - moonY
   elseif #gs.moons == 3 then
-    local moon2X, moon2Y = polarCoordinates(MOON_DISTANCE_FROM_EARTH, pd.getCrankPosition() + 120)
+    local moon2X, moon2Y = polarCoordinates(MOON_DISTANCE_FROM_EARTH, crankAngle + 120)
     gs.moons[2].pos.x = gs.earth.pos.x + moon2X
     gs.moons[2].pos.y = gs.earth.pos.y + moon2Y
 
-    local moon3X, moon3Y = polarCoordinates(MOON_DISTANCE_FROM_EARTH, pd.getCrankPosition() + 240)
+    local moon3X, moon3Y = polarCoordinates(MOON_DISTANCE_FROM_EARTH, crankAngle + 240)
     gs.moons[3].pos.x = gs.earth.pos.x + moon3X
     gs.moons[3].pos.y = gs.earth.pos.y + moon3Y
   end
 
-  if gs.earth.maxBombs == 0 then
+  if gs.earth.maxBombs == 0 and gs.bossPhase < 3 then
     if pd.buttonIsPressed(pd.kButtonB) and ((gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and gs.extraSuctionFuel == gs.extraSuctionMaxFuel)) then
       gs.extraSuction = true
       gs.extraSuctionFuel = math.max(0, gs.extraSuctionFuel - 2)

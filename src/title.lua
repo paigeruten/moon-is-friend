@@ -69,16 +69,24 @@ function Title.update()
   -- Earth eyes
   local leftEyeX, leftEyeY = earthX - 9, earthY - 9
   local rightEyeX, rightEyeY = earthX + 9, earthY - 9
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 8)
-  gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 8)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.setDitherPattern(0.25, gfx.image.kDitherTypeBayer8x8)
-  gfx.drawCircleAtPoint(leftEyeX, leftEyeY, 8)
-  gfx.drawCircleAtPoint(rightEyeX, rightEyeY, 8)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 3)
-  gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 3)
+  if SaveData.isMissionComplete("6-B") then
+    assets.gfx.eyelid:draw(leftEyeX - 5, leftEyeY)
+    assets.gfx.eyelid:draw(rightEyeX - 5, rightEyeY)
+
+    local zFrame = (gs.frameCount // 35) % 4 + 1
+    assets.gfx.zeds:getImage(zFrame):draw(earthX + 20, earthY - 42)
+  else
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 8)
+    gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 8)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.25, gfx.image.kDitherTypeBayer8x8)
+    gfx.drawCircleAtPoint(leftEyeX, leftEyeY, 8)
+    gfx.drawCircleAtPoint(rightEyeX, rightEyeY, 8)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 3)
+    gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 3)
+  end
 
   -- Moon
   local moonX = screenWidth / 3 + animFrame / 10

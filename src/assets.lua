@@ -17,7 +17,8 @@ Assets = {
     point = pdfxr.synth.new("sounds/point"),
     powerup = pdfxr.synth.new("sounds/powerup"),
     shieldDown = pdfxr.synth.new("sounds/shield-down"),
-    shieldUp = pdfxr.synth.new("sounds/shield-up")
+    shieldUp = pdfxr.synth.new("sounds/shield-up"),
+    achievement = pd.sound.sampleplayer.new("vendor/achievements/assets/toastSound")
   },
   gfx = {
     rocketNorth = gfx.image.new("images/rocket-orth"),
@@ -47,6 +48,9 @@ Assets = {
 
     banner = gfx.image.new("images/banner"),
     endless = gfx.image.new("images/endless"),
+    safeEyes = gfx.image.new("images/safe-eyes"),
+    zeds = gfx.imagetable.new("images/zeds"),
+    eyelid = gfx.image.new("images/eyelid"),
 
     achievement = gfx.image.new("vendor/achievements/assets/default_icon")
   }

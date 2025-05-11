@@ -24,7 +24,7 @@ achievements.initialize({
     {
       id = "rocket_collision",
       name = "Human shield",
-      description = "Cause a meteor to destroy a rocket (accidentally, of course).",
+      description = "Cause a meteor to destroy a rocket.",
     },
     {
       id = "big_damage",
@@ -176,6 +176,7 @@ function Achievement.queue(achievementId, showIcon)
   table.insert(achievementQueue, achievementId)
   if showIcon then
     gs.achievementTtl = 100
+    assets.sfx.achievement:play()
   end
 end
 

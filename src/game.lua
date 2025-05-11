@@ -149,7 +149,7 @@ local function checkEndState()
   elseif gs.mission.winType == "collide" then
     win = gs.asteroidsCollided >= gs.mission.winGoal
   elseif gs.mission.winType == "boss" then
-    win = Target.count() == 0 and (not gs.mission.winGoal2 or gs.bossPhase == 2)
+    win = (Target.count() == 0 and not gs.mission.winGoal2) or (gs.bossPhase == 4 and gs.bossPhaseFrame > 0)
   end
 
   local menuOptions = {
@@ -182,7 +182,11 @@ local function checkEndState()
       end
     end
 
-    MenuBox.init({ 'Next mission', 'Back to missions' }, menuOptions, GameEnd.menuSelect)
+    MenuBox.init(
+      { gs.missionId == "6-B" and "Back to title" or 'Next mission', 'Back to missions' },
+      menuOptions,
+      GameEnd.menuSelect
+    )
   elseif gs.earth.health <= 0 then
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'

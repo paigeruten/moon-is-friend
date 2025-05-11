@@ -1,6 +1,7 @@
 local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
+local assets = Assets
 
 Earth = {}
 
@@ -28,26 +29,33 @@ function Earth.draw()
     gfx.drawCircleAtPoint(gs.earth.pos.x, gs.earth.pos.y, gs.earth.radius + 4)
   end
 
-  local leftEyeX, leftEyeY = gs.earth.pos.x - 5, gs.earth.pos.y - 5
-  local rightEyeX, rightEyeY = gs.earth.pos.x + 5, gs.earth.pos.y - 5
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 5)
-  gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 5)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.setDitherPattern(0.25, gfx.image.kDitherTypeBayer8x8)
-  gfx.drawCircleAtPoint(leftEyeX, leftEyeY, 5)
-  gfx.drawCircleAtPoint(rightEyeX, rightEyeY, 5)
-  local lookAtX, lookAtY = Asteroid.closestAsteroidDirection()
-  if gs.mission.winType == "boss" and gs.bossPhase == 0 then
-    if gs.bossPhaseFrame < 30 then
-      lookAtX, lookAtY = 0, 0
-    elseif gs.bossPhaseFrame < 60 then
-      lookAtX, lookAtY = 1, 0
-    else
-      lookAtX, lookAtY = 2, 0
+  if gs.earth.isSafe then
+    assets.gfx.safeEyes:draw(gs.earth.pos.x - 9, gs.earth.pos.y - 5)
+
+    local zFrame = ((gs.bossPhaseFrame - 30) // 25) % 4 + 1
+    assets.gfx.zeds:getImage(zFrame):draw(gs.earth.pos.x + 10, gs.earth.pos.y - 28)
+  else
+    local leftEyeX, leftEyeY = gs.earth.pos.x - 5, gs.earth.pos.y - 5
+    local rightEyeX, rightEyeY = gs.earth.pos.x + 5, gs.earth.pos.y - 5
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillCircleAtPoint(leftEyeX, leftEyeY, 5)
+    gfx.fillCircleAtPoint(rightEyeX, rightEyeY, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.25, gfx.image.kDitherTypeBayer8x8)
+    gfx.drawCircleAtPoint(leftEyeX, leftEyeY, 5)
+    gfx.drawCircleAtPoint(rightEyeX, rightEyeY, 5)
+    local lookAtX, lookAtY = Asteroid.closestAsteroidDirection()
+    if gs.mission.winType == "boss" and gs.bossPhase == 0 then
+      if gs.bossPhaseFrame < 30 then
+        lookAtX, lookAtY = 0, 0
+      elseif gs.bossPhaseFrame < 60 then
+        lookAtX, lookAtY = 1, 0
+      else
+        lookAtX, lookAtY = 2, 0
+      end
     end
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillCircleAtPoint(leftEyeX + lookAtX, leftEyeY + lookAtY, 2)
+    gfx.fillCircleAtPoint(rightEyeX + lookAtX, rightEyeY + lookAtY, 2)
   end
-  gfx.setColor(gfx.kColorBlack)
-  gfx.fillCircleAtPoint(leftEyeX + lookAtX, leftEyeY + lookAtY, 2)
-  gfx.fillCircleAtPoint(rightEyeX + lookAtX, rightEyeY + lookAtY, 2)
 end

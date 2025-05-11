@@ -156,7 +156,7 @@ function Rocket.update()
         table.insert(powerups, 'earth-shield')
       end
       if #powerups == 0 then
-        table.insert(powerups, 'max-health')
+        table.insert(powerups, 'bonus-points')
       end
 
       local powerup = powerups[math.random(#powerups)]
@@ -166,10 +166,17 @@ function Rocket.update()
         Game.flashMessage('+1 Health!')
         assets.sfx.powerup:play()
       elseif powerup == 'max-health' then
+        -- unused for now
         gs.earth.maxHealth += 1
         gs.earth.health = gs.earth.maxHealth
         Game.flashMessage('+1 Max Health!')
         assets.sfx.powerup:play()
+      elseif powerup == 'bonus-points' then
+        if gs.mission.winType == 'endless' then
+          gs.score += 3
+          Game.flashMessage("Maxed power-ups! +3 bonus points")
+          assets.sfx.powerup:play()
+        end
       elseif powerup == 'moon-shield' then
         collidingMoon.hasShield = true
         Game.flashMessage('You got a shield!')
@@ -200,12 +207,12 @@ function Rocket.update()
         end
         if numShields == 3 then
           if achievements.grant("triple_shield") then
-            Achievement.queue("double_shield", true)
+            Achievement.queue("triple_shield", true)
           end
         end
         if numShields == 4 then
           if achievements.grant("quadruple_shield") then
-            Achievement.queue("double_shield", true)
+            Achievement.queue("quadruple_shield", true)
           end
         end
       end
@@ -236,7 +243,7 @@ function Rocket.update()
   elseif ((gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1)
       or (gs.frameCount - gs.lastRocketAt) > 1000 -- every 3 + ~10 seconds, max 20 seconds
   then
-    if gs.mission.mode == 'standard' then
+    if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
       Rocket.spawn()
       Game.flashMessage('Supplies incoming!')
     end

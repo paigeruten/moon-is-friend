@@ -119,7 +119,7 @@ local function clamp(value, low, high)
 end
 
 function Asteroid.update()
-  if gs.mission.mode == 'standard' then
+  if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
     if gs.frameCount - gs.lastAsteroidAt >= (gs.rampUpDifficulty or gs.mission.difficulty) then
       Asteroid.spawn()
       gs.lastAsteroidAt = gs.frameCount
@@ -245,6 +245,9 @@ function Asteroid.checkCollisions()
           target.shakeTtl = damage * 2
           assets.sfx.goodBoom:play()
 
+          Particle.spawn(asteroid.pos.x, asteroid.pos.y, asteroid.vel.x / 5, asteroid.vel.y / 5, 30, 1, 1, 1, 1, nil,
+            "-" .. damage)
+
           if damage > 10 then
             if achievements.grant("big_damage") then
               Achievement.queue("big_damage", true)
@@ -294,9 +297,6 @@ function Asteroid.checkCollisions()
         elseif gs.mission.winType == 'survive' then
           gs.surviveFrameCount += 50 * 5
           Game.flashMessage('2 meteors collided! -0:05')
-        elseif gs.mission.winType == 'rocket' then
-          gs.rocketsCaught += 1
-          Game.flashMessage('2 meteors collided! -1 rocket needed')
         elseif gs.mission.mode == 'standard' and gs.mission.winType == 'endless' then
           Game.flashMessage('2 meteors collided! +5 points')
         end

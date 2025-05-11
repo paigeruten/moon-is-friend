@@ -1,6 +1,7 @@
 local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
+local assets = Assets
 
 Particle = {}
 
@@ -10,7 +11,7 @@ for i = 1, maxParticles do
   particlePool[i] = {}
 end
 
-function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha, decay, color)
+function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha, decay, color, text)
   gs.curParticleId = (gs.curParticleId % maxParticles) + 1
   local id = gs.curParticleId
 
@@ -24,6 +25,7 @@ function Particle.spawn(x, y, velX, velY, ttl, minRadius, maxRadius, ditherAlpha
   particle.radius = math.random(minRadius, maxRadius)
   particle.ditherAlpha = ditherAlpha
   particle.color = color or gfx.kColorWhite
+  particle.text = text
 
   gs.particles[id] = particle
 end
@@ -31,13 +33,20 @@ end
 function Particle.draw()
   local idsToRemove = {}
   for id, particle in pairs(gs.particles) do
-    if math.random(1, 4) == 1 then
-      gfx.setColor(gfx.kColorXOR)
+    if particle.text then
+      gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+      gfx.setFont(assets.fonts.menu)
+      gfx.drawTextAligned(particle.text, particle.x, particle.y, kTextAlignment.center)
+      gfx.setImageDrawMode(gfx.kDrawModeCopy)
     else
-      gfx.setColor(particle.color)
+      if math.random(1, 4) == 1 then
+        gfx.setColor(gfx.kColorXOR)
+      else
+        gfx.setColor(particle.color)
+      end
+      gfx.setDitherPattern(particle.ditherAlpha, gfx.image.kDitherTypeBayer8x8)
+      gfx.fillCircleAtPoint(particle.x, particle.y, particle.radius)
     end
-    gfx.setDitherPattern(particle.ditherAlpha, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillCircleAtPoint(particle.x, particle.y, particle.radius)
     if particle.ttl <= 0 or particle.radius < 1 then
       table.insert(idsToRemove, id)
     else

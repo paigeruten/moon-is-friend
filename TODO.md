@@ -33,6 +33,13 @@
     * [x] Asteroid takes out shield
 * [x] Googly eyes on earth looking worriedly at the closest incoming asteroid?
 * [x] Increase difficulty (more frequent asteroids)
+* [ ] Easy mode
+    * [ ] Lower boss HP, or scale up damage
+    * [ ] 5 hearts
+    * [ ] Add 25 to all asteroid spawn rates
+    * [ ] i-frames (maybe the standard game should have this too though)
+    * [ ] Does not affect endless mode
+    * [ ] Flawless achievements require standard mode
 * [ ] Powerups
     * [x] +1 HP
     * [x] Moon shield
@@ -54,8 +61,9 @@
     * [x] Juggling (part 1): 3 asteroids on screen at once, cause 3 collisions
     * [x] Double moon (part 1): "Easy" difficulty, survive for 1 minute
     * [x] Boss fight (part 1): Harder difficulty, but no westward asteroids
-        * [ ] Ominous intro animation
-        * [ ] Victory animation (lots of explosions and/or boss asteroid breaking apart)
+        * [x] Ominous intro animation
+        * [x] Victory animation (lots of explosions and/or boss asteroid breaking apart)
+        * [ ] Boss launches asteroids at earth
     * [x] Survival (part 2): Hard difficulty, survive for 2 minutes
     * [x] Moon colonization (part 1): Hard difficulty, catch 20 rockets
     * [x] Juggling (part 2): 4 asteroids on screen at once, cause 5 collisions
@@ -67,13 +75,13 @@
         * [ ] Shield that blocks low-velocity asteroids
 * [x] Show win condition/progress in sidebar
 * [x] For survival missions, asteroid collisions should subtract time from the goal
-* [ ] Optimize lua code
-    * [ ] Less table allocations (especially for particles)
+* [x] Optimize lua code
+    * [x] Less table allocations (especially for particles)
     * [ ] Pre-draw the moon/earth/asteroid/stars into images
-* [ ] Menu with "Missions" / "Endless" / "High scores" / "How to play"
+* [x] Menu with "Missions" / "Endless" / "High scores" / "How to play"
     * [x] "Campaign" goes to mission selection tree
     * [x] "Endless" goes to mode selection (survival vs. juggling vs. target practice, # of moons)
-    * [ ] "High scores" shows high score for each endless mode (and each # of moons?)
+    * [x] "High scores" shows high score for each endless mode (and each # of moons?)
 * [x] More legible font
 * [ ] Music
 * [ ] New sound for triggering bomb
@@ -98,14 +106,14 @@
     * [x] Quadruple Shield: Have 4 shields up at once (between moon(s) and Earth)
 * [ ] Possibly bad ideas
     * [ ] Roguelike mode? (randomized mission trees)
-    * [ ] Moon colonization mode (goal is to catch every rocket which is full of people)
+    * [x] Moon colonization mode (goal is to catch every rocket which is full of people)
     * [x] Juggling mode (asteroids never despawn and always get pulled back, the only way to get rid of them is to make them collide with each other)
     * [ ] Slow motion mode (more of a puzzle game feel where a lot of asteroids are coming at you and you have to figure out how to divert all of them - either very slow motion, or turn-based somehow)
     * [ ] On harder levels, a comet (distinguished by being black with a white outline) comes by every once in a while - these are very fast and almost guaranteed to hit earth, and you're supposed to "parry" it by hitting A (or a d-pad button matching where the comet's coming from?) when it hits earth rather than diverting it with the moon
     * [ ] Allow asteroids to spawn quicker if they are spawning close to the previous ones?
     * [ ] Moon speed limit (subtly animate it instead of matching crank every frame? This might be annoying, not sure)
     * [ ] Make Moon orbit more of an ellipse?
-    * [ ] Targets you have to try to hit on the edges of the screen (the default way to score points? Or like a boss fight where asteroids to damage against a giant planet just poking into one side of the screen?)
+    * [x] Targets you have to try to hit on the edges of the screen (the default way to score points? Or like a boss fight where asteroids to damage against a giant planet just poking into one side of the screen?)
     * [ ] Minimap/radar
     * [ ] Randomly double/triple up asteroids sometimes
     * [ ] Light mode

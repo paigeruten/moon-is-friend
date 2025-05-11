@@ -39,7 +39,7 @@ function GameEnd.menuSelect(which)
         gs.missionId = nextMissionId
         MissionIntro.switch()
       else
-        return
+        Title.switch()
       end
     end
     assets.sfx.boop:play(77)
