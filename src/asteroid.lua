@@ -120,7 +120,7 @@ end
 
 function Asteroid.update()
   if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
-    if gs.frameCount - gs.lastAsteroidAt >= (gs.rampUpDifficulty or gs.mission.difficulty) then
+    if gs.frameCount - gs.lastAsteroidAt >= (gs.rampUpDifficulty or gs.difficulty) then
       Asteroid.spawn()
       gs.lastAsteroidAt = gs.frameCount
       if gs.rampUpDifficulty then
@@ -128,7 +128,7 @@ function Asteroid.update()
       end
     end
   elseif gs.mission.mode == 'juggling' then
-    if gs.numAsteroids < gs.mission.difficulty and gs.frameCount - gs.lastAsteroidAt >= 100 then
+    if gs.numAsteroids < gs.difficulty and gs.frameCount - gs.lastAsteroidAt >= 100 then
       Asteroid.spawn()
       gs.lastAsteroidAt = gs.frameCount
     end
@@ -241,6 +241,9 @@ function Asteroid.checkCollisions()
         if target.state == 'active' then
           local asteroidSpeed = math.sqrt(asteroid.vel.x * asteroid.vel.x + asteroid.vel.y * asteroid.vel.y)
           local damage = math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3))
+          if SaveData.getDifficulty() == 'easy' then
+            damage = math.floor(damage * 1.5)
+          end
           target.health -= damage
           target.shakeTtl = damage * 2
           assets.sfx.goodBoom:play()
@@ -248,7 +251,7 @@ function Asteroid.checkCollisions()
           Particle.spawn(asteroid.pos.x, asteroid.pos.y, asteroid.vel.x / 5, asteroid.vel.y / 5, 30, 1, 1, 1, 1, nil,
             "-" .. damage)
 
-          if damage > 10 then
+          if damage > 10 and SaveData.getDifficulty() ~= 'easy' then
             if achievements.grant("big_damage") then
               Achievement.queue("big_damage", true)
             end

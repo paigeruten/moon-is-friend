@@ -176,14 +176,14 @@ function Rocket.update()
           gs.score += 3
           Game.flashMessage("Max power-ups! +3 bonus points")
           assets.sfx.powerup:play()
+          if achievements.grant("max_powerups_endless") then
+            Achievement.queue("max_powerups_endless", true)
+          end
         end
       elseif powerup == 'moon-shield' then
         collidingMoon.hasShield = true
         Game.flashMessage('You got a shield!')
         assets.sfx.shieldUp:play()
-        if achievements.grant("max_powerups_endless") then
-          Achievement.queue("max_powerups_endless", true)
-        end
       elseif powerup == 'earth-shield' then
         gs.earth.hasShield = true
         Game.flashMessage('Earth got a shield!')

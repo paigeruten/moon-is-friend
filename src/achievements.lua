@@ -29,7 +29,7 @@ achievements.initialize({
     {
       id = "big_damage",
       name = "The Big One",
-      description = "Do more than 10 damage to a boss with a single meteor.",
+      description = "Do more than 10 damage to a boss with a single meteor (not in easy mode).",
     },
     {
       id = "chaos_averted",
@@ -81,67 +81,67 @@ achievements.initialize({
     {
       id = "no_damage_1-1",
       name = "Flawless 1-1",
-      description = "Complete mission 1-1 without taking damage.",
+      description = "Complete mission 1-1 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_2-1",
       name = "Flawless 2-1",
-      description = "Complete mission 2-1 without taking damage.",
+      description = "Complete mission 2-1 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_2-2",
       name = "Flawless 2-2",
-      description = "Complete mission 2-2 without taking damage.",
+      description = "Complete mission 2-2 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_2-3",
       name = "Flawless 2-3",
-      description = "Complete mission 2-3 without taking damage.",
+      description = "Complete mission 2-3 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_2-4",
       name = "Flawless 2-4",
-      description = "Complete mission 2-4 without taking damage.",
+      description = "Complete mission 2-4 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_3-B",
       name = "Flawless 3-B",
-      description = "Complete mission 3-B without taking damage.",
+      description = "Complete mission 3-B without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_4-1",
       name = "Flawless 4-1",
-      description = "Complete mission 4-1 without taking damage.",
+      description = "Complete mission 4-1 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_4-2",
       name = "Flawless 4-2",
-      description = "Complete mission 4-2 without taking damage.",
+      description = "Complete mission 4-2 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_4-3",
       name = "Flawless 4-3",
-      description = "Complete mission 4-3 without taking damage.",
+      description = "Complete mission 4-3 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_4-4",
       name = "Flawless 4-4",
-      description = "Complete mission 4-4 without taking damage.",
+      description = "Complete mission 4-4 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_5-1",
       name = "Flawless 5-1",
-      description = "Complete mission 5-1 without taking damage.",
+      description = "Complete mission 5-1 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_5-2",
       name = "Flawless 5-2",
-      description = "Complete mission 5-2 without taking damage.",
+      description = "Complete mission 5-2 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_6-B",
       name = "Flawless 6-B",
-      description = "Complete mission 6-B without taking damage.",
+      description = "Complete mission 6-B without taking damage (not in easy mode).",
     },
   }
 }, false)

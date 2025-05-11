@@ -15,6 +15,9 @@ end
 if SaveData.data.settings.screenShakeEnabled == nil then
   SaveData.data.settings.screenShakeEnabled = not pd.getReduceFlashing()
 end
+if SaveData.data.settings.difficulty == nil then
+  SaveData.data.settings.difficulty = 'normal'
+end
 
 function SaveData.completeMission(missionId)
   if not SaveData.data.missions[missionId] then
@@ -93,5 +96,14 @@ end
 
 function SaveData.setScreenShakeEnabled(enabled)
   SaveData.data.settings.screenShakeEnabled = enabled
+  pd.datastore.write(SaveData.data)
+end
+
+function SaveData.getDifficulty()
+  return SaveData.data.settings.difficulty
+end
+
+function SaveData.setDifficulty(difficulty)
+  SaveData.data.settings.difficulty = difficulty
   pd.datastore.write(SaveData.data)
 end

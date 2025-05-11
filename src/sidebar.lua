@@ -36,14 +36,14 @@ function Sidebar.draw()
     gfx.drawText(gs.score, 6, scoreY + 13)
 
     -- Difficulty
-    if gs.rampUpDifficulty and type(gs.mission.difficulty) == 'table' then
+    if gs.rampUpDifficulty and type(gs.difficulty) == 'table' then
       gfx.setFont(assets.fonts.small)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       gfx.drawText("Level", 6, difficultyY - 12)
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-      local maxDifficulty = gs.mission.difficulty[1] - gs.mission.difficulty[2]
-      local curDifficulty = maxDifficulty - (gs.rampUpDifficulty - gs.mission.difficulty[2])
+      local maxDifficulty = gs.difficulty[1] - gs.difficulty[2]
+      local curDifficulty = maxDifficulty - (gs.rampUpDifficulty - gs.difficulty[2])
       local curLevel = curDifficulty // 5 + 1
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       gfx.drawText(curLevel, 6, difficultyY + 1)

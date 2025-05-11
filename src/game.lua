@@ -42,14 +42,27 @@ function Game.reset()
   else
     gs.missionIcon = assets.gfx.missionIcons[gs.mission.winType]
   end
+  gs.difficulty = gs.mission.difficulty
+  if gs.mission.mode == 'standard' and gs.mission.winType ~= 'endless' and SaveData.getDifficulty() == 'easy' then
+    if type(gs.difficulty) == 'table' then
+      gs.difficulty[1] += 25
+      gs.difficulty[2] += 25
+    else
+      gs.difficulty += 25
+    end
+  end
 
+  local maxHealth = 3
+  if gs.mission.winType ~= 'endless' and SaveData.getDifficulty() == 'easy' then
+    maxHealth = 5
+  end
   gs.earth = {
     pos = { x = screenWidth // 2 + sidebarWidth // 2, y = screenHeight // 2 },
     radius = 14,
     mass = 0.75,
     pristine = true,
-    health = 3,
-    maxHealth = 3,
+    health = maxHealth,
+    maxHealth = maxHealth,
     bombs = 1,
     maxBombs = 3,
     hasShield = false,
@@ -113,14 +126,14 @@ function Game.reset()
   gs.isHighScore = false
 
   gs.rampUpDifficulty = nil
-  if type(gs.mission.difficulty) == 'table' then
+  if type(gs.difficulty) == 'table' then
     Game.updateRampUpDifficulty()
   end
 end
 
 function Game.updateRampUpDifficulty()
   ---@diagnostic disable-next-line: param-type-mismatch
-  local maxDifficulty, minDifficulty = table.unpack(gs.mission.difficulty)
+  local maxDifficulty, minDifficulty = table.unpack(gs.difficulty)
   local minDifficultyTime = 22500 -- 7.5 minutes
 
   if gs.frameCount >= minDifficultyTime then
@@ -179,7 +192,7 @@ local function checkEndState()
         achievements.toasts.toast("beat_the_game")
       end
     end
-    if gs.earth.pristine then
+    if SaveData.getDifficulty() ~= 'easy' and gs.earth.pristine then
       if achievements.grant("no_damage_" .. gs.missionId) then
         achievements.toasts.toast("no_damage_" .. gs.missionId)
       end
