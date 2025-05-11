@@ -43,7 +43,8 @@ function Game.reset()
     gs.missionIcon = assets.gfx.missionIcons[gs.mission.winType]
   end
   gs.difficulty = gs.mission.difficulty
-  if gs.mission.mode == 'standard' and gs.mission.winType ~= 'endless' and SaveData.getDifficulty() == 'easy' then
+  gs.easyMode = SaveData.getDifficulty() == 'easy' and gs.mission.winType ~= 'endless'
+  if gs.mission.mode == 'standard' and gs.easyMode then
     if type(gs.difficulty) == 'table' then
       gs.difficulty[1] += 25
       gs.difficulty[2] += 25
@@ -53,7 +54,7 @@ function Game.reset()
   end
 
   local maxHealth = 3
-  if gs.mission.winType ~= 'endless' and SaveData.getDifficulty() == 'easy' then
+  if gs.easyMode then
     maxHealth = 5
   end
   gs.earth = {
@@ -192,7 +193,7 @@ local function checkEndState()
         achievements.toasts.toast("beat_the_game")
       end
     end
-    if SaveData.getDifficulty() ~= 'easy' and gs.earth.pristine then
+    if gs.earth.pristine and not gs.easyMode then
       if achievements.grant("no_damage_" .. gs.missionId) then
         achievements.toasts.toast("no_damage_" .. gs.missionId)
       end

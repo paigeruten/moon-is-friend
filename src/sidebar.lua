@@ -56,6 +56,10 @@ function Sidebar.draw()
     gfx.setFont(assets.fonts.small)
     gfx.drawText(gs.missionId, 14, missionTextY)
 
+    if gs.easyMode then
+      assets.gfx.easy:draw(13, missionTextY + 15)
+    end
+
     if not (gs.mission.winType == 'boss' and gs.bossPhase == 0) then
       -- Goal outline
       gfx.setColor(gfx.kColorBlack)

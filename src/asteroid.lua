@@ -241,7 +241,7 @@ function Asteroid.checkCollisions()
         if target.state == 'active' then
           local asteroidSpeed = math.sqrt(asteroid.vel.x * asteroid.vel.x + asteroid.vel.y * asteroid.vel.y)
           local damage = math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3))
-          if SaveData.getDifficulty() == 'easy' then
+          if gs.easyMode then
             damage = math.floor(damage * 1.5)
           end
           target.health -= damage
@@ -251,7 +251,7 @@ function Asteroid.checkCollisions()
           Particle.spawn(asteroid.pos.x, asteroid.pos.y, asteroid.vel.x / 5, asteroid.vel.y / 5, 30, 1, 1, 1, 1, nil,
             "-" .. damage)
 
-          if damage > 10 and SaveData.getDifficulty() ~= 'easy' then
+          if damage > 10 and not gs.easyMode then
             if achievements.grant("big_damage") then
               Achievement.queue("big_damage", true)
             end

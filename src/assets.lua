@@ -51,6 +51,7 @@ Assets = {
     safeEyes = gfx.image.new("images/safe-eyes"),
     zeds = gfx.imagetable.new("images/zeds"),
     eyelid = gfx.image.new("images/eyelid"),
+    easy = gfx.image.new("images/easy"),
 
     achievement = gfx.image.new("vendor/achievements/assets/default_icon")
   }

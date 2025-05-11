@@ -24,7 +24,10 @@ function GameEnd.menuSelect(which)
     if gs.endState == "complete" then
       local lastMissionId = nil
       local nextMissionId = nil
-      for _, row in ipairs(MISSION_TREE) do
+      for rowIdx, row in ipairs(MISSION_TREE) do
+        if rowIdx > MissionTree.highestUnlockedColumn() then
+          goto foundNextMission
+        end
         for _, curMissionId in ipairs(row) do
           if lastMissionId == gs.missionId then
             nextMissionId = curMissionId
@@ -39,7 +42,7 @@ function GameEnd.menuSelect(which)
         gs.missionId = nextMissionId
         MissionIntro.switch()
       else
-        Title.switch()
+        MissionTree.switch()
       end
     end
     assets.sfx.boop:play(77)

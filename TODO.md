@@ -33,14 +33,14 @@
     * [x] Asteroid takes out shield
 * [x] Googly eyes on earth looking worriedly at the closest incoming asteroid?
 * [x] Increase difficulty (more frequent asteroids)
-* [ ] Easy mode
+* [x] Easy mode
     * [x] Lower boss HP, or scale up damage
     * [x] 5 hearts
     * [x] Add 25 to all asteroid spawn rates
     * [ ] i-frames (maybe the standard game should have this too though)
     * [x] Does not affect endless mode
     * [x] Flawless achievements require standard mode
-* [ ] Powerups
+* [x] Powerups
     * [x] +1 HP
     * [x] Moon shield
     * [x] Earth shield
