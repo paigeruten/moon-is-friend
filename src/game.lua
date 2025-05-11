@@ -122,15 +122,25 @@ end
 function Game.updateRampUpDifficulty()
   ---@diagnostic disable-next-line: param-type-mismatch
   local maxDifficulty, minDifficulty = table.unpack(gs.mission.difficulty)
+  local minDifficultyTime = 22500 -- 7.5 minutes
 
-  gs.rampUpDifficulty = maxDifficulty - math.floor(
-    pd.easingFunctions.outSine(
-      gs.frameCount,
-      0,
-      maxDifficulty - minDifficulty,
-      22500 -- 7.5 minutes
+  if gs.frameCount >= minDifficultyTime then
+    gs.rampUpDifficulty = minDifficulty
+    if gs.mission.winType == "endless" then
+      if achievements.grant("max_level_endless") then
+        Achievement.queue("max_level_endless", true)
+      end
+    end
+  else
+    gs.rampUpDifficulty = maxDifficulty - math.floor(
+      pd.easingFunctions.outSine(
+        gs.frameCount,
+        0,
+        maxDifficulty - minDifficulty,
+        minDifficultyTime
+      )
     )
-  )
+  end
 end
 
 function Game.flashMessage(message)

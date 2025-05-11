@@ -63,6 +63,16 @@ achievements.initialize({
       description = "Have 4 shield power-ups active at the same time.",
     },
     {
+      id = "max_level_endless",
+      name = "Pure chaos",
+      description = "Reach the maximum level in Endless mode.",
+    },
+    {
+      id = "max_powerups_endless",
+      name = "Power-up hoarder",
+      description = "Catch a rocket after maxing out all your power-ups in Endless mode.",
+    },
+    {
       id = "complete_all_missions",
       name = "Overachiever",
       description = "Complete every mission.",

@@ -11,6 +11,7 @@ local missionIconY = 6
 local missionTextY = 35
 local heartsY = 64
 local goalY = 185
+local difficultyY = 175
 local scoreY = 205
 
 function Sidebar.draw()
@@ -32,7 +33,25 @@ function Sidebar.draw()
     -- Score
     gfx.setFont(assets.fonts.small)
     gfx.drawText("Score", 6, scoreY)
-    gfx.drawText("" .. gs.score, 6, scoreY + 13)
+    gfx.drawText(gs.score, 6, scoreY + 13)
+
+    -- Difficulty
+    if gs.rampUpDifficulty and type(gs.mission.difficulty) == 'table' then
+      gfx.setFont(assets.fonts.small)
+      gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+      gfx.drawText("Level", 6, difficultyY - 12)
+      gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+      local maxDifficulty = gs.mission.difficulty[1] - gs.mission.difficulty[2]
+      local curDifficulty = maxDifficulty - (gs.rampUpDifficulty - gs.mission.difficulty[2])
+      local curLevel = curDifficulty // 5 + 1
+      gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+      gfx.drawText(curLevel, 6, difficultyY + 1)
+      if curDifficulty >= maxDifficulty then
+        gfx.drawText("Max", 6, difficultyY - 25)
+      end
+      gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    end
   else
     gfx.setFont(assets.fonts.small)
     gfx.drawText(gs.missionId, 14, missionTextY)
