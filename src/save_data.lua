@@ -9,6 +9,12 @@ end
 if not SaveData.data.missions then
   SaveData.data.missions = {}
 end
+if not SaveData.data.settings then
+  SaveData.data.settings = {}
+end
+if SaveData.data.settings.screenShakeEnabled == nil then
+  SaveData.data.settings.screenShakeEnabled = not pd.getReduceFlashing()
+end
 
 function SaveData.completeMission(missionId)
   if not SaveData.data.missions[missionId] then
@@ -79,4 +85,13 @@ function SaveData.checkAndSaveHighScore(missionId, score)
     return true
   end
   return false
+end
+
+function SaveData.isScreenShakeEnabled()
+  return SaveData.data.settings.screenShakeEnabled
+end
+
+function SaveData.setScreenShakeEnabled(enabled)
+  SaveData.data.settings.screenShakeEnabled = enabled
+  pd.datastore.write(SaveData.data)
 end

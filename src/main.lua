@@ -24,12 +24,12 @@ import "sidebar"
 import "mission_tree"
 import "menu_box"
 
+import "save_data"
 import "menu"
 import "title"
 import "instructions"
 import "mission_intro"
 import "game_end"
-import "save_data"
 import "endless"
 import "high_scores"
 

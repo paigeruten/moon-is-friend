@@ -4,8 +4,8 @@ local menu = pd.getSystemMenu()
 
 Menu = {}
 
-menu:addCheckmarkMenuItem('screen shake', gs.screenShakeEnabled, function(checked)
-  gs.screenShakeEnabled = checked
+menu:addCheckmarkMenuItem('screen shake', SaveData.isScreenShakeEnabled(), function(checked)
+  SaveData.setScreenShakeEnabled(checked)
 end)
 
 -- Menu items that should be removed when going back to the title screen

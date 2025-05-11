@@ -10,7 +10,6 @@ Game = {}
 Game.state = {
   scene = 'title',
   missionId = 'endless.s1',
-  screenShakeEnabled = not pd.getReduceFlashing()
 }
 local gs = Game.state
 

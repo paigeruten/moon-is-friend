@@ -15,7 +15,7 @@ function Explosion.spawn(x, y)
 end
 
 function Explosion.screenShake(shakeTime, shakeMagnitude)
-  if not gs.screenShakeEnabled then
+  if not SaveData.isScreenShakeEnabled() then
     return
   end
 
