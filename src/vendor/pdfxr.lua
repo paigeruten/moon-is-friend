@@ -114,6 +114,11 @@ pdfxr.synth.new = function(filename)
     if data.note then
         rv.note = data.note
     end
+    -- @paigeruten patch start
+    if data.volume then
+        rv.volume = data.volume
+    end
+    -- @paigeruten patch end
     -- plays the synth for the duration set in the data at the given midi note or the pitch set in the data if nil
     rv.play = function(self, midi_note, volume)
         if not volume then volume = self.volume end
