@@ -50,7 +50,7 @@ function SaveData.isEndlessModeUnlocked(mode, n)
     elseif n == 2 then
       return SaveData.isMissionComplete('2-4'), '2-4'
     elseif n == 3 then
-      return SaveData.isMissionComplete('5-2'), '5-2'
+      return SaveData.isMissionComplete('5-3'), '5-3'
     end
   elseif mode == 'juggling' then
     if n == 3 then

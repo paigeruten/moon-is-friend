@@ -76,12 +76,17 @@ achievements.initialize({
       id = "complete_all_missions",
       name = "Overachiever",
       description = "Complete every mission.",
-      progressMax = 13
+      progressMax = 15
     },
     {
       id = "no_damage_1-1",
       name = "Flawless 1-1",
       description = "Complete mission 1-1 without taking damage (not in easy mode).",
+    },
+    {
+      id = "no_damage_1-2",
+      name = "Flawless 1-2",
+      description = "Complete mission 1-2 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_2-1",
@@ -137,6 +142,11 @@ achievements.initialize({
       id = "no_damage_5-2",
       name = "Flawless 5-2",
       description = "Complete mission 5-2 without taking damage (not in easy mode).",
+    },
+    {
+      id = "no_damage_5-3",
+      name = "Flawless 5-3",
+      description = "Complete mission 5-3 without taking damage (not in easy mode).",
     },
     {
       id = "no_damage_6-B",

@@ -6,6 +6,8 @@ local assets = Assets
 Earth = {}
 
 function Earth.draw()
+  gfx.setColor(gfx.kColorBlack)
+  gfx.fillCircleAtPoint(gs.earth.pos.x, gs.earth.pos.y, gs.earth.radius)
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.4, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(gs.earth.pos.x, gs.earth.pos.y, gs.earth.radius)

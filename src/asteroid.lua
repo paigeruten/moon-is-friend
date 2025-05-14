@@ -17,6 +17,19 @@ local function nextAsteroidId()
 end
 
 function Asteroid.spawn()
+  if gs.mission.winType == "boss" and math.random(7) == 1 then
+    local targets = {}
+    for _, target in pairs(gs.targets) do
+      if target.state == 'active' then
+        table.insert(targets, target)
+      end
+    end
+    if #targets > 0 then
+      Asteroid.spawnFromTarget(targets[math.random(#targets)])
+      return
+    end
+  end
+
   local id = nextAsteroidId()
   local angle
   if gs.mission.winType == "boss" then
@@ -59,6 +72,9 @@ function Asteroid.spawn()
   else
     speed = math.random(5, 9) / 10
   end
+  if gs.mission.winType == "boss" then
+    speed *= 0.7
+  end
   local velX, velY = polarCoordinates(speed, angle + (math.random() * 40 - 20))
   gs.asteroids[id] = {
     id = id,
@@ -67,6 +83,27 @@ function Asteroid.spawn()
     initialVel = { x = -velX, y = -velY },
     radius = asteroidRadius,
     state = 'entering',
+  }
+  gs.numAsteroids += 1
+  return id
+end
+
+function Asteroid.spawnFromTarget(target)
+  local id = nextAsteroidId()
+  local posX, posY = polarCoordinates(target.radius + 3, math.random(225, 315))
+  posX += target.pos.x
+  posY += target.pos.y
+  local speed = math.random(5, 9) / 40
+  local direction = Util.angleFromVec(gs.earth.pos.x - posX, gs.earth.pos.y - posY)
+  local velX, velY = polarCoordinates(speed, direction + (math.random() * 20 - 10))
+  gs.asteroids[id] = {
+    id = id,
+    pos = { x = posX, y = posY },
+    vel = { x = velX, y = velY },
+    initialVel = { x = velX, y = velY },
+    radius = 4,
+    state = 'active',
+    bossSafeTtl = 50,
   }
   gs.numAsteroids += 1
   return id
@@ -171,6 +208,13 @@ function Asteroid.update()
     asteroid.pos.x += asteroid.vel.x
     asteroid.pos.y += asteroid.vel.y
 
+    if asteroid.bossSafeTtl then
+      asteroid.bossSafeTtl -= 1
+      if asteroid.bossSafeTtl <= 0 then
+        asteroid.bossSafeTtl = nil
+      end
+    end
+
     if asteroid.state == 'entering' and isOnScreen then
       asteroid.state = 'active'
     elseif asteroid.state == 'active' and not isOnScreen then
@@ -231,6 +275,10 @@ function Asteroid.checkCollisions()
     end
 
     for _, target in pairs(gs.targets) do
+      if asteroid.bossSafeTtl then
+        break
+      end
+
       if areCirclesColliding(asteroid.pos, asteroid.radius, target.pos, target.radius) then
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'

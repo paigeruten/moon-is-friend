@@ -41,6 +41,8 @@ function GameEnd.menuSelect(which)
       if nextMissionId then
         gs.missionId = nextMissionId
         MissionIntro.switch()
+      elseif gs.missionId == "6-B" then
+        Title.switch()
       else
         MissionTree.switch()
       end

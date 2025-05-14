@@ -9,12 +9,13 @@ Sidebar = {}
 
 local missionIconY = 6
 local missionTextY = 35
-local heartsY = 64
 local goalY = 185
 local difficultyY = 175
 local scoreY = 205
 
 function Sidebar.draw()
+  local heartsY = gs.easyMode and 70 or 60
+
   -- Sidebar
   gfx.setColor(gfx.kColorBlack)
   gfx.fillRect(sidebarWidth - 8, 0, 8, screenHeight)

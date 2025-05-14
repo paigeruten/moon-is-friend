@@ -113,7 +113,8 @@ function Game.reset()
   gs.bossPhaseFrame = 0
   gs.bossMaxHealth = gs.mission.winGoal
   if gs.mission.winType == "boss" then
-    Target.spawn(screenWidth - 20 + 100, screenHeight // 2, 75, gs.mission.winGoal)
+    local bossRadius = gs.mission.winGoal2 and 120 or 75
+    Target.spawn(screenWidth - 20 + 25 + bossRadius, screenHeight // 2, bossRadius, gs.mission.winGoal)
   end
 
   gs.particles = {}

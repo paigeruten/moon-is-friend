@@ -46,7 +46,7 @@ MISSIONS = {
     winGoal = 20,
     difficulty = 125,
     unlockMessage = "You've unlocked Endless mode!",
-    card = "Type: Divert\nGoal: 20 meteors\nDifficulty: **\nMoons: 1",
+    card = "Type: Divert\nGoal: 20 meteors\nChaos: **\nMoons: 1",
     introText = {
       "You are the Moon. After a large-scale asteroid mining expedition gone wrong, "
       .. "your best friend the Earth is now under a barrage of meteors, and is very scared.",
@@ -55,12 +55,19 @@ MISSIONS = {
       "Good luck!"
     }
   },
+  ["1-2"] = {
+    mode = "standard",
+    winType = "survive",
+    winGoal = 60,
+    difficulty = 125,
+    card = "Type: Survive\nGoal: 1 minute\nChaos: **\nMoons: 1",
+  },
   ["2-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 120,
     difficulty = 100,
-    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 1",
+    card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 1",
     introText = {
       "The meteors are coming in even faster now.",
       "Protect the Earth and survive for 2 minutes to complete this mission."
@@ -71,7 +78,7 @@ MISSIONS = {
     winType = "rocket",
     winGoal = 20,
     difficulty = 100,
-    card = "Type: Colonize\nGoal: 20 rockets\nDifficulty: ****\nMoons: 1",
+    card = "Type: Colonize\nGoal: 20 rockets\nChaos: ****\nMoons: 1",
     introText = {
       "Earth is sending a large team of scientists and astronauts up to the Moon "
       .. "to help resupply and bolster your defenses.",
@@ -85,7 +92,7 @@ MISSIONS = {
     winGoal = 3,
     difficulty = 3,
     unlockMessage = "You've unlocked Endless Juggling!",
-    card = "Type: Juggling\nGoal: 3 collisions\nDifficulty: ****\nMoons: 1",
+    card = "Type: Juggling\nGoal: 3 collisions\nChaos: ****\nMoons: 1",
     introText = {
       "Some asteroids got captured in Earth's orbit, and just won't leave."
       .. " In this mission you must obliterate 3 pairs of asteroids by making"
@@ -101,28 +108,28 @@ MISSIONS = {
     difficulty = 125,
     numMoons = 2,
     unlockMessage = "You've unlocked Endless mode (2 Moons)!",
-    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 2"
+    card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 2"
   },
   ["3-B"] = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
     difficulty = 85,
-    card = "Type: Boss\nGoal: ???\nDifficulty: ******\nMoons: 1"
+    card = "Type: Boss\nGoal: ???\nChaos: ******\nMoons: 1"
   },
   ["4-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 120,
     difficulty = 75,
-    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ******\nMoons: 1"
+    card = "Type: Survive\nGoal: 2 minutes\nChaos: ******\nMoons: 1"
   },
   ["4-2"] = {
     mode = "standard",
     winType = "rocket",
     winGoal = 30,
     difficulty = 75,
-    card = "Type: Colonize\nGoal: 30 rockets\nDifficulty: ******\nMoons: 1"
+    card = "Type: Colonize\nGoal: 30 rockets\nChaos: ******\nMoons: 1"
   },
   ["4-3"] = {
     mode = "juggling",
@@ -130,7 +137,7 @@ MISSIONS = {
     winGoal = 5,
     difficulty = 4,
     unlockMessage = "You've unlocked Endless Juggling (4 Meteors)!",
-    card = "Type: Juggling\nGoal: 5 collisions\nDifficulty: ******\nMoons: 1"
+    card = "Type: Juggling\nGoal: 5 collisions\nChaos: ******\nMoons: 1"
   },
   ["4-4"] = {
     mode = "standard",
@@ -138,43 +145,53 @@ MISSIONS = {
     winGoal = 120,
     difficulty = 100,
     numMoons = 2,
-    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 2"
+    card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 2"
   },
   ["5-1"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 90,
-    difficulty = 50,
-    card = "Type: Survive\nGoal: 90 seconds\nDifficulty: ********\nMoons: 1"
+    difficulty = 60,
+    card = "Type: Survive\nGoal: 90 seconds\nChaos: ********\nMoons: 1"
   },
   ["5-2"] = {
+    mode = "standard",
+    winType = "rocket",
+    winGoal = 30,
+    difficulty = 100,
+    numMoons = 2,
+    card = "Type: Colonize\nGoal: 30 rockets\nChaos: ****\nMoons: 2"
+  },
+  ["5-3"] = {
     mode = "standard",
     winType = "survive",
     winGoal = 120,
     difficulty = 100,
     numMoons = 3,
     unlockMessage = "You've unlocked Endless mode (3 Moons)!",
-    card = "Type: Survive\nGoal: 2 minutes\nDifficulty: ****\nMoons: 3"
+    card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 3"
   },
   ["6-B"] = {
     mode = "standard",
     winType = "boss",
     winGoal = 100,
-    winGoal2 = 50,
+    winGoal2 = 33,
     difficulty = 75,
     unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!",
-    card = "Type: Boss\nGoal: ???\nDifficulty: ********\nMoons: 1"
+    card = "Type: Boss\nGoal: ???\nChaos: ********\nMoons: 1"
   },
 }
 
 MISSION_TREE = {
-  { "1-1" },
+  { "1-1", "1-2" },
   { "2-1", "2-2", "2-3", "2-4" },
   { "3-B" },
   { "4-1", "4-2", "4-3", "4-4" },
-  { "5-1", "5-2" },
+  { "5-1", "5-2", "5-3" },
   { "6-B" }
 }
+
+UNLOCK_REQUIREMENTS = { 2, 3, 1, 3, 2, 1 }
 
 local columnUnlockText = { "Finish", "1 more", "mission", "from", "previous", "column", "to", "unlock" }
 local columnUnlockNumMissions = 1
@@ -206,14 +223,14 @@ end
 
 function MissionTree.highestUnlockedColumn()
   local highestUnlocked = 1
-  for _, missionCol in ipairs(MISSION_TREE) do
+  for colIdx, missionCol in ipairs(MISSION_TREE) do
     local numCompleted = 0
     for _, missionId in ipairs(missionCol) do
       if SaveData.isMissionComplete(missionId) then
         numCompleted += 1
       end
     end
-    if numCompleted == #missionCol or (#missionCol > 1 and numCompleted == #missionCol - 1) then
+    if numCompleted >= UNLOCK_REQUIREMENTS[colIdx] then
       highestUnlocked += 1
     else
       break
@@ -273,15 +290,16 @@ function MissionTree.update()
       missionY += screenHeight // 2 - 50
       missionSpacing = 50 * 2 - 26
     elseif #missionCol == 3 then
-      -- not used yet
+      missionY += screenHeight // 2 - 70
+      missionSpacing = (70 * 2 - 26) // 2
     elseif #missionCol == 4 then
       missionY += screenHeight // 2 - 85
       missionSpacing = (85 * 2 - 26) // 3
     end
     for _, missionId in ipairs(missionCol) do
       local mission = MISSIONS[missionId]
-      if mission.winType == "survive" then
-        for i = 1, (mission.numMoons or 1) do
+      if (mission.numMoons or 1) > 1 then
+        for i = 1, mission.numMoons do
           gfx.setColor(gfx.kColorBlack)
           gfx.fillCircleAtPoint(missionX + shakeX, missionY + i * 4, 1)
         end
@@ -316,13 +334,13 @@ function MissionTree.update()
       gfx.fillRect(missionX + 13 - 30 + 1 + shakeX, 26 + 1, 63 - 2, 210 - 2)
     end
     if showUnlockMessage and columnNum == gs.highestUnlocked + 1 then
-      local missionsNeeded = 0
+      local missionsCompleted = 0
       for _, missionId in ipairs(MISSION_TREE[gs.highestUnlocked]) do
-        if not SaveData.isMissionComplete(missionId) then
-          missionsNeeded += 1
+        if SaveData.isMissionComplete(missionId) then
+          missionsCompleted += 1
         end
       end
-      setColumnUnlockText(math.max(1, missionsNeeded - 1))
+      setColumnUnlockText(UNLOCK_REQUIREMENTS[gs.highestUnlocked] - missionsCompleted)
       local textX = missionX + 15 + shakeX
       for i, text in ipairs(columnUnlockText) do
         local textWidth, _ = gfx.getTextSize(text)

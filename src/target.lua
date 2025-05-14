@@ -221,8 +221,10 @@ function Target.draw()
     gfx.setDitherPattern(0.2, gfx.image.kDitherTypeBayer8x8)
     gfx.fillCircleAtPoint(target.pos.x - 4, target.pos.y - 4, target.radius - 4)
 
-    gfx.setColor(gfx.kColorWhite)
-    gfx.drawRoundRect(target.pos.x - 16, target.pos.y + target.radius + 6, 33, 4, 2)
-    gfx.fillRoundRect(target.pos.x - 16, target.pos.y + target.radius + 6, 33 * target.health / target.maxHealth, 4, 2)
+    if target.state == 'active' then
+      gfx.setColor(gfx.kColorWhite)
+      gfx.drawRoundRect(target.pos.x - 16, target.pos.y + target.radius + 6, 33, 4, 2)
+      gfx.fillRoundRect(target.pos.x - 16, target.pos.y + target.radius + 6, 33 * target.health / target.maxHealth, 4, 2)
+    end
   end
 end
