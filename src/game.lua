@@ -85,8 +85,19 @@ function Game.reset()
   gs.extraSuctionMaxFuel = 50
   gs.extraSuctionFuel = gs.extraSuctionMaxFuel
 
-  gs.curRocket = nil
+  gs.rockets = {}
   gs.lastRocketAt = 0
+  if gs.mission.winType == 'rocket' then
+    gs.maxRockets = 4
+    gs.rocketSpawnRate = 150
+    gs.rocketMinTime = 50
+    gs.rocketMaxTime = 250
+  else
+    gs.maxRockets = 1
+    gs.rocketSpawnRate = 500
+    gs.rocketMinTime = 150
+    gs.rocketMaxTime = 1000
+  end
 
   gs.explosions = {}
   gs.curExplosionId = 0

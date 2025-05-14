@@ -66,11 +66,23 @@ for direction, _ in pairs(rocketDirectionInfo) do
   table.insert(rocketDirections, direction)
 end
 
+local nextRocketId = 1
+
 function Rocket.spawn()
-  local direction = rocketDirections[math.random(#rocketDirections)]
+  local direction
+  while not direction do
+    direction = rocketDirections[math.random(#rocketDirections)]
+    for _, rocket in pairs(gs.rockets) do
+      if rocket.direction == direction then
+        direction = nil
+        break
+      end
+    end
+  end
+
   local directionInfo = rocketDirectionInfo[direction]
   local pX, pY = polarCoordinates(gs.earth.radius + 1, directionInfo.angle)
-  gs.curRocket = {
+  gs.rockets[nextRocketId] = {
     frame = 0,
     pos = { x = gs.earth.pos.x + pX, y = gs.earth.pos.y + pY },
     vel = { x = 0, y = 0 },
@@ -78,6 +90,7 @@ function Rocket.spawn()
     direction = direction,
     info = directionInfo
   }
+  nextRocketId += 1
 end
 
 local function isRocketOnScreen(rocket)
@@ -109,39 +122,50 @@ local function isRocketCollidingWithMoon(rocket)
 end
 
 function Rocket.update()
-  if gs.curRocket then
-    if gs.curRocket.frame == 100 then
+  local numRockets = 0
+  for rocketId, rocket in pairs(gs.rockets) do
+    numRockets += 1
+
+    if rocket.frame == 100 then
       -- Liftoff!
-      gs.curRocket.acc.x, gs.curRocket.acc.y = polarCoordinates(0.005, gs.curRocket.info.angle)
+      rocket.acc.x, rocket.acc.y = polarCoordinates(0.005, rocket.info.angle)
     end
     if gs.frameCount % 2 == 0 then
       Particle.spawn(
-        gs.curRocket.pos.x,
-        gs.curRocket.pos.y,
-        -gs.curRocket.vel.x + (math.random() - 0.5),
-        -gs.curRocket.vel.y + (math.random() - 0.5),
+        rocket.pos.x,
+        rocket.pos.y,
+        -rocket.vel.x + (math.random() - 0.5),
+        -rocket.vel.y + (math.random() - 0.5),
         5,
         1,
         2,
         0.2
       )
     end
-    gs.curRocket.vel.x += gs.curRocket.acc.x
-    gs.curRocket.vel.y += gs.curRocket.acc.y
-    gs.curRocket.pos.x += gs.curRocket.vel.x
-    gs.curRocket.pos.y += gs.curRocket.vel.y
+    rocket.vel.x += rocket.acc.x
+    rocket.vel.y += rocket.acc.y
+    rocket.pos.x += rocket.vel.x
+    rocket.pos.y += rocket.vel.y
 
-    gs.curRocket.frame += 1
+    rocket.frame += 1
 
-    local collidingMoon = isRocketCollidingWithMoon(gs.curRocket)
+    local collidingMoon = isRocketCollidingWithMoon(rocket)
 
-    if not isRocketOnScreen(gs.curRocket) then
-      gs.curRocket = nil
-      gs.lastRocketAt = gs.frameCount
+    if not isRocketOnScreen(rocket) then
+      gs.rockets[rocketId] = nil
+      if gs.mission.winType ~= 'rocket' then
+        gs.lastRocketAt = gs.frameCount
+      end
     elseif collidingMoon then
       gs.rocketsCaught += 1
 
       local powerups = {}
+      if gs.mission.winType == 'rocket' then
+        table.insert(powerups, 'nothing')
+        table.insert(powerups, 'nothing')
+        table.insert(powerups, 'nothing')
+        table.insert(powerups, 'nothing')
+      end
       if gs.earth.health < gs.earth.maxHealth then
         table.insert(powerups, 'health')
         table.insert(powerups, 'health')
@@ -192,6 +216,8 @@ function Rocket.update()
         gs.earth.bombs += 1
         Game.flashMessage('+1 Bomb! (Ⓑ to use)')
         assets.sfx.powerup:play()
+      elseif powerup == 'nothing' then
+        assets.sfx.point:play()
       end
 
       -- Check for shield achievements
@@ -220,22 +246,31 @@ function Rocket.update()
         end
       end
 
-      gs.curRocket = nil
-      gs.lastRocketAt = gs.frameCount
+      gs.rockets[rocketId] = nil
+      if gs.mission.winType ~= 'rocket' then
+        gs.lastRocketAt = gs.frameCount
+      end
     else
       for id, asteroid in pairs(gs.asteroids) do
-        if asteroid.state == 'active' and isRocketCollidingWithCircle(gs.curRocket, asteroid.pos, asteroid.radius) then
+        if asteroid.state == 'active' and isRocketCollidingWithCircle(rocket, asteroid.pos, asteroid.radius) then
           local explosionPos = pd.geometry.lineSegment.new(
             asteroid.pos.x,
             asteroid.pos.y,
-            gs.curRocket.pos.x,
-            gs.curRocket.pos.y
+            rocket.pos.x,
+            rocket.pos.y
           ):midPoint()
           Explosion.spawn(explosionPos.x, explosionPos.y)
           assets.sfx.goodBoom:play()
           Asteroid.despawn(id)
-          gs.curRocket = nil
-          gs.lastRocketAt = gs.frameCount
+          gs.rockets[rocketId] = nil
+          if gs.mission.winType == 'rocket' then
+            if gs.rocketsCaught > 0 then
+              gs.rocketsCaught -= 1
+              Game.flashMessage('Ouch! -1 rocket')
+            end
+          else
+            gs.lastRocketAt = gs.frameCount
+          end
           if achievements.grant("rocket_collision") then
             Achievement.queue("rocket_collision", true)
           end
@@ -243,19 +278,28 @@ function Rocket.update()
         end
       end
     end
-  elseif ((gs.frameCount - gs.lastRocketAt) > 150 and math.random(500) == 1)
-      or (gs.frameCount - gs.lastRocketAt) > 1000 -- every 3 + ~10 seconds, max 20 seconds
-  then
-    if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
-      Rocket.spawn()
-      Game.flashMessage('Supplies incoming!')
+  end
+
+  if numRockets < gs.maxRockets then
+    if (gs.frameCount - gs.lastRocketAt > gs.rocketMinTime and math.random(gs.rocketSpawnRate) == 1)
+        or gs.frameCount - gs.lastRocketAt > gs.rocketMaxTime
+    then
+      if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
+        Rocket.spawn()
+        if gs.mission.winType == 'rocket' then
+          gs.lastRocketAt = gs.frameCount
+        else
+          Game.flashMessage('Supplies incoming!')
+        end
+      end
     end
+    return
   end
 end
 
 function Rocket.draw()
-  if gs.curRocket then
-    gs.curRocket.info.image:drawAnchored(gs.curRocket.pos.x, gs.curRocket.pos.y, gs.curRocket.info.anchor.x,
-      gs.curRocket.info.anchor.y, gs.curRocket.info.flip)
+  for _, rocket in pairs(gs.rockets) do
+    rocket.info.image:drawAnchored(rocket.pos.x, rocket.pos.y, rocket.info.anchor.x, rocket.info.anchor.y,
+      rocket.info.flip)
   end
 end

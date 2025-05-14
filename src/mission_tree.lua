@@ -69,13 +69,13 @@ MISSIONS = {
   ["2-2"] = {
     mode = "standard",
     winType = "rocket",
-    winGoal = 10,
+    winGoal = 20,
     difficulty = 100,
-    card = "Type: Colonize\nGoal: 10 rockets\nDifficulty: ****\nMoons: 1",
+    card = "Type: Colonize\nGoal: 20 rockets\nDifficulty: ****\nMoons: 1",
     introText = {
       "Earth is sending a large team of scientists and astronauts up to the Moon "
       .. "to help resupply and bolster your defenses.",
-      "Catch 10 rocket-fuls of Moon colonizers to complete this mission."
+      "Catch 20 rocket-fuls of Moon colonizers to complete this mission."
       .. " Remember to use your bombs (by pressing B)!"
     }
   },
@@ -120,9 +120,9 @@ MISSIONS = {
   ["4-2"] = {
     mode = "standard",
     winType = "rocket",
-    winGoal = 15,
+    winGoal = 30,
     difficulty = 75,
-    card = "Type: Colonize\nGoal: 15 rockets\nDifficulty: ******\nMoons: 1"
+    card = "Type: Colonize\nGoal: 30 rockets\nDifficulty: ******\nMoons: 1"
   },
   ["4-3"] = {
     mode = "juggling",
@@ -385,22 +385,14 @@ function MissionTree.update()
 
   if pd.buttonJustPressed(pd.kButtonDown) then
     showUnlockMessage = false
-    if gs.missionRow < #MISSION_TREE[gs.missionCol] then
-      gs.missionRow += 1
-    elseif gs.missionCol < gs.highestUnlocked then
-      gs.missionCol += 1
+    gs.missionRow += 1
+    if gs.missionRow > #MISSION_TREE[gs.missionCol] then
       gs.missionRow = 1
-    else
-      showUnlockMessage = true
-      unlockShakeTtl = 20
-      assets.sfx.boop:play(55)
     end
   elseif pd.buttonJustPressed(pd.kButtonUp) then
     showUnlockMessage = false
-    if gs.missionRow > 1 then
-      gs.missionRow -= 1
-    elseif gs.missionCol > 1 then
-      gs.missionCol -= 1
+    gs.missionRow -= 1
+    if gs.missionRow == 0 then
       gs.missionRow = #MISSION_TREE[gs.missionCol]
     end
   elseif pd.buttonJustPressed(pd.kButtonLeft) then

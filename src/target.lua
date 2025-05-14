@@ -129,7 +129,7 @@ function Target.update()
           for _, moon in ipairs(gs.moons) do
             moon.hasShield = false
           end
-          gs.curRocket = nil
+          gs.rockets = {}
           gs.curMessage = nil
 
           for asteroidId, asteroid in pairs(gs.asteroids) do
