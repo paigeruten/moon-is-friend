@@ -43,12 +43,10 @@ function Sidebar.draw()
       gfx.drawText("Level", 6, difficultyY - 12)
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-      local maxDifficulty = gs.difficulty[1] - gs.difficulty[2]
-      local curDifficulty = maxDifficulty - (gs.rampUpDifficulty - gs.difficulty[2])
-      local curLevel = curDifficulty // 5 + 1
+      local curLevel = math.min(50, math.floor(49 * gs.frameCount / 22500) + 1)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       gfx.drawText(curLevel, 6, difficultyY + 1)
-      if curDifficulty >= maxDifficulty then
+      if curLevel >= 50 then
         gfx.drawText("Max", 6, difficultyY - 25)
       end
       gfx.setImageDrawMode(gfx.kDrawModeCopy)

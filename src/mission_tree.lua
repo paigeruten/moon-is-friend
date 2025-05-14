@@ -64,17 +64,6 @@ MISSIONS = {
   },
   ["2-1"] = {
     mode = "standard",
-    winType = "survive",
-    winGoal = 120,
-    difficulty = 100,
-    card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 1",
-    introText = {
-      "The meteors are coming in even faster now.",
-      "Protect the Earth and survive for 2 minutes to complete this mission."
-    }
-  },
-  ["2-2"] = {
-    mode = "standard",
     winType = "rocket",
     winGoal = 20,
     difficulty = 100,
@@ -84,6 +73,17 @@ MISSIONS = {
       .. "to help resupply and bolster your defenses.",
       "Catch 20 rocket-fuls of Moon colonizers to complete this mission."
       .. " Remember to use your bombs (by pressing B)!"
+    }
+  },
+  ["2-2"] = {
+    mode = "standard",
+    winType = "survive",
+    winGoal = 120,
+    difficulty = 100,
+    card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 1",
+    introText = {
+      "The meteors are coming in even faster now.",
+      "Protect the Earth and survive for 2 minutes to complete this mission."
     }
   },
   ["2-3"] = {
@@ -260,7 +260,7 @@ function MissionTree.update()
 
   gfx.setFont(assets.fonts.large)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 10, kTextAlignment.center)
+  gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 8, kTextAlignment.center)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   gfx.setFont(assets.fonts.small)
