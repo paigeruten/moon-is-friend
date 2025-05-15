@@ -14,7 +14,7 @@ local assetPath = "vendor/achievements/assets"
 
 achievements.initialize({
   iconPath = "images/launcher/icon",
-  cardPath = "images/launcher/card",
+  cardPath = "images/launcher/achievement-card",
   achievements = {
     {
       id = "first_collision",
