@@ -21,6 +21,8 @@ Assets = {
     achievement = pd.sound.sampleplayer.new("vendor/achievements/assets/toastSound")
   },
   gfx = {
+    logo = gfx.image.new("images/logo"),
+
     rocketNorth = gfx.image.new("images/rocket-orth"),
     rocketNorthEast = gfx.image.new("images/rocket-diag"),
 

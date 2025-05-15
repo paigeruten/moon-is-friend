@@ -110,13 +110,12 @@ function Title.update()
   gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
   gfx.fillCircleAtPoint(moonX - 8, moonY - 8, moonRadius - 16)
 
+  -- Logo
+  local logoWidth, logoHeight = 75, 49
+  local logoX, logoY = screenWidth // 2 - logoWidth // 2, 32
   gfx.setColor(gfx.kColorBlack)
-  gfx.fillRoundRect(screenWidth // 4, screenHeight // 4 - 4, screenWidth // 2, 24, 5)
-
-  gfx.setFont(assets.fonts.large)
-  gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  gfx.drawTextAligned("*The Moon is our Friend*", screenWidth // 2, screenHeight // 4, kTextAlignment.center)
-  gfx.setImageDrawMode(gfx.kDrawModeCopy)
+  gfx.fillRoundRect(logoX - 5, logoY - 5, logoWidth + 10, logoHeight + 10, 5)
+  assets.gfx.logo:draw(logoX, logoY)
 
   MenuBox.update()
 
