@@ -18,7 +18,9 @@ Assets = {
     powerup = pdfxr.synth.new("sounds/powerup"),
     shieldDown = pdfxr.synth.new("sounds/shield-down"),
     shieldUp = pdfxr.synth.new("sounds/shield-up"),
-    achievement = pd.sound.sampleplayer.new("vendor/achievements/assets/toastSound")
+    win = pdfxr.synth.new("sounds/win2"),
+    lose = pdfxr.synth.new("sounds/lose"),
+    achievement = pd.sound.sampleplayer.new("vendor/achievements/assets/toastSound"),
   },
   gfx = {
     logo = gfx.image.new("images/logo"),
@@ -55,6 +57,10 @@ Assets = {
     zeds = gfx.imagetable.new("images/zeds"),
     eyelid = gfx.image.new("images/eyelid"),
     easy = gfx.image.new("images/easy"),
+
+    labelMeteors = gfx.image.new("images/label-meteors"),
+    labelRockets = gfx.image.new("images/label-rockets"),
+    labelCollisions = gfx.image.new("images/label-collisions"),
 
     achievement = gfx.image.new("vendor/achievements/assets/default_icon")
   }

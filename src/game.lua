@@ -227,6 +227,7 @@ local function checkEndState()
       menuOptions,
       GameEnd.menuSelect
     )
+    assets.sfx.win:play()
   elseif gs.earth.health <= 0 then
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
@@ -236,6 +237,7 @@ local function checkEndState()
       gs.endState = 'failed'
       MenuBox.init({ 'Retry', 'Back to missions' }, menuOptions, GameEnd.menuSelect)
     end
+    assets.sfx.lose:play()
   end
 end
 

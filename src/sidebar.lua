@@ -66,16 +66,19 @@ function Sidebar.draw()
 
       -- Goal
       local goal = gs.mission.winGoal
-      local progress, progressText, leftText
+      local progress, progressText, leftText, label
       if gs.mission.winType == "asteroids" then
         progress = math.min(goal, gs.asteroidsDiverted)
         progressText = table.concat({ progress, '/', goal })
+        label = assets.gfx.labelMeteors
       elseif gs.mission.winType == "rocket" then
         progress = math.min(goal, gs.rocketsCaught)
         progressText = table.concat({ progress, '/', goal })
+        label = assets.gfx.labelRockets
       elseif gs.mission.winType == "collide" then
         progress = math.min(goal, gs.asteroidsCollided)
         progressText = table.concat({ progress, '/', goal })
+        label = assets.gfx.labelCollisions
       elseif gs.mission.winType == "boss" then
         local bossHealth = Target.totalHealth()
         goal = gs.bossMaxHealth
@@ -88,6 +91,10 @@ function Sidebar.draw()
         local secondsLeft = totalSecondsLeft % 60
         leftText = table.concat({ minutesLeft, ":", secondsLeft < 10 and "0" or "", secondsLeft })
         goal *= 50
+
+        if gs.surviveFrameCount % 50 == 0 and totalSecondsLeft > 0 and totalSecondsLeft <= 5 then
+          assets.sfx.boop:play(60, 0.25)
+        end
       end
       gfx.setFont(assets.fonts.small)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
@@ -98,7 +105,11 @@ function Sidebar.draw()
         gfx.drawTextAligned(progressText, (sidebarWidth - 4) // 2, goalY + 17, kTextAlignment.center)
       end
       if gs.mission.winType == "boss" then
-        gfx.drawText("Boss", 10, goalY - 12)
+        gfx.drawText("Boss", 9, goalY - 12)
+      end
+      if label then
+        gfx.setImageDrawMode(gfx.kDrawModeCopy)
+        label:drawAnchored((sidebarWidth - 4) // 2, goalY + 32, 0.5, 0.0)
       end
 
       -- Goal progress bar

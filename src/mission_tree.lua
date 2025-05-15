@@ -58,7 +58,7 @@ MISSIONS = {
   ["1-2"] = {
     mode = "standard",
     winType = "survive",
-    winGoal = 60,
+    winGoal = 15, --60,
     difficulty = 125,
     card = "Type: Survive\nGoal: 1 minute\nChaos: **\nMoons: 1",
   },
@@ -454,8 +454,8 @@ function MissionTree.update()
     gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
 
     local easyModeDesc = SaveData.getDifficulty() == 'easy'
-      and "Easy mode is on.\n\nSome achievements\nwill be disabled."
-      or "Easy mode is off.\n\nTurn it on for a\nbit less stress!"
+        and "Easy mode is on.\n\nSome achievements\nwill be disabled."
+        or "Easy mode is off.\n\nTurn it on for a\nbit less stress!"
     gfx.drawText(easyModeDesc, cardX + 5, cardY + 5)
   end
 
