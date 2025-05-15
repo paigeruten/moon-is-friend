@@ -200,6 +200,11 @@ local function checkEndState()
     SaveData.completeMission(gs.missionId)
     gs.newMissionsUnlocked = MissionTree.highestUnlockedColumn() > prevHighestUnlocked
 
+    if gs.missionId == "3-B" then
+      if achievements.grant("beat_first_boss") then
+        achievements.toasts.toast("beat_first_boss")
+      end
+    end
     if gs.missionId == "6-B" then
       if achievements.grant("beat_the_game") then
         achievements.toasts.toast("beat_the_game")

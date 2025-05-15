@@ -89,7 +89,7 @@
 * [ ] Explain bombs in "How to play"
 * [ ] Achievements
     * [ ] Create card image for trophy case
-    * [ ] Beat the first boss
+    * [x] Beat the first boss
     * [ ] Revenge: Diverted asteroid got pulled back (after ~2 seconds) and hit moon/earth
     * [ ] Return to Sender: Asteroid was sent off the same side of the screen that it entered from
     * [ ] Get 100 points in each endless mode

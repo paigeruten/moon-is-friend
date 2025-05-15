@@ -37,6 +37,11 @@ achievements.initialize({
       description = "Destroy 5 or more meteors with a single bomb.",
     },
     {
+      id = "beat_first_boss",
+      name = "Halfway there",
+      description = "Beat the first boss."
+    },
+    {
       id = "beat_the_game",
       name = "The Earth is safe",
       description = "Beat the game."
