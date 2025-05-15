@@ -93,7 +93,7 @@ function Sidebar.draw()
         goal *= 50
 
         if gs.surviveFrameCount % 50 == 0 and totalSecondsLeft > 0 and totalSecondsLeft <= 5 then
-          assets.sfx.boop:play(60, 0.25)
+          assets.sfx.boop:play(60, 0.35)
         end
       end
       gfx.setFont(assets.fonts.small)

@@ -219,7 +219,7 @@ function Asteroid.update()
       asteroid.state = 'active'
     elseif asteroid.state == 'active' and not isOnScreen then
       table.insert(idsToRemove, id)
-      gs.score += 1
+      Game.increaseScore(1)
       gs.asteroidsDiverted += 1
       if gs.mission.winType == 'asteroids' or (gs.mission.winType == 'endless' and gs.mission.mode == 'standard') then
         assets.sfx.point:play()
@@ -321,7 +321,7 @@ function Asteroid.checkCollisions()
         table.insert(idsToRemove, id2)
         asteroid.state = 'dead'
         asteroid2.state = 'dead'
-        gs.score += 5
+        Game.increaseScore(5)
         gs.asteroidsCollided += 1
 
         if achievements.grant("first_collision") then

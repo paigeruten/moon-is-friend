@@ -197,7 +197,7 @@ function Rocket.update()
         assets.sfx.powerup:play()
       elseif powerup == 'bonus-points' then
         if gs.mission.winType == 'endless' then
-          gs.score += 3
+          Game.increaseScore(3)
           Game.flashMessage("Max power-ups! +3 bonus points")
           assets.sfx.powerup:play()
           if achievements.grant("max_powerups_endless") then

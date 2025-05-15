@@ -58,7 +58,7 @@ MISSIONS = {
   ["1-2"] = {
     mode = "standard",
     winType = "survive",
-    winGoal = 15, --60,
+    winGoal = 60,
     difficulty = 125,
     card = "Type: Survive\nGoal: 1 minute\nChaos: **\nMoons: 1",
   },

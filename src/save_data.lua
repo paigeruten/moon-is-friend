@@ -39,6 +39,18 @@ function SaveData.countMissionsComplete()
   return count
 end
 
+function SaveData.countMissionsFlawless()
+  local count = 0
+  for _, row in ipairs(MISSION_TREE) do
+    for _, missionId in ipairs(row) do
+      if achievements.isGranted("no_damage_" .. missionId) then
+        count += 1
+      end
+    end
+  end
+  return count
+end
+
 function SaveData.isMissionComplete(missionId)
   return SaveData.data.missions[missionId] and SaveData.data.missions[missionId].complete
 end

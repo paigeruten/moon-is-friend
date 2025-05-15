@@ -92,8 +92,8 @@
     * [x] Beat the first boss
     * [ ] Revenge: Diverted asteroid got pulled back (after ~2 seconds) and hit moon/earth
     * [ ] Return to Sender: Asteroid was sent off the same side of the screen that it entered from
-    * [ ] Get 100 points in each endless mode
-    * [ ] Complete every mission without taking damage
+    * [x] Get 100 points in each endless mode
+    * [x] Complete every mission without taking damage
     * [x] X amount of asteroid-asteroid collisions
     * [x] X amount of asteroids cleared at once from a bomb
     * [x] Max out damage done to boss (large asteroid + high velocity)

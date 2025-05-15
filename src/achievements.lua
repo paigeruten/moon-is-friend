@@ -29,7 +29,7 @@ achievements.initialize({
     {
       id = "big_damage",
       name = "The Big One",
-      description = "Do more than 10 damage to a boss with a single meteor (not in easy mode).",
+      description = "Do more than 10 damage to a boss with a single meteor in normal mode.",
     },
     {
       id = "chaos_averted",
@@ -84,79 +84,117 @@ achievements.initialize({
       progressMax = 15
     },
     {
+      id = "endless_one_moon_hundo",
+      name = "Single moon hundo",
+      description = "Get 100 points in an Endless run with one moon."
+    },
+    {
+      id = "endless_two_moon_hundo",
+      name = "Double moon hundo",
+      description = "Get 100 points in an Endless run with two moons."
+    },
+    {
+      id = "endless_three_moon_hundo",
+      name = "Triple moon hundo",
+      description = "Get 100 points in an Endless run with three moons."
+    },
+    {
+      id = "endless_expert_juggler",
+      name = "Expert juggler",
+      description = "Get 50 points in any Endless Juggling run."
+    },
+    {
+      id = "endless_hero",
+      name = "Endless hero",
+      description = "Accumulate 2,500 points over the course of all your Endless runs.",
+      progressMax = 2500
+    },
+    {
+      id = "endless_addict",
+      name = "Endless addict",
+      description = "Accumulate 10,000 points over the course of all your Endless runs.",
+      progressMax = 10000
+    },
+    {
       id = "no_damage_1-1",
       name = "Flawless 1-1",
-      description = "Complete mission 1-1 without taking damage (not in easy mode).",
+      description = "Complete mission 1-1 in normal mode without taking damage.",
     },
     {
       id = "no_damage_1-2",
       name = "Flawless 1-2",
-      description = "Complete mission 1-2 without taking damage (not in easy mode).",
+      description = "Complete mission 1-2 in normal mode without taking damage.",
     },
     {
       id = "no_damage_2-1",
       name = "Flawless 2-1",
-      description = "Complete mission 2-1 without taking damage (not in easy mode).",
+      description = "Complete mission 2-1 in normal mode without taking damage.",
     },
     {
       id = "no_damage_2-2",
       name = "Flawless 2-2",
-      description = "Complete mission 2-2 without taking damage (not in easy mode).",
+      description = "Complete mission 2-2 in normal mode without taking damage.",
     },
     {
       id = "no_damage_2-3",
       name = "Flawless 2-3",
-      description = "Complete mission 2-3 without taking damage (not in easy mode).",
+      description = "Complete mission 2-3 in normal mode without taking damage.",
     },
     {
       id = "no_damage_2-4",
       name = "Flawless 2-4",
-      description = "Complete mission 2-4 without taking damage (not in easy mode).",
+      description = "Complete mission 2-4 in normal mode without taking damage.",
     },
     {
       id = "no_damage_3-B",
       name = "Flawless 3-B",
-      description = "Complete mission 3-B without taking damage (not in easy mode).",
+      description = "Complete mission 3-B in normal mode without taking damage.",
     },
     {
       id = "no_damage_4-1",
       name = "Flawless 4-1",
-      description = "Complete mission 4-1 without taking damage (not in easy mode).",
+      description = "Complete mission 4-1 in normal mode without taking damage.",
     },
     {
       id = "no_damage_4-2",
       name = "Flawless 4-2",
-      description = "Complete mission 4-2 without taking damage (not in easy mode).",
+      description = "Complete mission 4-2 in normal mode without taking damage.",
     },
     {
       id = "no_damage_4-3",
       name = "Flawless 4-3",
-      description = "Complete mission 4-3 without taking damage (not in easy mode).",
+      description = "Complete mission 4-3 in normal mode without taking damage.",
     },
     {
       id = "no_damage_4-4",
       name = "Flawless 4-4",
-      description = "Complete mission 4-4 without taking damage (not in easy mode).",
+      description = "Complete mission 4-4 in normal mode without taking damage.",
     },
     {
       id = "no_damage_5-1",
       name = "Flawless 5-1",
-      description = "Complete mission 5-1 without taking damage (not in easy mode).",
+      description = "Complete mission 5-1 in normal mode without taking damage.",
     },
     {
       id = "no_damage_5-2",
       name = "Flawless 5-2",
-      description = "Complete mission 5-2 without taking damage (not in easy mode).",
+      description = "Complete mission 5-2 in normal mode without taking damage.",
     },
     {
       id = "no_damage_5-3",
       name = "Flawless 5-3",
-      description = "Complete mission 5-3 without taking damage (not in easy mode).",
+      description = "Complete mission 5-3 in normal mode without taking damage.",
     },
     {
       id = "no_damage_6-B",
       name = "Flawless 6-B",
-      description = "Complete mission 6-B without taking damage (not in easy mode).",
+      description = "Complete mission 6-B in normal mode without taking damage.",
+    },
+    {
+      id = "no_damage_all",
+      name = "Perfectionist",
+      description = "Complete all missions in normal mode without taking damage.",
+      progressMax = 15
     },
   }
 }, false)

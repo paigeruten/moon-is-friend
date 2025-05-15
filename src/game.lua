@@ -168,6 +168,40 @@ function Game.updateRampUpDifficulty()
   end
 end
 
+function Game.increaseScore(points)
+  gs.score += points
+
+  if gs.mission.winType == "endless" then
+    achievements.advance("endless_hero", points)
+    if achievements.isGranted("endless_hero") then
+      Achievement.queue("endless_hero", true)
+    end
+
+    achievements.advance("endless_addict", points)
+    if achievements.isGranted("endless_addict") then
+      Achievement.queue("endless_addict", true)
+    end
+
+    if gs.missionId == "endless.s1" and gs.score >= 100 then
+      if achievements.grant("endless_one_moon_hundo") then
+        Achievement.queue("endless_one_moon_hundo", true)
+      end
+    elseif gs.missionId == "endless.s2" and gs.score >= 100 then
+      if achievements.grant("endless_two_moon_hundo") then
+        Achievement.queue("endless_two_moon_hundo", true)
+      end
+    elseif gs.missionId == "endless.s3" and gs.score >= 100 then
+      if achievements.grant("endless_three_moon_hundo") then
+        Achievement.queue("endless_three_moon_hundo", true)
+      end
+    elseif gs.mission.mode == "juggling" and gs.score >= 50 then
+      if achievements.grant("endless_expert_juggler") then
+        Achievement.queue("endless_expert_juggler", true)
+      end
+    end
+  end
+end
+
 function Game.flashMessage(message)
   gs.curMessage = message
   gs.curMessageAt = gs.frameCount
@@ -213,6 +247,13 @@ local function checkEndState()
     if gs.earth.pristine and not gs.easyMode then
       if achievements.grant("no_damage_" .. gs.missionId) then
         achievements.toasts.toast("no_damage_" .. gs.missionId)
+
+        if not achievements.isGranted("no_damage_all") then
+          achievements.advanceTo("no_damage_all", SaveData.countMissionsFlawless())
+          if achievements.isGranted("no_damage_all") then
+            achievements.toasts.toast("no_damage_all")
+          end
+        end
       end
     end
     if not achievements.isGranted("complete_all_missions") then
