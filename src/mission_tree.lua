@@ -263,6 +263,45 @@ function MissionTree.update()
   gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 8, kTextAlignment.center)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
+  local checkboxX, checkboxY = screenWidth - 97, 10
+  local checkboxSize = 12
+  gfx.setColor(gfx.kColorBlack)
+  gfx.fillRect(checkboxX, checkboxY, checkboxSize, checkboxSize)
+
+  -- gfx.setColor(gfx.kColorWhite)
+  -- gfx.setLineWidth(2)
+  -- gfx.drawRoundRect(checkboxX, checkboxY, checkboxSize, checkboxSize, 2)
+  -- gfx.setLineWidth(1)
+
+  if SaveData.getDifficulty() == 'easy' then
+    -- gfx.setColor(gfx.kColorWhite)
+    -- gfx.drawLine(checkboxX, checkboxY, checkboxX + checkboxSize, checkboxY + checkboxSize)
+    -- gfx.drawLine(checkboxX, checkboxY + checkboxSize, checkboxX + checkboxSize, checkboxY)
+    -- assets.gfx.whiteCheckmark:draw(checkboxX + 1, checkboxY + 2)
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    assets.gfx.checkmark:draw(checkboxX, checkboxY)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+  else
+    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+    assets.gfx.noCheckmark:draw(checkboxX, checkboxY)
+    gfx.setImageDrawMode(gfx.kDrawModeCopy)
+  end
+
+  gfx.setFont(assets.fonts.small)
+  gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+  local easyWidth, easyHeight = gfx.drawText('easy mode', screenWidth - 80, 8)
+  gfx.setImageDrawMode(gfx.kDrawModeCopy)
+
+  if gs.missionRow == 0 then
+    local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(screenWidth - 80, 8 + easyHeight + 2 + perlY, easyWidth, 3)
+  else
+    gfx.setColor(gfx.kColorWhite)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(screenWidth - 80, 8 + easyHeight + 1, easyWidth, 2)
+  end
+
   gfx.setFont(assets.fonts.small)
   local missionX = 25
   for columnNum, missionCol in ipairs(MISSION_TREE) do
@@ -275,7 +314,7 @@ function MissionTree.update()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(missionX + 13 - 28 + 1 + shakeX, 32 + 1, 61 - 2, 204 - 2, 5)
 
-    if gs.missionCol == columnNum then
+    if gs.missionCol == columnNum and gs.missionRow > 0 then
       gfx.setColor(gfx.kColorBlack)
       gfx.setLineWidth(2)
       gfx.drawRoundRect(missionX + 13 - 28 + 1 + 3 + shakeX, 32 + 1 + 3, 61 - 2 - 6, 204 - 2 - 6, 5)
@@ -357,47 +396,68 @@ function MissionTree.update()
     missionX += 64
   end
 
-  local cardWidth, cardHeight = 130, 70
-  local cardX, cardY = screenWidth - cardWidth - 8, screenHeight - cardHeight - 6
-  if gs.missionCol >= 4 then
-    cardX = 8
-  end
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(cardX - 3, cardY - 18, cardWidth + 6, cardHeight + 21, 10)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.setDitherPattern(0.5, gfx.image.kDitherTypeDiagonalLine)
-  gfx.fillRoundRect(cardX - 3, cardY - 18, cardWidth + 6, cardHeight + 21, 10)
+  if gs.missionId then
+    local cardWidth, cardHeight = 130, 70
+    local cardX, cardY = screenWidth - cardWidth - 8, screenHeight - cardHeight - 6
+    if gs.missionCol >= 4 then
+      cardX = 8
+    end
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX - 3, cardY - 18, cardWidth + 6, cardHeight + 21, 10)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeDiagonalLine)
+    gfx.fillRoundRect(cardX - 3, cardY - 18, cardWidth + 6, cardHeight + 21, 10)
 
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(cardX, cardY, cardWidth, cardHeight, 5)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(cardX + 15, cardY - 15, 40, 20, 5)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(cardX + cardWidth - 44, cardY - 15, 17, 20, 5)
-  gfx.setColor(gfx.kColorBlack)
-  gfx.drawRoundRect(cardX + cardWidth - 24, cardY - 15, 17, 20, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(cardX, cardY, cardWidth, cardHeight, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(cardX + 15, cardY - 15, 40, 20, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(cardX + cardWidth - 44, cardY - 15, 17, 20, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(cardX + cardWidth - 24, cardY - 15, 17, 20, 5)
 
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(cardX + 15 + 1, cardY - 15 + 1, 40 - 2, 20, 5)
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(cardX + cardWidth - 44 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
-  if SaveData.isMissionComplete(gs.missionId) then
-    assets.gfx.checkmark:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 5, gfx.kImageUnflipped, 2, 2, 9, 9)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX + 15 + 1, cardY - 15 + 1, 40 - 2, 20, 5)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX + cardWidth - 44 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
+    if SaveData.isMissionComplete(gs.missionId) then
+      assets.gfx.checkmark:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 5, gfx.kImageUnflipped, 2, 2, 9, 9)
+    else
+      assets.gfx.emptyCircle:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 4)
+    end
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX + cardWidth - 24 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
+    if achievements.isGranted("no_damage_" .. gs.missionId) then
+      assets.gfx.starIcon:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
+    else
+      assets.gfx.emptyCircle:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4)
+    end
+
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
+    gfx.drawText(gs.missionId, cardX + 15 + 9, cardY - 15 + 2)
+    gfx.drawText(MISSIONS[gs.missionId].card, cardX + 5, cardY + 5)
   else
-    assets.gfx.emptyCircle:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 4)
-  end
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(cardX + cardWidth - 24 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
-  if achievements.isGranted("no_damage_" .. gs.missionId) then
-    assets.gfx.starIcon:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
-  else
-    assets.gfx.emptyCircle:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4)
-  end
+    local cardWidth, cardHeight = 140, 70
+    local cardX, cardY = screenWidth - cardWidth - 8, screenHeight - cardHeight - 6
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX - 3, cardY - 3, cardWidth + 6, cardHeight + 6, 10)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeDiagonalLine)
+    gfx.fillRoundRect(cardX - 3, cardY - 3, cardWidth + 6, cardHeight + 6, 10)
 
-  gfx.setColor(gfx.kColorWhite)
-  gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
-  gfx.drawText(gs.missionId, cardX + 15 + 9, cardY - 15 + 2)
-  gfx.drawText(MISSIONS[gs.missionId].card, cardX + 5, cardY + 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(cardX, cardY, cardWidth, cardHeight, 5)
+
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
+
+    local easyModeDesc = SaveData.getDifficulty() == 'easy'
+      and "Easy mode is on.\n\nSome achievements\nwill be disabled."
+      or "Easy mode is off.\n\nTurn it on for a\nbit less stress!"
+    gfx.drawText(easyModeDesc, cardX + 5, cardY + 5)
+  end
 
   gs.frameCount += 1
 
@@ -405,21 +465,21 @@ function MissionTree.update()
     showUnlockMessage = false
     gs.missionRow += 1
     if gs.missionRow > #MISSION_TREE[gs.missionCol] then
-      gs.missionRow = 1
+      gs.missionRow = 0
     end
   elseif pd.buttonJustPressed(pd.kButtonUp) then
     showUnlockMessage = false
     gs.missionRow -= 1
-    if gs.missionRow == 0 then
+    if gs.missionRow == -1 then
       gs.missionRow = #MISSION_TREE[gs.missionCol]
     end
-  elseif pd.buttonJustPressed(pd.kButtonLeft) then
+  elseif pd.buttonJustPressed(pd.kButtonLeft) and gs.missionRow > 0 then
     showUnlockMessage = false
     if gs.missionCol > 1 then
       gs.missionCol -= 1
       gs.missionRow = 1
     end
-  elseif pd.buttonJustPressed(pd.kButtonRight) then
+  elseif pd.buttonJustPressed(pd.kButtonRight) and gs.missionRow > 0 then
     showUnlockMessage = false
     if gs.missionCol < gs.highestUnlocked then
       gs.missionCol += 1
@@ -434,8 +494,13 @@ function MissionTree.update()
   gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
 
   if pd.buttonJustReleased(pd.kButtonA) then
-    MissionIntro.switch()
-    assets.sfx.boop:play(77)
+    if gs.missionRow == 0 then
+      SaveData.setDifficulty(SaveData.getDifficulty() == 'easy' and 'normal' or 'easy')
+      assets.sfx.boop:play()
+    else
+      MissionIntro.switch()
+      assets.sfx.boop:play(77)
+    end
   end
 
   if pd.buttonJustReleased(pd.kButtonB) then

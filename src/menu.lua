@@ -4,10 +4,6 @@ local menu = pd.getSystemMenu()
 
 Menu = {}
 
-menu:addCheckmarkMenuItem('easy mode', SaveData.getDifficulty() == 'easy', function(checked)
-  SaveData.setDifficulty(checked and 'easy' or 'normal')
-end)
-
 menu:addCheckmarkMenuItem('screen shake', SaveData.isScreenShakeEnabled(), function(checked)
   SaveData.setScreenShakeEnabled(checked)
 end)
@@ -17,6 +13,10 @@ local inGameMenuItems = {}
 
 function Menu.addInGameMenuItems()
   Menu.reset()
+  table.insert(inGameMenuItems, (menu:addMenuItem('restart level', function()
+    Game.reset()
+    gs.scene = 'game'
+  end)))
   table.insert(inGameMenuItems, (menu:addMenuItem('back to title', function()
     Game.reset()
     Title.switch()
