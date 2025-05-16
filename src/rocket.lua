@@ -214,7 +214,7 @@ function Rocket.update()
         assets.sfx.shieldUp:play()
       elseif powerup == 'bomb' then
         gs.earth.bombs += 1
-        Game.flashMessage('+1 Bomb! (Ⓑ to use)')
+        Game.flashMessage('+1 Bomb!')
         assets.sfx.powerup:play()
       elseif powerup == 'nothing' then
         assets.sfx.point:play()
