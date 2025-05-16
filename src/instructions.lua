@@ -19,21 +19,54 @@ local pages = {
   {
     title = "How to play",
     text = {
-      "Use the crank to control the Moon and pull incoming meteors away from the Earth.",
-      "Press B to use a bomb and clear the screen of meteors.",
-      "Try to grab any supplies the Earth sends your way - they may contain extra health or various powerups."
+      "Use the crank to move the Moon and pull incoming meteors away from the Earth.",
+      "The Moon has strong gravity, but only affects meteors close to it.",
+      "Try to grab any supplies the Earth sends your way - they may contain extra health or various power-ups.",
     }
   },
   {
-    title = "Game modes",
+    title = "Power-ups",
     text = {
-      "Todo"
+      "Shield: Protects the Moon or the Earth from 1 hit.",
+      "Bomb: Destroys all meteors in its path. Press B to use. You can hold up to 3.",
+      "Extra suction: Replaces bombs in some game modes. Press and hold B to double your gravitational pull for a short time."
     }
   },
   {
-    title = "Tips",
+    title = "Missions",
     text = {
-      "Todo"
+      "Complete missions to unlock new game modes, and ultimately to save the Earth for good.",
+      "Each mission gets a checkmark upon completion, and a star if you completed it without taking damage.",
+      "Most, but not all missions need to be completed to reach the end of the game."
+    }
+  },
+  {
+    title = "Easy mode",
+    text = {
+      "If you are struggling with some missions, try turning on easy mode from the Select Mission screen. This changes the game in a few ways:",
+      "- Asteroids spawn less often\n"
+      .. "- You have 5 hearts instead of 3\n"
+      .. "- You do higher damage to bosses\n"
+      .. "- No rewards for not taking damage"
+    }
+  },
+  {
+    title = "Endless mode",
+    text = {
+      "In Endless mode, try to score as many points as you can until game over. "
+      .. "Meteors will spawn more frequently as time goes on.",
+      "+1 point for diverting a meteor off-screen\n"
+      .. "+3 points for catching a rocket when you are already at max health/bombs/shields\n"
+      .. "+5 points when two meteors collide"
+    }
+  },
+  {
+    title = "Juggling",
+    text = {
+      "In Juggling mode, meteors stay on-screen until they are destroyed. "
+      .. "The only way to destroy them is to make them collide with each other.",
+      "Each collision gives you +1 Health (and +5 Points in Endless mode).",
+      "Use extra suction (by holding B) to help maneuver the meteors in this mode."
     }
   },
   {
