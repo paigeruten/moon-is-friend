@@ -10,40 +10,42 @@ Instructions = {}
 local pages = {
   {
     title = "Story",
-    text = { "After a large-scale asteroid mining expedition gone wrong, "
-    .. "the Earth is now under a barrage of meteors, and is very scared.",
+    text = {
+      "After a large-scale asteroid mining\nexpedition gone wrong, "
+      .. "the Earth is now\nunder a barrage of meteors, and is very\nscared.",
       "Desparate to help its best friend, "
-      .. "the Moon wakes up from its deep slumber "
-      .. "and springs into action to protect the Earth." }
+      .. "the\nMoon wakes up from its deep slumber "
+      .. "and\nsprings into action to protect the Earth."
+    }
   },
   {
     title = "How to play",
     text = {
-      "Use the crank to move the Moon and pull incoming meteors away from the Earth.",
-      "The Moon has strong gravity, but only affects meteors close to it.",
-      "Try to grab any supplies the Earth sends your way - they may contain extra health or various power-ups.",
+      "Use the crank to move the Moon and pull\nincoming meteors away from the Earth.",
+      "The Moon has strong gravity, but it only\naffects meteors close to it.",
+      "Try to grab any supplies the Earth sends\nyour way. They may contain extra health\nor various power-ups.",
     }
   },
   {
     title = "Power-ups",
     text = {
-      "Shield: Protects the Moon or the Earth from 1 hit.",
-      "Bomb: Destroys all meteors in its path. Press B to use. You can hold up to 3.",
-      "Extra suction: Replaces bombs in some game modes. Press and hold B to double your gravitational pull for a short time."
+      "Shield: Protects the Moon or the Earth\nfrom 1 hit.",
+      "Bomb: Destroys all meteors in its path.\nPress B to use. You can hold up to 3.",
+      "Gravity booster: Replaces bombs in some\ngame modes. Press and hold B to double\nyour gravitational pull for a short time."
     }
   },
   {
     title = "Missions",
     text = {
-      "Complete missions to unlock new game modes, and ultimately to save the Earth for good.",
-      "Each mission gets a checkmark upon completion, and a star if you completed it without taking damage.",
-      "Most, but not all missions need to be completed to reach the end of the game."
+      "Missions take you on a journey to save\nthe Earth from the meteors, for good.",
+      "Each mission gets a checkmark upon\ncompletion, and a star if you completed it\nwithout taking damage.",
+      "Some missions unlock new game modes.\nNot all missions need to be completed to\nreach the end of the game."
     }
   },
   {
     title = "Easy mode",
     text = {
-      "If you are struggling with some missions, try turning on easy mode from the Select Mission screen. This changes the game in a few ways:",
+      "If you are struggling with some missions,\ntry turning on Easy mode from the Select\nMission screen. This changes the game in\na few ways:",
       "- Asteroids spawn less often\n"
       .. "- You have 5 hearts instead of 3\n"
       .. "- You do higher damage to bosses\n"
@@ -53,27 +55,28 @@ local pages = {
   {
     title = "Endless mode",
     text = {
-      "In Endless mode, try to score as many points as you can until game over. "
-      .. "Meteors will spawn more frequently as time goes on.",
+      "In Endless mode, try to score as many\npoints as you can until game over. "
+      .. "Meteors will spawn more frequently as\ntime goes on.",
       "+1 point for diverting a meteor off-screen\n"
-      .. "+3 points for catching a rocket when you are already at max health/bombs/shields\n"
+      .. "+3 points for catching a rocket when you\nare already at max health/bombs/shields\n"
       .. "+5 points when two meteors collide"
     }
   },
   {
     title = "Juggling",
     text = {
-      "In Juggling mode, meteors stay on-screen until they are destroyed. "
-      .. "The only way to destroy them is to make them collide with each other.",
-      "Each collision gives you +1 Health (and +5 Points in Endless mode).",
-      "Use extra suction (by holding B) to help maneuver the meteors in this mode."
+      "In Juggling mode, meteors stay on-screen\nuntil they are destroyed. "
+      .. "The only way to\ndestroy them is to make them collide\nwith each other.",
+      "Each collision gives you +1 Health (and +5\nPoints in Endless mode).",
+      "Use your gravity booster (by holding B) to\nmaneuver the meteors in this mode."
     }
   },
   {
     title = "About",
     text = {
-      "Made by Paige Ruten (aka pailey)",
-      "Source code:\n  github.com/paigeruten/moon-is-friend"
+      "\nMade by Paige Ruten (aka pailey)",
+      "\nFeedback is welcome!\n  paige.ruten@gmail.com",
+      "\nSource code:\n  github.com/paigeruten/moon-is-friend"
     }
   }
 }
@@ -108,7 +111,7 @@ function Instructions.update()
   local paddingX, paddingY = boxX + 10, titleY + 24
   local page = pages[curPage]
 
-  local maxChars = math.floor(gs.frameCount * 1.5)
+  local maxChars = math.floor(gs.frameCount * 3)
 
   gfx.setFont(assets.fonts.large)
   gfx.drawTextAligned('*' .. page.title .. '*', screenWidth // 2, titleY, kTextAlignment.center)

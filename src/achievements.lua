@@ -47,6 +47,12 @@ achievements.initialize({
       description = "Beat the game."
     },
     {
+      id = "complete_all_missions",
+      name = "Overachiever",
+      description = "Complete every mission.",
+      progressMax = 15
+    },
+    {
       id = "asteroid_collisions",
       name = "Collisionist",
       description = "Cause 100 pairs of meteors to collide with each other.",
@@ -68,35 +74,29 @@ achievements.initialize({
       description = "Have 4 shield power-ups active at the same time.",
     },
     {
-      id = "max_level_endless",
-      name = "Pure chaos",
-      description = "Reach the maximum level in Endless mode.",
-    },
-    {
       id = "max_powerups_endless",
       name = "Power-up hoarder",
       description = "Catch a rocket after maxing out all your power-ups in Endless mode.",
     },
     {
-      id = "complete_all_missions",
-      name = "Overachiever",
-      description = "Complete every mission.",
-      progressMax = 15
-    },
-    {
       id = "endless_one_moon_hundo",
-      name = "Single moon hundo",
+      name = "Single moon expert",
       description = "Get 100 points in an Endless run with one moon."
     },
     {
       id = "endless_two_moon_hundo",
-      name = "Double moon hundo",
+      name = "Double moon expert",
       description = "Get 100 points in an Endless run with two moons."
     },
     {
       id = "endless_three_moon_hundo",
-      name = "Triple moon hundo",
+      name = "Triple moon expert",
       description = "Get 100 points in an Endless run with three moons."
+    },
+    {
+      id = "max_level_endless",
+      name = "Pure chaos",
+      description = "Reach the maximum level in Endless mode.",
     },
     {
       id = "endless_expert_juggler",
