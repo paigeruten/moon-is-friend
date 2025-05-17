@@ -121,6 +121,20 @@ local function isRocketCollidingWithMoon(rocket)
   return nil
 end
 
+local function isMaxPowerUps()
+  if not gs.earth.hasShield or gs.earth.health < gs.earth.maxHealth or gs.earth.bombs < gs.earth.maxBombs then
+    return false
+  end
+
+  for _, moon in ipairs(gs.moons) do
+    if not moon.hasShield then
+      return false
+    end
+  end
+
+  return true
+end
+
 function Rocket.update()
   local numRockets = 0
   for rocketId, rocket in pairs(gs.rockets) do
@@ -285,11 +299,13 @@ function Rocket.update()
         or gs.frameCount - gs.lastRocketAt > gs.rocketMaxTime
     then
       if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
-        Rocket.spawn()
-        if gs.mission.winType == 'rocket' then
-          gs.lastRocketAt = gs.frameCount
-        else
-          Game.flashMessage('Supplies incoming!')
+        if gs.mission.winType == 'endless' or gs.mission.winType == 'rocket' or not isMaxPowerUps() then
+          Rocket.spawn()
+          if gs.mission.winType == 'rocket' then
+            gs.lastRocketAt = gs.frameCount
+          else
+            Game.flashMessage('Supplies incoming!')
+          end
         end
       end
     end

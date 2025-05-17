@@ -74,9 +74,10 @@ local pages = {
   {
     title = "About",
     text = {
-      "\nMade by Paige Ruten (aka pailey)",
-      "\nFeedback is welcome!\n  paige.ruten@gmail.com",
-      "\nSource code:\n  github.com/paigeruten/moon-is-friend"
+      "Made by Paige Ruten (aka pailey)",
+      "Feedback is welcome!\n  paige.ruten@gmail.com",
+      "Source code:\n  github.com/paigeruten/moon-is-friend",
+      "Made with:\n  Playdate SDK, PDFXR (sfx), Pixen (gfx)"
     }
   }
 }
