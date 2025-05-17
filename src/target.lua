@@ -143,13 +143,13 @@ function Target.update()
           end
           gs.asteroids = {}
         end
-      elseif math.random(1, 5) == 1 then
-        if math.random(1, 2) == 1 then
+      else
+        if math.random(1, 10) == 1 then
           assets.sfx.boom:play()
         end
-        for _ = 1, 32 do
+        for _ = 1, math.random(1, target.radius // 3) do
           local pVelX, pVelY = polarCoordinates(math.random() + 1, math.random() * 360)
-          local minRadius = math.floor((100 - target.splodeTtl) / 20) * 2 + 2
+          local minRadius = math.floor((100 - target.splodeTtl) / 100 * target.radius * 0.15) + 2
           Particle.spawn(
             target.pos.x + math.random(-target.radius, target.radius),
             target.pos.y + math.random(-target.radius, target.radius),
