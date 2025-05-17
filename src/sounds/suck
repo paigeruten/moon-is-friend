@@ -1,0 +1,51 @@
+{
+	"amp_mod": {
+		"arpeggio": [
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"arpeggio_enabled":false,
+		"center":0.47384184598923,
+		"delay_fade":0.015410988591611,
+		"delay_start":0,
+		"depth":0.12536868453026,
+		"enabled":true,
+		"phase":0,
+		"rate":15,
+		"start_phase":0.00060481880791485,
+		"type":5
+	},
+	"attack":0.054862212389708,
+	"curvature":0.52563786506653,
+	"decay":0.14373184740543,
+	"duration":0.34842985868454,
+	"freq_mod": {
+		"arpeggio": [
+			12.082606315613,
+			1.9667088985443,
+			4.4947729110718,
+			8.4725170135498,
+			2.7488379478455
+		],
+		"arpeggio_enabled":false,
+		"center":0.51055485010147,
+		"delay_fade":0,
+		"delay_start":0.048095114529133,
+		"depth":0.17479956150055,
+		"enabled":false,
+		"phase":0,
+		"rate":6.649974822998,
+		"start_phase":0.17333626747131,
+		"type":3
+	},
+	"lock_note_to_integer":false,
+	"name":"suck",
+	"note":59.942401885986,
+	"release":0.13694676756859,
+	"sustain":0.7857112288475,
+	"volume":0.50280225276947,
+	"wave":7
+}

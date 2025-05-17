@@ -20,6 +20,8 @@ Assets = {
     shieldUp = pdfxr.synth.new("sounds/shield-up"),
     win = pdfxr.synth.new("sounds/win2"),
     lose = pdfxr.synth.new("sounds/lose"),
+    omen = pdfxr.synth.new("sounds/omen"),
+    suck = pdfxr.synth.new("sounds/suck"),
     achievement = pd.sound.sampleplayer.new("vendor/achievements/assets/toastSound"),
   },
   gfx = {

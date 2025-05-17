@@ -17,6 +17,11 @@ function Game.init()
   Title.switch()
 end
 
+function Game.stopSounds()
+  assets.sfx.omen:stop()
+  assets.sfx.suck:stop()
+end
+
 function Game.reset()
   achievements.save()
 
@@ -142,6 +147,8 @@ function Game.reset()
   if type(gs.difficulty) == 'table' then
     Game.updateRampUpDifficulty()
   end
+
+  Game.stopSounds()
 end
 
 function Game.updateRampUpDifficulty()
@@ -228,6 +235,7 @@ local function checkEndState()
   }
 
   if win then
+    Game.stopSounds()
     gs.endState = 'complete'
     gs.firstTimeCompleted = not SaveData.isMissionComplete(gs.missionId)
     local prevHighestUnlocked = MissionTree.highestUnlockedColumn()
@@ -270,6 +278,7 @@ local function checkEndState()
     )
     assets.sfx.win:play()
   elseif gs.earth.health <= 0 then
+    Game.stopSounds()
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
       gs.isHighScore = SaveData.checkAndSaveHighScore(gs.missionId, gs.score)

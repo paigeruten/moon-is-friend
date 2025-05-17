@@ -44,6 +44,9 @@ end
 
 function Target.update()
   if gs.mission.winType == "boss" and gs.bossPhase == 0 then
+    if gs.bossPhaseFrame == 100 then
+      assets.sfx.omen:start()
+    end
     if gs.bossPhaseFrame > 100 then
       if gs.bossPhaseFrame % 4 == 0 then
         gs.earth.pos.x -= 1
@@ -63,6 +66,7 @@ function Target.update()
 
     if gs.bossPhaseFrame == 300 then
       gs.bossPhase = 1
+      assets.sfx.omen:stop()
     end
   elseif gs.mission.winType == "boss" and gs.bossPhase == 3 then
     if gs.bossPhaseFrame < 200 then
@@ -131,6 +135,7 @@ function Target.update()
           end
           gs.rockets = {}
           gs.curMessage = nil
+          Game.stopSounds()
 
           for asteroidId, asteroid in pairs(gs.asteroids) do
             Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
