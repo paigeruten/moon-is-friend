@@ -280,7 +280,7 @@ function Rocket.update()
           if gs.mission.winType == 'rocket' then
             if gs.rocketsCaught > 0 then
               gs.rocketsCaught -= 1
-              Game.flashMessage('Ouch! -1 rocket')
+              Game.flashMessage('Oops! -1 rocket')
             end
           else
             gs.lastRocketAt = gs.frameCount

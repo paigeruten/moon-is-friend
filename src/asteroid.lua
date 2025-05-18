@@ -53,18 +53,22 @@ function Asteroid.spawn()
   local posX, posY = polarCoordinates(250, angle)
   posX += gs.earth.pos.x
   posY += gs.earth.pos.y
-  local chooseRadius = math.random()
   local asteroidRadius
-  if chooseRadius < 0.6 then
-    asteroidRadius = 3
-  elseif chooseRadius < 0.9 then
-    asteroidRadius = 4
-  elseif chooseRadius < 0.95 then
-    asteroidRadius = 5
-  elseif chooseRadius < 0.99 then
-    asteroidRadius = 6
+  if gs.mission.mode == 'juggling' then
+    asteroidRadius = math.random(4, 5)
   else
-    asteroidRadius = 7
+    local chooseRadius = math.random()
+    if chooseRadius < 0.6 then
+      asteroidRadius = 3
+    elseif chooseRadius < 0.9 then
+      asteroidRadius = 4
+    elseif chooseRadius < 0.95 then
+      asteroidRadius = 5
+    elseif chooseRadius < 0.99 then
+      asteroidRadius = 6
+    else
+      asteroidRadius = 7
+    end
   end
   local speed
   if posX < 0 or posX >= screenWidth then
