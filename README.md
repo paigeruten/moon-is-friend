@@ -4,11 +4,20 @@ An arcade game for [Playdate](https://play.date/) made in one weekend, for [Play
 
 Download the game here: https://paigeruten.itch.io/moon-is-friend
 
-![](screenshots/title.png) ![](screenshots/in-game.png)
-
-![](screenshots/mission-select.png) ![](screenshots/gameplay.gif)
-
-![](screenshots/boss.png) ![](screenshots/achievements.png)
+<table align="center">
+    <tr>
+        <td align="center"><img src="screenshots/title.png?raw=true" alt="title"></td>
+        <td align="center"><img src="screenshots/in-game.png?raw=true" alt="in-game"></td>
+    </tr>
+    <tr>
+        <td align="center"><img src="screenshots/mission-select.png?raw=true" alt="mission-select"></td>
+        <td align="center"><img src="screenshots/gameplay.gif?raw=true" alt="gameplay"></td>
+    </tr>
+    <tr>
+        <td align="center"><img src="screenshots/boss.png?raw=true" alt="boss"></td>
+        <td align="center"><img src="screenshots/achievements.png?raw=true" alt="achievements"></td>
+    </tr>
+</table>
 
 > #### 2038: The Moon Wakes Up
 >
