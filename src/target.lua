@@ -151,15 +151,15 @@ function Target.update()
         if math.random(1, 10) == 1 then
           assets.sfx.boom:play()
         end
-        for _ = 1, math.random(1, target.radius // 3) do
-          local pVelX, pVelY = polarCoordinates(math.random() + 1, math.random() * 360)
+        for _ = 1, math.random(1, target.radius // 10) do
           local minRadius = math.floor((100 - target.splodeTtl) / 100 * target.radius * 0.15) + 2
+          local pVelX, pVelY = polarCoordinates(math.random() + 1, math.random() * 360)
           Particle.spawn(
             target.pos.x + math.random(-target.radius, target.radius),
             target.pos.y + math.random(-target.radius, target.radius),
             pVelX,
             pVelY,
-            10,
+            15,
             minRadius,
             minRadius + 2,
             0.2,

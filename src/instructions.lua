@@ -55,7 +55,7 @@ local pages = {
   {
     title = "Endless mode",
     text = {
-      "In Endless mode, try to score as many\npoints as you can until game over. "
+      "In Endless mode, try to score as many\npoints as you can until game over.\n"
       .. "Meteors will spawn more frequently as\ntime goes on.",
       "+1 point for diverting a meteor off-screen\n"
       .. "+3 points for catching a rocket when you\nare already at max health/bombs/shields\n"
@@ -76,8 +76,7 @@ local pages = {
     text = {
       "Made by Paige Ruten (aka pailey)",
       "Feedback is welcome!\n  paige.ruten@gmail.com",
-      "Source code:\n  github.com/paigeruten/moon-is-friend",
-      "Made with:\n  Playdate SDK, PDFXR (sfx), Pixen (gfx)"
+      "Source code:\n  github.com/paigeruten/moon-is-friend"
     }
   }
 }

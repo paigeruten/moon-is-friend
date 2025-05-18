@@ -61,8 +61,8 @@ function Moon.draw()
   for _, moon in ipairs(gs.moons) do
     if gs.extraSuction and not gs.endState then
       gfx.setColor(gfx.kColorWhite)
-      for _ = 1, 20 do
-        local suctionX, suctionY = polarCoordinates(moon.radius + 5, math.random() * 360)
+      for _ = 1, 40 do
+        local suctionX, suctionY = polarCoordinates(moon.radius + math.random(5, 6), math.random() * 360)
         gfx.drawPixel(moon.pos.x + suctionX, moon.pos.y + suctionY)
       end
     end

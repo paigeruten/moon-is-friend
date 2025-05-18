@@ -82,45 +82,13 @@
     * [x] "Campaign" goes to mission selection tree
     * [x] "Endless" goes to mode selection (survival vs. juggling vs. target practice, # of moons)
     * [x] "High scores" shows high score for each endless mode (and each # of moons?)
+* [ ] Fix target splode slowdown
+* [ ] Flawless juggling should be allowed on easy mode
+* [x] Can hardly see the gravity booster circle
 * [x] More legible font
 * [ ] Music
 * [ ] New sound for triggering bomb
 * [x] Quieter coin sound
-* [ ] Write mission intros
-    * 1-1
-        * Tip: Diverting asteroids often requires very little movement from the Moon.
-    * 1-2
-    * 2-1
-    * 2-2
-    * 2-3
-    * 2-4
-    * 3-B
-    * 4-1
-    * 4-2
-    * 4-3
-    * 4-4
-    * 5-1
-    * 5-2
-    * 5-3
-    * 6-B
-* [ ] Write manual
-    * Story
-    * Gravity radius
-    * Rockets and power-ups
-    * Shields
-    * Bombs
-    * Extra suction
-    * Checkmarks and stars
-    * Don't have to complete every mission
-    * Easy mode
-    * Endless
-        * Difficulty ramp-up
-        * Scoring
-    * Juggling
-        * Appears in both missions and endless
-        * Scoring
-        * No power-ups, but each collision gives +1 health
-    * Credits
 * [ ] Achievements
     * [x] Create card image for trophy case
     * [x] Beat the first boss

@@ -189,17 +189,17 @@ function Game.increaseScore(points)
       Achievement.queue("endless_addict", true)
     end
 
-    if gs.missionId == "endless.s1" and gs.score >= 100 then
-      if achievements.grant("endless_one_moon_hundo") then
-        Achievement.queue("endless_one_moon_hundo", true)
+    if gs.missionId == "endless.s1" and gs.score >= 200 then
+      if achievements.grant("endless_one_moon_expert") then
+        Achievement.queue("endless_one_moon_expert", true)
       end
     elseif gs.missionId == "endless.s2" and gs.score >= 100 then
-      if achievements.grant("endless_two_moon_hundo") then
-        Achievement.queue("endless_two_moon_hundo", true)
+      if achievements.grant("endless_two_moon_expert") then
+        Achievement.queue("endless_two_moon_expert", true)
       end
     elseif gs.missionId == "endless.s3" and gs.score >= 100 then
-      if achievements.grant("endless_three_moon_hundo") then
-        Achievement.queue("endless_three_moon_hundo", true)
+      if achievements.grant("endless_three_moon_expert") then
+        Achievement.queue("endless_three_moon_expert", true)
       end
     elseif gs.mission.mode == "juggling" and gs.score >= 50 then
       if achievements.grant("endless_expert_juggler") then

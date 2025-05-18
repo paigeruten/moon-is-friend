@@ -79,17 +79,17 @@ achievements.initialize({
       description = "Catch a rocket after maxing out all your power-ups in Endless mode.",
     },
     {
-      id = "endless_one_moon_hundo",
+      id = "endless_one_moon_expert",
       name = "Single moon expert",
-      description = "Get 100 points in an Endless run with one moon."
+      description = "Get 200 points in an Endless run with one moon."
     },
     {
-      id = "endless_two_moon_hundo",
+      id = "endless_two_moon_expert",
       name = "Double moon expert",
       description = "Get 100 points in an Endless run with two moons."
     },
     {
-      id = "endless_three_moon_hundo",
+      id = "endless_three_moon_expert",
       name = "Triple moon expert",
       description = "Get 100 points in an Endless run with three moons."
     },

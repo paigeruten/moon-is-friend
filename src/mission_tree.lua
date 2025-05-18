@@ -62,7 +62,7 @@ MISSIONS = {
     difficulty = 125,
     card = "Type: Survive\nGoal: 1 minute\nChaos: **\nMoons: 1",
     introText = {
-      "After a short rest, you see a long wave\nof meteors approaching.",
+      "After a short rest, you see an even\nlonger line of meteors approaching.",
       "Defend yourself and the Earth for 60\nseconds to complete this mission.",
     }
   },
@@ -209,7 +209,7 @@ MISSIONS = {
     unlockMessage = "You've unlocked Endless mode (3 Moons)!",
     card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 3",
     introText = {
-      "Another visiting moon, named Io, has\ndecided to join! Can the three of you\nwork together to keep the Earth safe?",
+      "Another visiting moon, called Io, has\ndecided to join! Can the three of you\nwork together to keep the Earth safe?",
       "Survive a gentler wave of meteors for\n2 minutes to complete this mission.",
     }
   },
