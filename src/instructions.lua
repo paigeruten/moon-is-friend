@@ -76,7 +76,8 @@ local pages = {
     text = {
       "Made by Paige Ruten (aka pailey)",
       "Feedback is welcome!\n  paige.ruten@gmail.com",
-      "Source code:\n  github.com/paigeruten/moon-is-friend"
+      "Source code:\n  github.com/paigeruten/moon-is-friend",
+      "Version: " .. VERSION
     }
   }
 }
