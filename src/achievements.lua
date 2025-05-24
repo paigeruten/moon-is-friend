@@ -236,6 +236,10 @@ function Achievement.draw()
 end
 
 function Achievement.queue(achievementId, showIcon)
+  if #achievementQueue >= 10 then
+    -- failsafe to protect against any endlessly looping achievements
+    return
+  end
   table.insert(achievementQueue, achievementId)
   if showIcon then
     gs.achievementTtl = 100

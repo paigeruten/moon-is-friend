@@ -179,14 +179,18 @@ function Game.increaseScore(points)
   gs.score += points
 
   if gs.mission.winType == "endless" then
-    achievements.advance("endless_hero", points)
-    if achievements.isGranted("endless_hero") then
-      Achievement.queue("endless_hero", true)
+    if not achievements.isGranted("endless_hero") then
+      achievements.advance("endless_hero", points)
+      if achievements.isGranted("endless_hero") then
+        Achievement.queue("endless_hero", true)
+      end
     end
 
-    achievements.advance("endless_addict", points)
-    if achievements.isGranted("endless_addict") then
-      Achievement.queue("endless_addict", true)
+    if not achievements.isGranted("endless_addict") then
+      achievements.advance("endless_addict", points)
+      if achievements.isGranted("endless_addict") then
+        Achievement.queue("endless_addict", true)
+      end
     end
 
     if gs.missionId == "endless.s1" and gs.score >= 200 then
