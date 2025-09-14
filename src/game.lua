@@ -64,6 +64,7 @@ function Game.reset()
   end
   gs.earth = {
     pos = { x = screenWidth // 2 + sidebarWidth // 2, y = screenHeight // 2 },
+    basePos = { x = screenWidth // 2 + sidebarWidth // 2, y = screenHeight // 2 },
     radius = 14,
     mass = 0.75,
     pristine = true,
@@ -298,6 +299,7 @@ end
 
 function Game.update()
   if not gs.endState and not pd.isCrankDocked() then
+    Earth.update()
     Moon.update()
     Bomb.update()
     Target.update()

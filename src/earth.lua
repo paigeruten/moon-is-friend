@@ -5,6 +5,18 @@ local assets = Assets
 
 Earth = {}
 
+function Earth.update()
+  if gs.earth.isSafe then
+    gs.earth.pos.x = gs.earth.basePos.x
+    gs.earth.pos.y = gs.earth.basePos.y
+  else
+    local perlX = math.min(1, math.max(-1, gfx.perlin((gs.frameCount % 166) / 166, 0, 0, 0) * 10 - 5))
+    local perlY = math.min(1, math.max(-1, gfx.perlin(0, (gs.frameCount % 166) / 166, 0, 0) * 10 - 5))
+    gs.earth.pos.x = gs.earth.basePos.x + perlX
+    gs.earth.pos.y = gs.earth.basePos.y + perlY
+  end
+end
+
 function Earth.draw()
   gfx.setColor(gfx.kColorBlack)
   gfx.fillCircleAtPoint(gs.earth.pos.x, gs.earth.pos.y, gs.earth.radius)

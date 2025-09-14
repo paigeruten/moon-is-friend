@@ -20,19 +20,19 @@ end
 function Moon.update()
   local crankAngle = gs.moons[1].holdAngle or pd.getCrankPosition()
   local moonX, moonY = polarCoordinates(MOON_DISTANCE_FROM_EARTH, crankAngle)
-  gs.moons[1].pos.x = gs.earth.pos.x + moonX
-  gs.moons[1].pos.y = gs.earth.pos.y + moonY
+  gs.moons[1].pos.x = gs.earth.basePos.x + moonX
+  gs.moons[1].pos.y = gs.earth.basePos.y + moonY
   if #gs.moons == 2 then
-    gs.moons[2].pos.x = gs.earth.pos.x - moonX
-    gs.moons[2].pos.y = gs.earth.pos.y - moonY
+    gs.moons[2].pos.x = gs.earth.basePos.x - moonX
+    gs.moons[2].pos.y = gs.earth.basePos.y - moonY
   elseif #gs.moons == 3 then
     local moon2X, moon2Y = polarCoordinates(MOON_DISTANCE_FROM_EARTH, crankAngle + 120)
-    gs.moons[2].pos.x = gs.earth.pos.x + moon2X
-    gs.moons[2].pos.y = gs.earth.pos.y + moon2Y
+    gs.moons[2].pos.x = gs.earth.basePos.x + moon2X
+    gs.moons[2].pos.y = gs.earth.basePos.y + moon2Y
 
     local moon3X, moon3Y = polarCoordinates(MOON_DISTANCE_FROM_EARTH, crankAngle + 240)
-    gs.moons[3].pos.x = gs.earth.pos.x + moon3X
-    gs.moons[3].pos.y = gs.earth.pos.y + moon3Y
+    gs.moons[3].pos.x = gs.earth.basePos.x + moon3X
+    gs.moons[3].pos.y = gs.earth.basePos.y + moon3Y
   end
 
   if gs.earth.maxBombs == 0 and gs.bossPhase < 3 then

@@ -49,7 +49,7 @@ function Target.update()
     end
     if gs.bossPhaseFrame > 100 then
       if gs.bossPhaseFrame % 4 == 0 then
-        gs.earth.pos.x -= 1
+        gs.earth.basePos.x -= 1
         for _, star in ipairs(gs.stars) do
           star.x -= 1
           if star.x < 0 then
@@ -71,7 +71,7 @@ function Target.update()
   elseif gs.mission.winType == "boss" and gs.bossPhase == 3 then
     if gs.bossPhaseFrame < 200 then
       if gs.bossPhaseFrame % 4 == 0 then
-        gs.earth.pos.x += 1
+        gs.earth.basePos.x += 1
         for _, star in ipairs(gs.stars) do
           star.x += 1
           if star.x >= screenWidth then
@@ -91,7 +91,7 @@ function Target.update()
           moon.holdAngle -= 360
         end
       else
-        moon.holdAngle = math.floor(Util.angleFromVec(moon.pos.x - gs.earth.pos.x, moon.pos.y - gs.earth.pos.y))
+        moon.holdAngle = math.floor(Util.angleFromVec(moon.pos.x - gs.earth.basePos.x, moon.pos.y - gs.earth.basePos.y))
       end
     end
 
