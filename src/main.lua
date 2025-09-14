@@ -70,6 +70,6 @@ function pd.update()
   end
 
   if gs.scene ~= 'mission-tree' then
-    --pd.drawFPS(screenWidth - 20, screenHeight - 15)
+    pd.drawFPS(screenWidth - 20, screenHeight - 15)
   end
 end

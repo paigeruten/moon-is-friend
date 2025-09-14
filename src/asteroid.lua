@@ -6,6 +6,10 @@ local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
 local sidebarWidth = SIDEBAR_WIDTH
 
+local pathSegments = PATH_SEGMENTS
+local pathSegmentLength = PATH_SEGMENT_LENGTH
+local pathLength = pathSegmentLength * pathSegments
+
 local polarCoordinates = Util.polarCoordinates
 local angleFromVec = Util.angleFromVec
 
@@ -87,7 +91,10 @@ function Asteroid.spawn()
     initialVel = { x = -velX, y = -velY },
     radius = asteroidRadius,
     state = 'entering',
+    path = {},
+    lastPathState = { frame = 1, velX = 0, velY = 0 },
   }
+  Asteroid.resetPath(gs.asteroids[id])
   gs.numAsteroids += 1
   return id
 end
@@ -107,8 +114,11 @@ function Asteroid.spawnFromTarget(target)
     initialVel = { x = velX, y = velY },
     radius = 4,
     state = 'active',
+    path = {},
+    lastPathState = { frame = 1, velX = 0, velY = 0 },
     bossSafeTtl = 50,
   }
+  Asteroid.resetPath(gs.asteroids[id])
   gs.numAsteroids += 1
   return id
 end
@@ -122,41 +132,163 @@ function Asteroid.despawn(id)
   end
 end
 
-function Asteroid.closestAsteroidDirection()
-  local dirX, dirY = 0, 0
-  if gs.mission.winType == 'boss' then
-    dirX = 1
+function Asteroid.resetPath(asteroid)
+  local curLength = #asteroid.path
+  for i = 1, pathLength do
+    if i > curLength then
+      asteroid.path[i] = {}
+    end
+    asteroid.path[i].x = asteroid.pos.x
+    asteroid.path[i].y = asteroid.pos.y
   end
+  asteroid.lastPathState.frame = 1
+end
+
+function Asteroid.resetAllPaths()
+  for _, asteroid in pairs(gs.asteroids) do
+    Asteroid.resetPath(asteroid)
+  end
+end
+
+function playdate.mirrorStarted()
+  pathSegments = MIRROR_PATH_SEGMENTS
+  pathSegmentLength = MIRROR_PATH_SEGMENT_LENGTH
+  pathLength = pathSegmentLength * pathSegments
+
+  Asteroid.resetAllPaths()
+end
+
+function playdate.mirrorEnded()
+  pathSegments = PATH_SEGMENTS
+  pathSegmentLength = PATH_SEGMENT_LENGTH
+  pathLength = pathSegmentLength * pathSegments
+
+  Asteroid.resetAllPaths()
+end
+
+function Asteroid.closestAsteroidDirection()
   local minDistance = nil
+  local minEarthVecX = nil
+  local minEarthVecY = nil
   for _, asteroid in pairs(gs.asteroids) do
     local earthVecX, earthVecY = asteroid.pos.x - gs.earth.pos.x, asteroid.pos.y - gs.earth.pos.y
     local distanceSquared = earthVecX * earthVecX + earthVecY * earthVecY
     if minDistance == nil or distanceSquared < minDistance then
       minDistance = distanceSquared
-      local distance = math.sqrt(distanceSquared)
-      dirX, dirY = earthVecX / distance, earthVecY / distance
+      minEarthVecX = earthVecX
+      minEarthVecY = earthVecY
     end
   end
-  return dirX, dirY
+
+  if minDistance then
+    local distance = math.sqrt(minDistance)
+    return minEarthVecX / distance, minEarthVecY / distance
+  elseif gs.mission.winType == 'boss' then
+    return 1, 0
+  else
+    return 0, 0
+  end
+end
+
+local function posIsOnScreen(x, y, r)
+  return x + r >= sidebarWidth and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
 end
 
 function Asteroid.isOnScreen(asteroid)
-  local x, y, r = asteroid.pos.x, asteroid.pos.y, asteroid.radius
-  return x + r >= sidebarWidth and x - r <= screenWidth and y + r >= 0 and y - r <= screenHeight
+  return posIsOnScreen(asteroid.pos.x, asteroid.pos.y, asteroid.radius)
 end
 
 local isAsteroidOnScreen = Asteroid.isOnScreen
 
+local function areCirclesCollidingRaw(ax, ay, ar, bx, by, br)
+  local dx, dy = bx - ax, by - ay
+  local distanceSquared = dx * dx + dy * dy
+  local radiusSum = ar + br
+  return distanceSquared <= radiusSum * radiusSum
+end
+
 function Asteroid.areCirclesColliding(centerA, radiusA, centerB, radiusB)
-  local dx, dy = centerB.x - centerA.x, centerB.y - centerA.y
-  local distance = math.sqrt(dx * dx + dy * dy)
-  return distance <= radiusA + radiusB
+  return areCirclesCollidingRaw(centerA.x, centerA.y, radiusA, centerB.x, centerB.y, radiusB)
 end
 
 local areCirclesColliding = Asteroid.areCirclesColliding
 
 local function clamp(value, low, high)
   return math.min(high, math.max(low, value))
+end
+
+local function calculateAsteroidPath(steps, x, y, velX, velY, radius, isOnScreen, stopWhenOffScreen, stopOnCollision,
+                                     callback)
+  local earthX, earthY = gs.earth.pos.x, gs.earth.pos.y
+  local earthMass = gs.earth.mass
+  local moonGravityRadiusSquared = gs.moons[1].gravityRadius * gs.moons[1].gravityRadius
+  local collided = false
+
+  for i = 1, steps do
+    if not collided and (not stopWhenOffScreen or posIsOnScreen(x, y, radius)) then
+      local earthVecX, earthVecY = earthX - x, earthY - y
+      local earthDistanceSquared = earthVecX * earthVecX + earthVecY * earthVecY
+      local accX = earthVecX * (earthMass / earthDistanceSquared)
+      local accY = earthVecY * (earthMass / earthDistanceSquared)
+
+      if isOnScreen then
+        for _, moon in ipairs(gs.moons) do
+          local moonVecX, moonVecY = moon.pos.x - x, moon.pos.y - y
+          local moonDistanceSquared = moonVecX * moonVecX + moonVecY * moonVecY
+          if moonDistanceSquared <= moonGravityRadiusSquared then
+            local moonMass = moon.mass
+            if gs.extraSuction then
+              moonMass *= 2
+            end
+            accX += moonVecX * (moonMass / moonDistanceSquared)
+            accY += moonVecY * (moonMass / moonDistanceSquared)
+          end
+        end
+      end
+
+      if gs.mission.mode == 'juggling' then
+        if (x < sidebarWidth + radius and velX < 0) or (x > screenWidth - radius and velX > 0) then
+          velX = -velX
+          velX *= 0.65
+          velY *= 0.65
+        elseif (y < radius and velY < 0) or (y > screenHeight - radius and velY > 0) then
+          velY = -velY
+          velX *= 0.65
+          velY *= 0.65
+        end
+      end
+
+      velX += accX
+      velY += accY
+      x += velX
+      y += velY
+    end
+
+    if callback then
+      callback(i, x, y)
+    end
+
+    -- Only used for showing asteroid paths. Actual collision detection is done elsewhere.
+    if stopOnCollision then
+      if areCirclesCollidingRaw(x, y, radius, gs.earth.pos.x, gs.earth.pos.y, gs.earth.radius + (gs.earth.hasShield and 4 or 0)) then
+        collided = true
+      end
+
+      for _, moon in ipairs(gs.moons) do
+        if areCirclesCollidingRaw(x, y, radius, moon.pos.x, moon.pos.y, moon.radius + (moon.hasShield and 3 or 0)) then
+          collided = true
+        end
+      end
+
+      for _, target in pairs(gs.targets) do
+        if areCirclesCollidingRaw(x, y, radius, target.pos.x, target.pos.y, target.radius) then
+          collided = true
+        end
+      end
+    end
+  end
+
+  return x, y, velX, velY
 end
 
 function Asteroid.update()
@@ -175,42 +307,68 @@ function Asteroid.update()
     end
   end
 
+  if pd.buttonJustPressed(pd.kButtonUp) then
+    gs.showAsteroidPaths = not gs.showAsteroidPaths
+    if gs.showAsteroidPaths then
+      Asteroid.resetAllPaths()
+    end
+  end
+
   local idsToRemove = {}
   for id, asteroid in pairs(gs.asteroids) do
     local isOnScreen = isAsteroidOnScreen(asteroid)
-    local earthVecX, earthVecY = gs.earth.pos.x - asteroid.pos.x, gs.earth.pos.y - asteroid.pos.y
-    local earthMass = gs.earth.mass
-    local earthDistanceSquared = earthVecX * earthVecX + earthVecY * earthVecY
-    local accX = earthVecX * (earthMass / earthDistanceSquared)
-    local accY = earthVecY * (earthMass / earthDistanceSquared)
-    for _, moon in ipairs(gs.moons) do
-      local moonVecX, moonVecY = moon.pos.x - asteroid.pos.x, moon.pos.y - asteroid.pos.y
-      local moonDistanceSquared = moonVecX * moonVecX + moonVecY * moonVecY
-      local moonDistance = math.sqrt(moonDistanceSquared)
-      if isOnScreen and moonDistance <= moon.gravityRadius then
-        local moonMass = moon.mass
-        if gs.extraSuction then
-          moonMass *= 2
+
+    asteroid.pos.x, asteroid.pos.y, asteroid.vel.x, asteroid.vel.y = calculateAsteroidPath(
+      1,
+      asteroid.pos.x,
+      asteroid.pos.y,
+      asteroid.vel.x,
+      asteroid.vel.y,
+      asteroid.radius,
+      isOnScreen,
+      false,
+      false
+    )
+
+    if gs.showAsteroidPaths and isOnScreen then
+      local asteroidPath = asteroid.path
+      local lastFrame = asteroid.lastPathState.frame
+      local pathX, pathY, pathVelX, pathVelY
+      if lastFrame == 1 then
+        pathX = asteroid.pos.x
+        pathY = asteroid.pos.y
+        pathVelX = asteroid.vel.x
+        pathVelY = asteroid.vel.y
+      else
+        pathX = asteroid.path[lastFrame - 1].x
+        pathY = asteroid.path[lastFrame - 1].y
+        pathVelX = asteroid.lastPathState.velX
+        pathVelY = asteroid.lastPathState.velY
+      end
+
+      local _, _, lastVelX, lastVelY = calculateAsteroidPath(
+        pathSegmentLength,
+        pathX,
+        pathY,
+        pathVelX,
+        pathVelY,
+        asteroid.radius,
+        isOnScreen,
+        gs.mission.mode ~= 'juggling',
+        true,
+        function(i, curX, curY)
+          asteroidPath[lastFrame + i - 1].x = curX
+          asteroidPath[lastFrame + i - 1].y = curY
         end
-        accX += moonVecX * (moonMass / moonDistanceSquared)
-        accY += moonVecY * (moonMass / moonDistanceSquared)
+      )
+
+      asteroid.lastPathState.frame = lastFrame + pathSegmentLength
+      if asteroid.lastPathState.frame > pathLength then
+        asteroid.lastPathState.frame = 1
       end
+      asteroid.lastPathState.velX = lastVelX
+      asteroid.lastPathState.velY = lastVelY
     end
-    if gs.mission.mode == 'juggling' then
-      if (asteroid.pos.x < sidebarWidth + asteroid.radius and asteroid.vel.x < 0) or (asteroid.pos.x > screenWidth - asteroid.radius and asteroid.vel.x > 0) then
-        asteroid.vel.x = -asteroid.vel.x
-        asteroid.vel.x *= 0.65
-        asteroid.vel.y *= 0.65
-      elseif (asteroid.pos.y < asteroid.radius and asteroid.vel.y < 0) or (asteroid.pos.y > screenHeight - asteroid.radius and asteroid.vel.y > 0) then
-        asteroid.vel.y = -asteroid.vel.y
-        asteroid.vel.x *= 0.65
-        asteroid.vel.y *= 0.65
-      end
-    end
-    asteroid.vel.x += accX
-    asteroid.vel.y += accY
-    asteroid.pos.x += asteroid.vel.x
-    asteroid.pos.y += asteroid.vel.y
 
     if asteroid.bossSafeTtl then
       asteroid.bossSafeTtl -= 1
@@ -379,6 +537,8 @@ function Asteroid.draw()
   gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
   for _, asteroid in pairs(gs.asteroids) do
     if Asteroid.isOnScreen(asteroid) then
+      gfx.setColor(gfx.kColorWhite)
+      gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
       gfx.fillCircleAtPoint(asteroid.pos.x, asteroid.pos.y, asteroid.radius)
 
       -- Spawn a particle for the asteroid tail every frame
@@ -408,6 +568,17 @@ function Asteroid.draw()
         maxRadius,
         0.5
       )
+
+      if gs.showAsteroidPaths then
+        gfx.setColor(gfx.kColorWhite)
+        gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+        local path = asteroid.path
+        for i = 1, pathLength, 3 do
+          local avgX = (path[i].x + path[i + 1].x + path[i + 2].x) / 3
+          local avgY = (path[i].y + path[i + 1].y + path[i + 2].y) / 3
+          gfx.fillCircleAtPoint(avgX, avgY, 1)
+        end
+      end
     elseif (gs.frameCount // 10) % 3 ~= 0 then
       if asteroid.pos.y < 0 then
         assets.gfx.arrowUp:drawAnchored(clamp(asteroid.pos.x, sidebarWidth, screenWidth - 1), 0, 0.5, 0)
