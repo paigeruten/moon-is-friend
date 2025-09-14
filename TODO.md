@@ -1,5 +1,21 @@
 # Todo
 
+## For Catalog release
+
+* [x] Asteroid paths
+    * [ ] Better way of toggling this
+* [x] Fidgety Earth
+* [ ] Difficulty tweaks
+    * [ ] The "Easy mode" checkbox should be changed to "Hard mode", so that the old "Easy mode" becomes the default/standard. Difficulty of each level can be tweaked/balanced from there. Stars should be earned by playing on "Hard mode" instead of playing flawlessly.
+    * [ ] In boss fights, don't make asteroids come directly from the left of Earth (maybe in hard mode...)
+* [ ] Global scoreboards
+* [ ] Zen/Practice mode (constant difficulty, no damage, probably a setting within Endless mode)
+* [ ] Performance tweaks
+* [ ] Update story text
+* [ ] Upload Catalog assets
+
+## Old list
+
 * [x] Collision
 * [x] Screen shake on collision (respecting "reduce flashing" setting)
 * [x] Variation in asteroid initial velocity (not always pointing directly at Earth)
