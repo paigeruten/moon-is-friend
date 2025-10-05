@@ -4,8 +4,11 @@ local menu = pd.getSystemMenu()
 
 Menu = {}
 
-menu:addCheckmarkMenuItem('screen shake', SaveData.isScreenShakeEnabled(), function(checked)
-  SaveData.setScreenShakeEnabled(checked)
+Menu.showPathsItem = menu:addCheckmarkMenuItem('show paths', SaveData.getShowAsteroidPaths(), function(checked)
+  SaveData.setShowAsteroidPaths(checked)
+  if checked then
+    Asteroid.resetAllPaths()
+  end
 end)
 
 -- Menu items that should be removed when going back to the title screen

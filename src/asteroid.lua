@@ -307,13 +307,7 @@ function Asteroid.update()
     end
   end
 
-  if pd.buttonJustPressed(pd.kButtonUp) then
-    gs.showAsteroidPaths = not gs.showAsteroidPaths
-    if gs.showAsteroidPaths then
-      Asteroid.resetAllPaths()
-    end
-  end
-
+  local showAsteroidPaths = SaveData.data.settings.showAsteroidPaths
   local idsToRemove = {}
   for id, asteroid in pairs(gs.asteroids) do
     local isOnScreen = isAsteroidOnScreen(asteroid)
@@ -330,7 +324,7 @@ function Asteroid.update()
       false
     )
 
-    if gs.showAsteroidPaths and isOnScreen then
+    if showAsteroidPaths and isOnScreen then
       local asteroidPath = asteroid.path
       local lastFrame = asteroid.lastPathState.frame
       local pathX, pathY, pathVelX, pathVelY
@@ -533,6 +527,8 @@ function Asteroid.checkCollisions()
 end
 
 function Asteroid.draw()
+  local showAsteroidPaths = SaveData.data.settings.showAsteroidPaths
+
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
   for _, asteroid in pairs(gs.asteroids) do
@@ -569,7 +565,7 @@ function Asteroid.draw()
         0.5
       )
 
-      if gs.showAsteroidPaths then
+      if showAsteroidPaths then
         gfx.setColor(gfx.kColorWhite)
         gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
         local path = asteroid.path

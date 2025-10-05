@@ -15,6 +15,9 @@ end
 if SaveData.data.settings.screenShakeEnabled == nil then
   SaveData.data.settings.screenShakeEnabled = not pd.getReduceFlashing()
 end
+if SaveData.data.settings.showAsteroidPaths == nil then
+  SaveData.data.settings.showAsteroidPaths = true
+end
 if SaveData.data.settings.difficulty == nil then
   SaveData.data.settings.difficulty = 'normal'
 end
@@ -108,6 +111,15 @@ end
 
 function SaveData.setScreenShakeEnabled(enabled)
   SaveData.data.settings.screenShakeEnabled = enabled
+  pd.datastore.write(SaveData.data)
+end
+
+function SaveData.getShowAsteroidPaths()
+  return SaveData.data.settings.showAsteroidPaths
+end
+
+function SaveData.setShowAsteroidPaths(enabled)
+  SaveData.data.settings.showAsteroidPaths = enabled
   pd.datastore.write(SaveData.data)
 end
 

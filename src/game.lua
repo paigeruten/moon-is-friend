@@ -112,7 +112,6 @@ function Game.reset()
   gs.numAsteroids = 0
   gs.curAsteroidId = 0
   gs.lastAsteroidAt = 0
-  gs.showAsteroidPaths = true
 
   gs.targets = {}
   gs.curTargetId = 0

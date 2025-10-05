@@ -11,8 +11,8 @@ function Title.switch()
   gs.scene = 'title'
   gs.frameCount = 0
   Menu.reset()
-  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Achievements', 'Manual' },
-    { width = 120, adjustY = 10, selected = gs.titleSelected },
+  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Achievements', 'Manual', 'Settings' },
+    { width = 120, adjustY = 14, selected = gs.titleSelected },
     function(selected)
       gs.titleSelected = selected
       if selected == 1 then
@@ -30,6 +30,9 @@ function Title.switch()
         achievements.viewer.launch()
       elseif selected == 5 then
         Instructions.switch()
+        assets.sfx.boop:play()
+      elseif selected == 6 then
+        Settings.switch()
         assets.sfx.boop:play()
       end
     end)
@@ -112,7 +115,7 @@ function Title.update()
 
   -- Logo
   local logoWidth, logoHeight = 75, 49
-  local logoX, logoY = screenWidth // 2 - logoWidth // 2, 32
+  local logoX, logoY = screenWidth // 2 - logoWidth // 2, 19
   gfx.setColor(gfx.kColorBlack)
   gfx.fillRoundRect(logoX - 5, logoY - 5, logoWidth + 10, logoHeight + 10, 5)
   assets.gfx.logo:draw(logoX, logoY)

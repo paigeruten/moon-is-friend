@@ -32,6 +32,7 @@ import "mission_intro"
 import "game_end"
 import "endless"
 import "high_scores"
+import "settings"
 
 local pd = playdate
 local gfx = pd.graphics
@@ -61,6 +62,8 @@ function pd.update()
     Endless.update()
   elseif gs.scene == 'high-scores' then
     HighScores.update()
+  elseif gs.scene == 'settings' then
+    Settings.update()
   else
     Game.update()
   end

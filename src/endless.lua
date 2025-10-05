@@ -77,6 +77,9 @@ function Endless.update()
     return
   end
 
+  gfx.setFont(assets.fonts.menu)
+  gfx.drawText("Endless", 213 - 26, boxY + 16)
+
   local otherText = gs.endlessMode == 'standard' and 'Moons' or 'Asteroids'
   if not isModeUnlocked then
     otherText = '???'
@@ -93,11 +96,11 @@ function Endless.update()
 
   gfx.drawText(arrowWrapIf(gs.endlessSelected == 'mode', modeText), 220, boxY + 50)
   if gs.endlessMode == 'standard' then
-    assets.gfx.missionIcons.asteroids:draw(200 - 13, boxY + 10)
+    assets.gfx.missionIcons.asteroids:draw(213 - 30 - 26, boxY + 10)
     gfx.drawText(arrowWrapIf(gs.endlessSelected == 'other', isUnlocked and tostring(gs.endlessMoons) or '???'), 220,
       boxY + 50 + 20)
   else
-    assets.gfx.missionIcons.collide:draw(200 - 13, boxY + 10)
+    assets.gfx.missionIcons.collide:draw(213 - 30 - 26, boxY + 10)
     gfx.drawText(arrowWrapIf(gs.endlessSelected == 'other', isUnlocked and tostring(gs.endlessAsteroids) or '???'), 220,
       boxY + 50 + 20)
   end
