@@ -14,7 +14,7 @@ local difficultyY = 175
 local scoreY = 205
 
 function Sidebar.draw()
-  local heartsY = gs.easyMode and 70 or 60
+  local heartsY = (gs.easyMode or gs.zenMode) and 70 or 60
 
   -- Sidebar
   gfx.setColor(gfx.kColorBlack)
@@ -30,6 +30,10 @@ function Sidebar.draw()
 
   if gs.mission.winType == 'endless' then
     assets.gfx.endless:draw(12, missionTextY + 2)
+
+    if gs.zenMode then
+      assets.gfx.zen:draw(13, missionTextY + 16)
+    end
 
     -- Score
     gfx.setFont(assets.fonts.small)

@@ -24,7 +24,7 @@ function Bomb.update()
       for _, _ in pairs(gs.asteroids) do
         gs.bombedAsteroids += 1
       end
-      if gs.bombedAsteroids >= 5 then
+      if gs.bombedAsteroids >= 5 and not gs.zenMode then
         if achievements.grant("chaos_averted") then
           Achievement.queue("chaos_averted", true)
         end

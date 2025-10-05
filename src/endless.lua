@@ -13,6 +13,7 @@ function Endless.switch()
   gs.endlessMode = 'standard'
   gs.endlessMoons = 1
   gs.endlessAsteroids = 3
+  gs.endlessZenMode = false
   Menu.reset()
 end
 
@@ -24,8 +25,8 @@ local function arrowWrapIf(cond, str)
   end
 end
 
-local boxX, boxY = 80, 50
-local boxWidth, boxHeight = 240, 140
+local boxX, boxY = 80, 37
+local boxWidth, boxHeight = 240, 154
 
 function Endless.update()
   gfx.clear()
@@ -72,7 +73,8 @@ function Endless.update()
 
   if gs.endlessMode == 'standard' and not isModeUnlocked then
     gfx.setFont(assets.fonts.menu)
-    gfx.drawText("Unlock Endless mode by\ncompleting mission 1-1!", boxX + 10, boxY + 10)
+    gfx.drawTextAligned("Unlock Endless mode by\ncompleting mission 1-1!", boxX + boxWidth // 2, boxY + 60,
+      kTextAlignment.center)
     gfx.drawTextAligned("Ⓑ Back", boxX + boxWidth - 10, boxY + boxHeight - 22, kTextAlignment.right)
     return
   end
@@ -93,8 +95,10 @@ function Endless.update()
   gfx.setFont(assets.fonts.menu)
   local modeWidth, modeHeight = gfx.drawText("Game mode", boxX + 15, boxY + 50)
   local otherWidth, otherHeight = gfx.drawText(otherText, boxX + 15, boxY + 50 + 20)
+  local zenWidth, zenHeight = gfx.drawText("Zen mode", boxX + 15, boxY + 50 + 40)
 
   gfx.drawText(arrowWrapIf(gs.endlessSelected == 'mode', modeText), 220, boxY + 50)
+
   if gs.endlessMode == 'standard' then
     assets.gfx.missionIcons.asteroids:draw(213 - 30 - 26, boxY + 10)
     gfx.drawText(arrowWrapIf(gs.endlessSelected == 'other', isUnlocked and tostring(gs.endlessMoons) or '???'), 220,
@@ -103,6 +107,12 @@ function Endless.update()
     assets.gfx.missionIcons.collide:draw(213 - 30 - 26, boxY + 10)
     gfx.drawText(arrowWrapIf(gs.endlessSelected == 'other', isUnlocked and tostring(gs.endlessAsteroids) or '???'), 220,
       boxY + 50 + 20)
+  end
+
+  if gs.endlessZenMode then
+    assets.gfx.checkmark:draw(220, boxY + 50 + 40)
+  else
+    assets.gfx.noCheckmark:draw(220, boxY + 50 + 40)
   end
 
   gfx.setColor(gfx.kColorBlack)
@@ -122,6 +132,7 @@ function Endless.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
     gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 2, otherWidth, 2)
+    gfx.fillRect(boxX + 15, boxY + 50 + 40 + zenHeight + 2, zenWidth, 2)
     if isUnlocked then
       gfx.fillRect(boxX + 15, boxY + boxHeight - 25 + startHeight + 2, startWidth, 2)
     end
@@ -132,6 +143,18 @@ function Endless.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
     gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 2, modeWidth, 2)
+    gfx.fillRect(boxX + 15, boxY + 50 + 40 + zenHeight + 2, zenWidth, 2)
+    if isUnlocked then
+      gfx.fillRect(boxX + 15, boxY + boxHeight - 25 + startHeight + 2, startWidth, 2)
+    end
+  elseif gs.endlessSelected == 'zen' then
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(boxX + 15, boxY + 50 + 40 + zenHeight + 4 + perlY, zenWidth, 3)
+
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 2, modeWidth, 2)
+    gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 2, otherWidth, 2)
     if isUnlocked then
       gfx.fillRect(boxX + 15, boxY + boxHeight - 25 + startHeight + 2, startWidth, 2)
     end
@@ -143,19 +166,34 @@ function Endless.update()
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
     gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 2, modeWidth, 2)
     gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 2, otherWidth, 2)
+    gfx.fillRect(boxX + 15, boxY + 50 + 40 + zenHeight + 2, zenWidth, 2)
   end
 
   if isUnlocked then
-    local highScore = SaveData.getHighScore(gs.missionId)
-    if highScore then
-      gfx.setFont(assets.fonts.small)
-      local highScoreWidth = assets.fonts.small:getTextWidth("High score: " .. highScore)
-      local _, highScoreHeight = gfx.drawText("High score: " .. highScore, boxX + boxWidth - 12 - highScoreWidth,
-        boxY + boxHeight - 24)
-
+    if gs.endlessZenMode then
       gfx.setColor(gfx.kColorBlack)
-      gfx.drawRoundRect(boxX + boxWidth - 12 - 6 - highScoreWidth, boxY + boxHeight - 28, highScoreWidth + 10,
-        highScoreHeight + 8, 3)
+      gfx.fillRect(15, 215, 370, 30)
+      gfx.setColor(gfx.kColorWhite)
+      gfx.setDitherPattern(0.4, gfx.image.kDitherTypeDiagonalLine)
+      gfx.fillRect(15, 215, 370, 30)
+      gfx.setColor(gfx.kColorWhite)
+      gfx.fillRect(15 + 3, 215 + 3, 370 - 6, 30 - 6)
+
+      gfx.setFont(assets.fonts.menu)
+      gfx.drawTextAligned('Achievements and high scores disabled in Zen mode.', screenWidth // 2, 222,
+        kTextAlignment.center)
+    else
+      local highScore = SaveData.getHighScore(gs.missionId)
+      if highScore then
+        gfx.setFont(assets.fonts.small)
+        local highScoreWidth = assets.fonts.small:getTextWidth("High score: " .. highScore)
+        local _, highScoreHeight = gfx.drawText("High score: " .. highScore, boxX + boxWidth - 12 - highScoreWidth,
+          boxY + boxHeight - 24)
+
+        gfx.setColor(gfx.kColorBlack)
+        gfx.drawRoundRect(boxX + boxWidth - 12 - 6 - highScoreWidth, boxY + boxHeight - 28, highScoreWidth + 10,
+          highScoreHeight + 8, 3)
+      end
     end
   else
     gfx.setColor(gfx.kColorBlack)
@@ -175,17 +213,21 @@ function Endless.update()
     if gs.endlessSelected == 'mode' then
       gs.endlessSelected = 'other'
     elseif gs.endlessSelected == 'other' then
+      gs.endlessSelected = 'zen'
+    elseif gs.endlessSelected == 'zen' then
       gs.endlessSelected = isUnlocked and 'start' or 'mode'
     else
       gs.endlessSelected = 'mode'
     end
   elseif pd.buttonJustPressed(pd.kButtonUp) then
     if gs.endlessSelected == 'mode' then
-      gs.endlessSelected = isUnlocked and 'start' or 'other'
+      gs.endlessSelected = isUnlocked and 'start' or 'zen'
     elseif gs.endlessSelected == 'other' then
       gs.endlessSelected = 'mode'
-    else
+    elseif gs.endlessSelected == 'zen' then
       gs.endlessSelected = 'other'
+    else
+      gs.endlessSelected = 'zen'
     end
   end
 
@@ -233,11 +275,16 @@ function Endless.update()
     assets.sfx.boop:play()
   end
 
-  if pd.buttonJustReleased(pd.kButtonA) and isUnlocked and gs.endlessSelected == 'start' then
-    gs.scene = 'game'
-    Game.reset()
-    assets.sfx.boop:play(77)
-    Menu.addInGameMenuItems()
+  if pd.buttonJustReleased(pd.kButtonA) then
+    if gs.endlessSelected == 'zen' then
+      gs.endlessZenMode = not gs.endlessZenMode
+      assets.sfx.boop:play()
+    elseif isUnlocked and gs.endlessSelected == 'start' then
+      gs.scene = 'game'
+      Game.reset()
+      assets.sfx.boop:play(77)
+      Menu.addInGameMenuItems()
+    end
   end
 
   gs.frameCount += 1

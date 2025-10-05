@@ -401,7 +401,9 @@ function Asteroid.checkCollisions()
         gs.earth.hasShield = false
         assets.sfx.shieldDown:play()
       else
-        gs.earth.health -= 1
+        if not gs.zenMode then
+          gs.earth.health -= 1
+        end
         gs.earth.pristine = false
         Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
         Explosion.screenShake(500, 5)
@@ -418,7 +420,9 @@ function Asteroid.checkCollisions()
           moon.hasShield = false
           assets.sfx.shieldDown:play()
         else
-          gs.earth.health -= 1
+          if not gs.zenMode then
+            gs.earth.health -= 1
+          end
           gs.earth.pristine = false
           Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
           Explosion.screenShake(500, 5)
@@ -455,7 +459,7 @@ function Asteroid.checkCollisions()
           Particle.spawn(asteroid.pos.x, asteroid.pos.y, asteroid.vel.x / 5, asteroid.vel.y / 5, 30, 1, 1, 1, 1, nil,
             "-" .. damage)
 
-          if damage > 10 and not gs.easyMode then
+          if damage > 10 and not gs.easyMode and not gs.zenMode then
             if achievements.grant("big_damage") then
               Achievement.queue("big_damage", true)
             end
@@ -480,14 +484,16 @@ function Asteroid.checkCollisions()
         Game.increaseScore(5)
         gs.asteroidsCollided += 1
 
-        if achievements.grant("first_collision") then
-          Achievement.queue("first_collision", true)
-        end
+        if not gs.zenMode then
+          if achievements.grant("first_collision") then
+            Achievement.queue("first_collision", true)
+          end
 
-        if not achievements.isGranted("asteroid_collisions") then
-          achievements.advance("asteroid_collisions", 1)
-          if achievements.isGranted("asteroid_collisions") then
-            Achievement.queue("asteroid_collisions", true)
+          if not achievements.isGranted("asteroid_collisions") then
+            achievements.advance("asteroid_collisions", 1)
+            if achievements.isGranted("asteroid_collisions") then
+              Achievement.queue("asteroid_collisions", true)
+            end
           end
         end
 

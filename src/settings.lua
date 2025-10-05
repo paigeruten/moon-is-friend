@@ -46,7 +46,7 @@ function Settings.update()
   end
 
   gfx.setFont(assets.fonts.small)
-  local pathsWidth, pathsHeight = gfx.drawText('Show asteroid paths', checkboxX + checkboxWidth + 5, pathsCheckboxY - 1)
+  local pathsWidth, pathsHeight = gfx.drawText('Show asteroid paths', checkboxX + checkboxWidth + 7, pathsCheckboxY - 1)
 
   local shakeCheckboxY = pathsCheckboxY + checkboxSpacing
   if SaveData.isScreenShakeEnabled() then
@@ -56,16 +56,16 @@ function Settings.update()
   end
 
   gfx.setFont(assets.fonts.small)
-  local shakeWidth, shakeHeight = gfx.drawText('Screen shake', checkboxX + checkboxWidth + 5, shakeCheckboxY - 1)
+  local shakeWidth, shakeHeight = gfx.drawText('Screen shake', checkboxX + checkboxWidth + 7, shakeCheckboxY - 1)
 
   local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
   if gs.settingsSelected == 'paths' then
     gfx.setColor(gfx.kColorBlack)
-    gfx.fillRect(checkboxX + checkboxWidth + 5, pathsCheckboxY - 2 + pathsHeight + 4 + perlY, pathsWidth, 3)
+    gfx.fillRect(checkboxX + checkboxWidth + 7, pathsCheckboxY - 2 + pathsHeight + 4 + perlY, pathsWidth, 3)
 
     gfx.setColor(gfx.kColorBlack)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRect(checkboxX + checkboxWidth + 5, shakeCheckboxY - 2 + shakeHeight + 2, shakeWidth, 2)
+    gfx.fillRect(checkboxX + checkboxWidth + 7, shakeCheckboxY - 2 + shakeHeight + 2, shakeWidth, 2)
 
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(60, 215, 280, 30)
@@ -80,11 +80,11 @@ function Settings.update()
       kTextAlignment.center)
   else
     gfx.setColor(gfx.kColorBlack)
-    gfx.fillRect(checkboxX + checkboxWidth + 5, shakeCheckboxY - 2 + shakeHeight + 4 + perlY, shakeWidth, 3)
+    gfx.fillRect(checkboxX + checkboxWidth + 7, shakeCheckboxY - 2 + shakeHeight + 4 + perlY, shakeWidth, 3)
 
     gfx.setColor(gfx.kColorBlack)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRect(checkboxX + checkboxWidth + 5, pathsCheckboxY - 2 + pathsHeight + 2, pathsWidth, 2)
+    gfx.fillRect(checkboxX + checkboxWidth + 7, pathsCheckboxY - 2 + pathsHeight + 2, pathsWidth, 2)
   end
 
   gfx.setFont(assets.fonts.menu)

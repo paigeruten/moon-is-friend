@@ -214,7 +214,7 @@ function Rocket.update()
           Game.increaseScore(3)
           Game.flashMessage("Max power-ups! +3 bonus points")
           assets.sfx.powerup:play()
-          if achievements.grant("max_powerups_endless") then
+          if not gs.zenMode and achievements.grant("max_powerups_endless") then
             Achievement.queue("max_powerups_endless", true)
           end
         end
@@ -235,7 +235,7 @@ function Rocket.update()
       end
 
       -- Check for shield achievements
-      if powerup == 'moon-shield' or powerup == 'earth-shield' then
+      if not gs.zenMode and (powerup == 'moon-shield' or powerup == 'earth-shield') then
         local numShields = gs.earth.hasShield and 1 or 0
         for _, moon in ipairs(gs.moons) do
           if moon.hasShield then
@@ -285,7 +285,7 @@ function Rocket.update()
           else
             gs.lastRocketAt = gs.frameCount
           end
-          if achievements.grant("rocket_collision") then
+          if not gs.zenMode and achievements.grant("rocket_collision") then
             Achievement.queue("rocket_collision", true)
           end
           break

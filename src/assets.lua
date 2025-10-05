@@ -59,6 +59,7 @@ Assets = {
     zeds = gfx.imagetable.new("images/zeds"),
     eyelid = gfx.image.new("images/eyelid"),
     easy = gfx.image.new("images/easy"),
+    zen = gfx.image.new("images/zen"),
 
     labelMeteors = gfx.image.new("images/label-meteors"),
     labelRockets = gfx.image.new("images/label-rockets"),

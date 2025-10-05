@@ -57,6 +57,10 @@ function Game.reset()
       gs.difficulty += 25
     end
   end
+  gs.zenMode = gs.mission.winType == 'endless' and gs.endlessZenMode
+  if gs.zenMode and gs.mission.mode == 'standard' then
+    gs.difficulty = 125
+  end
 
   local maxHealth = 3
   if gs.easyMode then
@@ -159,7 +163,7 @@ function Game.updateRampUpDifficulty()
 
   if gs.frameCount >= minDifficultyTime then
     gs.rampUpDifficulty = minDifficulty
-    if gs.mission.winType == "endless" then
+    if gs.mission.winType == "endless" and not gs.zenMode then
       if achievements.grant("max_level_endless") then
         Achievement.queue("max_level_endless", true)
       end
@@ -179,7 +183,7 @@ end
 function Game.increaseScore(points)
   gs.score += points
 
-  if gs.mission.winType == "endless" then
+  if gs.mission.winType == "endless" and not gs.zenMode then
     if not achievements.isGranted("endless_hero") then
       achievements.advance("endless_hero", points)
       if achievements.isGranted("endless_hero") then
@@ -286,7 +290,7 @@ local function checkEndState()
     Game.stopSounds()
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
-      gs.isHighScore = SaveData.checkAndSaveHighScore(gs.missionId, gs.score)
+      gs.isHighScore = not gs.zenMode and SaveData.checkAndSaveHighScore(gs.missionId, gs.score)
       MenuBox.init({ 'Retry', 'Back to title' }, menuOptions, GameEnd.menuSelect)
     else
       gs.endState = 'failed'
