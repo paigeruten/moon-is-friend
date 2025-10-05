@@ -105,6 +105,14 @@ function Endless.update()
       boxY + 50 + 20)
   end
 
+  gfx.setColor(gfx.kColorBlack)
+  gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+  gfx.drawLine(boxX + 3, boxY + boxHeight - 35, boxX + boxWidth - 3, boxY + boxHeight - 35)
+
+  gfx.setFont(assets.fonts.menu)
+  local startText = isUnlocked and "Start" or "-Locked-"
+  local startWidth, startHeight = gfx.drawText(startText, boxX + 15, boxY + boxHeight - 25)
+
   local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
 
   if gs.endlessSelected == 'mode' then
@@ -114,23 +122,40 @@ function Endless.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
     gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 2, otherWidth, 2)
-  else
+    if isUnlocked then
+      gfx.fillRect(boxX + 15, boxY + boxHeight - 25 + startHeight + 2, startWidth, 2)
+    end
+  elseif gs.endlessSelected == 'other' then
     gfx.setColor(gfx.kColorBlack)
     gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 4 + perlY, otherWidth, 3)
 
     gfx.setColor(gfx.kColorBlack)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
     gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 2, modeWidth, 2)
+    if isUnlocked then
+      gfx.fillRect(boxX + 15, boxY + boxHeight - 25 + startHeight + 2, startWidth, 2)
+    end
+  else
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(boxX + 15, boxY + boxHeight - 25 + startHeight + 4 + perlY, startWidth, 3)
+
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRect(boxX + 15, boxY + 50 + modeHeight + 2, modeWidth, 2)
+    gfx.fillRect(boxX + 15, boxY + 50 + 20 + otherHeight + 2, otherWidth, 2)
   end
 
   if isUnlocked then
     local highScore = SaveData.getHighScore(gs.missionId)
     if highScore then
       gfx.setFont(assets.fonts.small)
-      local highScoreWidth, highScoreHeight = gfx.drawText("High score: " .. highScore, boxX + 12, boxY + boxHeight - 24)
+      local highScoreWidth = assets.fonts.small:getTextWidth("High score: " .. highScore)
+      local _, highScoreHeight = gfx.drawText("High score: " .. highScore, boxX + boxWidth - 12 - highScoreWidth,
+        boxY + boxHeight - 24)
 
       gfx.setColor(gfx.kColorBlack)
-      gfx.drawRoundRect(boxX + 7, boxY + boxHeight - 28, highScoreWidth + 10, highScoreHeight + 8, 3)
+      gfx.drawRoundRect(boxX + boxWidth - 12 - 6 - highScoreWidth, boxY + boxHeight - 28, highScoreWidth + 10,
+        highScoreHeight + 8, 3)
     end
   else
     gfx.setColor(gfx.kColorBlack)
@@ -146,15 +171,21 @@ function Endless.update()
       kTextAlignment.center)
   end
 
-  gfx.setFont(assets.fonts.menu)
-  gfx.drawTextAligned(isUnlocked and "Ⓐ Start" or "-Locked-", boxX + boxWidth - 10, boxY + boxHeight - 22,
-    kTextAlignment.right)
-
-  if pd.buttonJustPressed(pd.kButtonDown) or pd.buttonJustPressed(pd.kButtonUp) then
+  if pd.buttonJustPressed(pd.kButtonDown) then
     if gs.endlessSelected == 'mode' then
       gs.endlessSelected = 'other'
+    elseif gs.endlessSelected == 'other' then
+      gs.endlessSelected = isUnlocked and 'start' or 'mode'
     else
       gs.endlessSelected = 'mode'
+    end
+  elseif pd.buttonJustPressed(pd.kButtonUp) then
+    if gs.endlessSelected == 'mode' then
+      gs.endlessSelected = isUnlocked and 'start' or 'other'
+    elseif gs.endlessSelected == 'other' then
+      gs.endlessSelected = 'mode'
+    else
+      gs.endlessSelected = 'other'
     end
   end
 
@@ -202,7 +233,7 @@ function Endless.update()
     assets.sfx.boop:play()
   end
 
-  if pd.buttonJustReleased(pd.kButtonA) and isUnlocked then
+  if pd.buttonJustReleased(pd.kButtonA) and isUnlocked and gs.endlessSelected == 'start' then
     gs.scene = 'game'
     Game.reset()
     assets.sfx.boop:play(77)

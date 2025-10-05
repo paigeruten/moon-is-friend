@@ -3,7 +3,7 @@
 ## For Catalog release
 
 * [x] Asteroid paths
-    * [ ] Better way of toggling this (system menu + new settings menu)
+    * [x] Better way of toggling this (system menu + new settings menu)
     * [ ] Fix performance when there are 3+ asteroids
 * [x] Fidgety Earth
 * [ ] Difficulty tweaks
