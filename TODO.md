@@ -10,7 +10,7 @@
 * [ ] Difficulty tweaks
     * [x] The "Easy mode" checkbox should be changed to "Hard mode", so that the old "Easy mode" becomes the default/standard.
     * [ ] Difficulty of each level can be tweaked/balanced from there.
-    * [ ] Stars should be earned by playing on "Hard mode" instead of playing flawlessly, and new achievement should be added for getting all stars. (Make star look more fancy if they played flawlessly?)
+    * [x] Stars should be earned by playing on "Hard mode" instead of playing flawlessly, and new achievement should be added for getting all stars. (Make star look more fancy if they played flawlessly?)
     * [ ] Make "Hard mode" checkbox more obvious?
     * [ ] "Hard mode" unlocks after beating the game for the first time?
     * [ ] In boss fights, don't make asteroids come directly from the left of Earth (maybe in hard mode...)

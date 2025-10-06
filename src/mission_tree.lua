@@ -253,7 +253,7 @@ end
 function MissionTree.selectNextMission()
   for colIdx, missionCol in ipairs(MISSION_TREE) do
     for rowIdx, missionId in ipairs(missionCol) do
-      if not SaveData.isMissionComplete(missionId) then
+      if not SaveData.isMissionComplete(missionId, false) then
         gs.missionRow = rowIdx
         gs.missionCol = colIdx
         gs.missionId = missionId
@@ -272,7 +272,7 @@ function MissionTree.highestUnlockedColumn()
   for colIdx, missionCol in ipairs(MISSION_TREE) do
     local numCompleted = 0
     for _, missionId in ipairs(missionCol) do
-      if SaveData.isMissionComplete(missionId) then
+      if SaveData.isMissionComplete(missionId, false) then
         numCompleted += 1
       end
     end
@@ -381,8 +381,10 @@ function MissionTree.update()
         end
       end
       assets.gfx.missionIcons[mission.winType]:draw(missionX + 2 + shakeX, missionY)
-      if SaveData.isMissionComplete(missionId) then
+      if SaveData.isMissionComplete(missionId, false) then
         if achievements.isGranted("no_damage_" .. missionId) then
+          assets.gfx.flawlessIcon:draw(missionX + 19 + shakeX, missionY - 3)
+        elseif SaveData.isMissionComplete(missionId, true) then
           assets.gfx.starIcon:draw(missionX + 19 + shakeX, missionY - 3)
         else
           assets.gfx.checkmark:draw(missionX + 19 + shakeX, missionY - 3)
@@ -412,7 +414,7 @@ function MissionTree.update()
     if showUnlockMessage and columnNum == gs.highestUnlocked + 1 then
       local missionsCompleted = 0
       for _, missionId in ipairs(MISSION_TREE[gs.highestUnlocked]) do
-        if SaveData.isMissionComplete(missionId) then
+        if SaveData.isMissionComplete(missionId, false) then
           missionsCompleted += 1
         end
       end
@@ -448,32 +450,41 @@ function MissionTree.update()
     gfx.setColor(gfx.kColorBlack)
     gfx.drawRoundRect(cardX, cardY, cardWidth, cardHeight, 5)
     gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(cardX + 15, cardY - 15, 40, 20, 5)
+    gfx.drawRoundRect(cardX + 10, cardY - 15, 40, 20, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.drawRoundRect(cardX + cardWidth - 64, cardY - 15, 17, 20, 5)
     gfx.setColor(gfx.kColorBlack)
     gfx.drawRoundRect(cardX + cardWidth - 44, cardY - 15, 17, 20, 5)
     gfx.setColor(gfx.kColorBlack)
     gfx.drawRoundRect(cardX + cardWidth - 24, cardY - 15, 17, 20, 5)
 
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(cardX + 15 + 1, cardY - 15 + 1, 40 - 2, 20, 5)
+    gfx.fillRoundRect(cardX + 10 + 1, cardY - 15 + 1, 40 - 2, 20, 5)
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRoundRect(cardX + cardWidth - 64 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
+    if SaveData.isMissionComplete(gs.missionId, false) then
+      assets.gfx.checkmark:draw(cardX + cardWidth - 64 + 4, cardY - 15 + 5, gfx.kImageUnflipped, 2, 2, 9, 9)
+    else
+      assets.gfx.emptyCircle:draw(cardX + cardWidth - 64 + 4, cardY - 15 + 4)
+    end
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(cardX + cardWidth - 44 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
-    if SaveData.isMissionComplete(gs.missionId) then
-      assets.gfx.checkmark:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 5, gfx.kImageUnflipped, 2, 2, 9, 9)
+    if SaveData.isMissionComplete(gs.missionId, true) then
+      assets.gfx.starIcon:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
     else
       assets.gfx.emptyCircle:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 4)
     end
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(cardX + cardWidth - 24 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
     if achievements.isGranted("no_damage_" .. gs.missionId) then
-      assets.gfx.starIcon:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
+      assets.gfx.flawlessIcon:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
     else
       assets.gfx.emptyCircle:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4)
     end
 
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
-    gfx.drawText(gs.missionId, cardX + 15 + 9, cardY - 15 + 2)
+    gfx.drawText(gs.missionId, cardX + 10 + 9, cardY - 15 + 2)
     gfx.drawText(MISSIONS[gs.missionId].card, cardX + 5, cardY + 5)
   else
     local cardWidth, cardHeight = 140, 70

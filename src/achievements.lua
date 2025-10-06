@@ -58,6 +58,12 @@ achievements.initialize({
       progressMax = 15
     },
     {
+      id = "complete_all_missions_on_hard",
+      name = "Overoverachiever",
+      description = "Complete every mission in hard mode.",
+      progressMax = 15
+    },
+    {
       id = "asteroid_collisions",
       name = "Collisionist",
       description = "Cause 100 pairs of meteors to collide with each other.",

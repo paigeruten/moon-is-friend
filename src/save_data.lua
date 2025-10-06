@@ -24,19 +24,22 @@ if SaveData.data.settings.difficulty == nil or SaveData.data.settings.difficulty
   SaveData.data.settings.difficulty = 'normal'
 end
 
-function SaveData.completeMission(missionId)
+function SaveData.completeMission(missionId, isHardMode)
   if not SaveData.data.missions[missionId] then
     SaveData.data.missions[missionId] = {}
   end
   SaveData.data.missions[missionId].complete = true
+  if isHardMode then
+    SaveData.data.missions[missionId].completeOnHard = true
+  end
   pd.datastore.write(SaveData.data)
 end
 
-function SaveData.countMissionsComplete()
+function SaveData.countMissionsComplete(hardMode)
   local count = 0
   for _, row in ipairs(MISSION_TREE) do
     for _, missionId in ipairs(row) do
-      if SaveData.isMissionComplete(missionId) then
+      if SaveData.isMissionComplete(missionId, hardMode) then
         count += 1
       end
     end
@@ -56,26 +59,27 @@ function SaveData.countMissionsFlawless()
   return count
 end
 
-function SaveData.isMissionComplete(missionId)
-  return SaveData.data.missions[missionId] and SaveData.data.missions[missionId].complete
+function SaveData.isMissionComplete(missionId, hardMode)
+  return SaveData.data.missions[missionId] and SaveData.data.missions[missionId].complete and
+      (not hardMode or SaveData.data.missions[missionId].completeOnHard)
 end
 
 function SaveData.isEndlessModeUnlocked(mode, n)
   if mode == 'standard' then
     if n == 1 then
-      return SaveData.isMissionComplete('1-1'), '1-1'
+      return SaveData.isMissionComplete('1-1', false), '1-1'
     elseif n == 2 then
-      return SaveData.isMissionComplete('2-4'), '2-4'
+      return SaveData.isMissionComplete('2-4', false), '2-4'
     elseif n == 3 then
-      return SaveData.isMissionComplete('5-3'), '5-3'
+      return SaveData.isMissionComplete('5-3', false), '5-3'
     end
   elseif mode == 'juggling' then
     if n == 3 then
-      return SaveData.isMissionComplete('2-3'), '2-3'
+      return SaveData.isMissionComplete('2-3', false), '2-3'
     elseif n == 4 then
-      return SaveData.isMissionComplete('4-3'), '4-3'
+      return SaveData.isMissionComplete('4-3', false), '4-3'
     elseif n == 5 then
-      return SaveData.isMissionComplete('6-B'), '6-B'
+      return SaveData.isMissionComplete('6-B', false), '6-B'
     end
   end
   return false, nil

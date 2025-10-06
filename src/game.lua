@@ -247,9 +247,9 @@ local function checkEndState()
   if win then
     Game.stopSounds()
     gs.endState = 'complete'
-    gs.firstTimeCompleted = not SaveData.isMissionComplete(gs.missionId)
+    gs.firstTimeCompleted = not SaveData.isMissionComplete(gs.missionId, false)
     local prevHighestUnlocked = MissionTree.highestUnlockedColumn()
-    SaveData.completeMission(gs.missionId)
+    SaveData.completeMission(gs.missionId, gs.hardMode)
     gs.newMissionsUnlocked = MissionTree.highestUnlockedColumn() > prevHighestUnlocked
 
     if gs.missionId == "3-B" then
@@ -280,9 +280,15 @@ local function checkEndState()
       end
     end
     if not achievements.isGranted("complete_all_missions") then
-      achievements.advanceTo("complete_all_missions", SaveData.countMissionsComplete())
+      achievements.advanceTo("complete_all_missions", SaveData.countMissionsComplete(false))
       if achievements.isGranted("complete_all_missions") then
         achievements.toasts.toast("complete_all_missions")
+      end
+    end
+    if gs.hardMode and not achievements.isGranted("complete_all_missions_on_hard") then
+      achievements.advanceTo("complete_all_missions_on_hard", SaveData.countMissionsComplete(true))
+      if achievements.isGranted("complete_all_missions_on_hard") then
+        achievements.toasts.toast("complete_all_missions_on_hard")
       end
     end
 
