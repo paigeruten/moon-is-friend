@@ -27,6 +27,11 @@ achievements.initialize({
       description = "Cause a meteor to destroy a rocket.",
     },
     {
+      id = "no_asteroid_paths",
+      name = "Taking off the training wheels",
+      description = "Complete any mission with asteroid paths turned off the entire time.",
+    },
+    {
       id = "big_damage",
       name = "The Big One",
       description = "Do more than 10 damage to a boss with a single meteor in normal mode.",

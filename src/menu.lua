@@ -8,6 +8,9 @@ Menu.showPathsItem = menu:addCheckmarkMenuItem('show paths', SaveData.getShowAst
   SaveData.setShowAsteroidPaths(checked)
   if checked then
     Asteroid.resetAllPaths()
+    if gs.asteroidPathsEverEnabled ~= nil then
+      gs.asteroidPathsEverEnabled = true
+    end
   end
 end)
 

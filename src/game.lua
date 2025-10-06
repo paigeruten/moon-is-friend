@@ -147,6 +147,7 @@ function Game.reset()
 
   gs.gameoverSelection = 'retry'
   gs.isHighScore = false
+  gs.asteroidPathsEverEnabled = SaveData.getShowAsteroidPaths()
 
   gs.rampUpDifficulty = nil
   if type(gs.difficulty) == 'table' then
@@ -271,6 +272,11 @@ local function checkEndState()
             achievements.toasts.toast("no_damage_all")
           end
         end
+      end
+    end
+    if not gs.asteroidPathsEverEnabled then
+      if achievements.grant("no_asteroid_paths") then
+        achievements.toasts.toast("no_asteroid_paths")
       end
     end
     if not achievements.isGranted("complete_all_missions") then
