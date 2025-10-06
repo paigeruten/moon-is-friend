@@ -5,16 +5,18 @@
 * [x] Asteroid paths
     * [x] Better way of toggling this (system menu + new settings menu)
     * [ ] Fix performance when there are 3+ asteroids
+    * [ ] Add page to manual about paths, and how they impact performance
     * [x] Add achievement for winning a mission without showing asteroid paths ("Training wheels off")
 * [x] Fidgety Earth
 * [ ] Difficulty tweaks
     * [x] The "Easy mode" checkbox should be changed to "Hard mode", so that the old "Easy mode" becomes the default/standard.
     * [ ] Difficulty of each level can be tweaked/balanced from there.
     * [x] Stars should be earned by playing on "Hard mode" instead of playing flawlessly, and new achievement should be added for getting all stars. (Make star look more fancy if they played flawlessly?)
-    * [ ] Make "Hard mode" checkbox more obvious?
+    * [ ] Make "Hard mode" checkbox more obvious? (Difficulty select dialog when you re-play a mission?)
     * [ ] "Hard mode" unlocks after beating the game for the first time?
     * [ ] In boss fights, don't make asteroids come directly from the left of Earth (maybe in hard mode...)
 * [ ] Global scoreboards
+    * [ ] Final boss speedrun scoreboard?
 * [x] Zen/Practice mode (constant difficulty, no damage, probably a setting within Endless mode)
 * [ ] Performance tweaks
 * [ ] Update story text
