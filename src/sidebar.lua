@@ -14,7 +14,7 @@ local difficultyY = 175
 local scoreY = 205
 
 function Sidebar.draw()
-  local heartsY = (gs.easyMode or gs.zenMode) and 70 or 60
+  local heartsY = (gs.hardMode or gs.zenMode) and 70 or 60
 
   -- Sidebar
   gfx.setColor(gfx.kColorBlack)
@@ -59,8 +59,8 @@ function Sidebar.draw()
     gfx.setFont(assets.fonts.small)
     gfx.drawText(gs.missionId, 14, missionTextY)
 
-    if gs.easyMode then
-      assets.gfx.easy:draw(13, missionTextY + 15)
+    if gs.hardMode then
+      assets.gfx.hard:draw(13, missionTextY + 15)
     end
 
     if not (gs.mission.winType == 'boss' and gs.bossPhase == 0) then

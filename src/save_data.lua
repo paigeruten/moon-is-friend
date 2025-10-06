@@ -18,7 +18,9 @@ end
 if SaveData.data.settings.showAsteroidPaths == nil then
   SaveData.data.settings.showAsteroidPaths = true
 end
-if SaveData.data.settings.difficulty == nil then
+-- 'easy' difficulty was renamed to 'normal' after version 1.0.1, so this handles
+-- those old save files.
+if SaveData.data.settings.difficulty == nil or SaveData.data.settings.difficulty == 'easy' then
   SaveData.data.settings.difficulty = 'normal'
 end
 

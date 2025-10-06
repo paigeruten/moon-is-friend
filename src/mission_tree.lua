@@ -314,16 +314,7 @@ function MissionTree.update()
   gfx.setColor(gfx.kColorBlack)
   gfx.fillRect(checkboxX, checkboxY, checkboxSize, checkboxSize)
 
-  -- gfx.setColor(gfx.kColorWhite)
-  -- gfx.setLineWidth(2)
-  -- gfx.drawRoundRect(checkboxX, checkboxY, checkboxSize, checkboxSize, 2)
-  -- gfx.setLineWidth(1)
-
-  if SaveData.getDifficulty() == 'easy' then
-    -- gfx.setColor(gfx.kColorWhite)
-    -- gfx.drawLine(checkboxX, checkboxY, checkboxX + checkboxSize, checkboxY + checkboxSize)
-    -- gfx.drawLine(checkboxX, checkboxY + checkboxSize, checkboxX + checkboxSize, checkboxY)
-    -- assets.gfx.whiteCheckmark:draw(checkboxX + 1, checkboxY + 2)
+  if SaveData.getDifficulty() == 'hard' then
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
     assets.gfx.checkmark:draw(checkboxX, checkboxY)
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
@@ -335,17 +326,17 @@ function MissionTree.update()
 
   gfx.setFont(assets.fonts.small)
   gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  local easyWidth, easyHeight = gfx.drawText('easy mode', screenWidth - 80, 8)
+  local hardWidth, hardHeight = gfx.drawText('hard mode', screenWidth - 80, 8)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   if gs.missionRow == 0 then
     local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRect(screenWidth - 80, 8 + easyHeight + 2 + perlY, easyWidth, 3)
+    gfx.fillRect(screenWidth - 80, 8 + hardHeight + 2 + perlY, hardWidth, 3)
   else
     gfx.setColor(gfx.kColorWhite)
     gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRect(screenWidth - 80, 8 + easyHeight + 1, easyWidth, 2)
+    gfx.fillRect(screenWidth - 80, 8 + hardHeight + 1, hardWidth, 2)
   end
 
   gfx.setFont(assets.fonts.small)
@@ -499,10 +490,10 @@ function MissionTree.update()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
 
-    local easyModeDesc = SaveData.getDifficulty() == 'easy'
-        and "Easy mode is on.\n\nSome achievements\nwill be disabled."
-        or "Easy mode is off.\n\nTurn it on for a\nbit less stress!"
-    gfx.drawText(easyModeDesc, cardX + 5, cardY + 5)
+    local hardModeDesc = SaveData.getDifficulty() == 'hard'
+        and "Hard mode is on.\n\nTurn it off for a\nbit less stress!"
+        or "Hard mode is off.\n\nSome achievements\nwill be disabled."
+    gfx.drawText(hardModeDesc, cardX + 5, cardY + 5)
   end
 
   gs.frameCount += 1
@@ -541,7 +532,7 @@ function MissionTree.update()
 
   if pd.buttonJustReleased(pd.kButtonA) then
     if gs.missionRow == 0 then
-      SaveData.setDifficulty(SaveData.getDifficulty() == 'easy' and 'normal' or 'easy')
+      SaveData.setDifficulty(SaveData.getDifficulty() == 'hard' and 'normal' or 'hard')
       assets.sfx.boop:play()
     else
       MissionIntro.switch()
