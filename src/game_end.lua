@@ -68,13 +68,23 @@ function GameEnd.update()
   gfx.setFont(assets.fonts.large)
   gfx.drawTextAligned(bannerText, bannerCenterX, bannerY + 5, kTextAlignment.center)
 
-  if gs.isHighScore then
+  if gs.scoreStatus or gs.isHighScore then
+    local highScoreParts = gs.isHighScore and { "New high score!" } or {}
+    if gs.scoreStatus == 'submitting' then
+      table.insert(highScoreParts, "Submitting score...")
+    else
+      table.insert(highScoreParts, "Global rank:")
+      table.insert(highScoreParts, gs.scoreGlobalRank or "?")
+    end
+    local highScoreText = table.concat(highScoreParts, " ")
+    local highScoreWidth = assets.fonts.small:getTextWidth(highScoreText) + 16
+
     local highScoreY = pd.easingFunctions.outExpo(gs.menuFrameCount, screenHeight, -22, 50)
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(sidebarWidth + 5, highScoreY, 120, 18, 2)
+    gfx.fillRoundRect(sidebarWidth + 5, highScoreY, highScoreWidth, 18, 2)
     assets.gfx.arrowRight:draw(sidebarWidth + 1, highScoreY + 9 - 3, gfx.kImageFlippedX)
     gfx.setFont(assets.fonts.small)
-    gfx.drawText("New high score!", sidebarWidth + 13, highScoreY + 2)
+    gfx.drawText(highScoreText, sidebarWidth + 13, highScoreY + 2)
   end
 
   if gs.firstTimeCompleted then

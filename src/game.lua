@@ -4,6 +4,7 @@ local assets = Assets
 local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
 local sidebarWidth = SIDEBAR_WIDTH
+local scoreboardsEnabled = SCOREBOARDS_ENABLED
 
 Game = {}
 
@@ -147,6 +148,8 @@ function Game.reset()
 
   gs.gameoverSelection = 'retry'
   gs.isHighScore = false
+  gs.scoreStatus = nil
+  gs.scoreGlobalRank = nil
   gs.asteroidPathsEverEnabled = SaveData.getShowAsteroidPaths()
 
   gs.rampUpDifficulty = nil
@@ -303,6 +306,17 @@ local function checkEndState()
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
       gs.isHighScore = not gs.zenMode and SaveData.checkAndSaveHighScore(gs.missionId, gs.score)
+      if scoreboardsEnabled and not gs.zenMode then
+        gs.scoreStatus = 'submitting'
+        pd.scoreboards.addScore(gs.mission.scoreboardId, gs.score, function(status, result)
+          if status.code == 'OK' then
+            gs.scoreStatus = 'submitted'
+            gs.scoreGlobalRank = result.rank
+          else
+            gs.scoreStatus = 'error'
+          end
+        end)
+      end
       MenuBox.init({ 'Retry', 'Back to title' }, menuOptions, GameEnd.menuSelect)
     else
       gs.endState = 'failed'

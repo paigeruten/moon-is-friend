@@ -11,34 +11,40 @@ MISSIONS = {
   ["endless.s1"] = {
     mode = "standard",
     winType = "endless",
-    difficulty = { 125, 50 }
+    difficulty = { 125, 50 },
+    scoreboardId = "endless1moon"
   },
   ["endless.s2"] = {
     mode = "standard",
     winType = "endless",
     difficulty = { 125, 50 },
-    numMoons = 2
+    numMoons = 2,
+    scoreboardId = "endless2moon"
   },
   ["endless.s3"] = {
     mode = "standard",
     winType = "endless",
     difficulty = { 125, 50 },
-    numMoons = 3
+    numMoons = 3,
+    scoreboardId = "endless3moon"
   },
   ["endless.j3"] = {
     mode = "juggling",
     winType = "endless",
-    difficulty = 3
+    difficulty = 3,
+    scoreboardId = "juggling3meteor"
   },
   ["endless.j4"] = {
     mode = "juggling",
     winType = "endless",
-    difficulty = 4
+    difficulty = 4,
+    scoreboardId = "juggling4meteor"
   },
   ["endless.j5"] = {
     mode = "juggling",
     winType = "endless",
-    difficulty = 5
+    difficulty = 5,
+    scoreboardId = "juggling5meteor"
   },
   ["1-1"] = {
     mode = "standard",

@@ -82,7 +82,7 @@ function Endless.update()
   gfx.setFont(assets.fonts.menu)
   gfx.drawText("Endless", 213 - 26, boxY + 16)
 
-  local otherText = gs.endlessMode == 'standard' and 'Moons' or 'Asteroids'
+  local otherText = gs.endlessMode == 'standard' and 'Moons' or 'Meteors'
   if not isModeUnlocked then
     otherText = '???'
   end
