@@ -50,7 +50,7 @@ function Game.reset()
   end
   gs.difficulty = gs.mission.difficulty
   gs.hardMode = SaveData.getDifficulty() == 'hard' and gs.mission.winType ~= 'endless'
-  if gs.mission.mode == 'standard' and not gs.hardMode then
+  if gs.mission.mode == 'standard' and gs.mission.winType ~= 'endless' and not gs.hardMode then
     if type(gs.difficulty) == 'table' then
       gs.difficulty[1] += 25
       gs.difficulty[2] += 25

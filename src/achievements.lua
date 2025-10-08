@@ -28,13 +28,13 @@ achievements.initialize({
     },
     {
       id = "no_asteroid_paths",
-      name = "Taking off the training wheels",
+      name = "No more training wheels",
       description = "Complete any mission with asteroid paths turned off the entire time.",
     },
     {
       id = "big_damage",
       name = "The Big One",
-      description = "Do more than 10 damage to a boss with a single meteor in normal mode.",
+      description = "Do 12 or more damage to a boss with a single meteor.",
     },
     {
       id = "chaos_averted",
@@ -129,82 +129,82 @@ achievements.initialize({
     {
       id = "no_damage_1-1",
       name = "Flawless 1-1",
-      description = "Complete mission 1-1 in normal mode without taking damage.",
+      description = "Complete mission 1-1 in hard mode without taking damage.",
     },
     {
       id = "no_damage_1-2",
       name = "Flawless 1-2",
-      description = "Complete mission 1-2 in normal mode without taking damage.",
+      description = "Complete mission 1-2 in hard mode without taking damage.",
     },
     {
       id = "no_damage_2-1",
       name = "Flawless 2-1",
-      description = "Complete mission 2-1 in normal mode without taking damage.",
+      description = "Complete mission 2-1 in hard mode without taking damage.",
     },
     {
       id = "no_damage_2-2",
       name = "Flawless 2-2",
-      description = "Complete mission 2-2 in normal mode without taking damage.",
+      description = "Complete mission 2-2 in hard mode without taking damage.",
     },
     {
       id = "no_damage_2-3",
       name = "Flawless 2-3",
-      description = "Complete mission 2-3 in normal mode without taking damage.",
+      description = "Complete mission 2-3 in hard mode without taking damage.",
     },
     {
       id = "no_damage_2-4",
       name = "Flawless 2-4",
-      description = "Complete mission 2-4 in normal mode without taking damage.",
+      description = "Complete mission 2-4 in hard mode without taking damage.",
     },
     {
       id = "no_damage_3-B",
       name = "Flawless 3-B",
-      description = "Complete mission 3-B in normal mode without taking damage.",
+      description = "Complete mission 3-B in hard mode without taking damage.",
     },
     {
       id = "no_damage_4-1",
       name = "Flawless 4-1",
-      description = "Complete mission 4-1 in normal mode without taking damage.",
+      description = "Complete mission 4-1 in hard mode without taking damage.",
     },
     {
       id = "no_damage_4-2",
       name = "Flawless 4-2",
-      description = "Complete mission 4-2 in normal mode without taking damage.",
+      description = "Complete mission 4-2 in hard mode without taking damage.",
     },
     {
       id = "no_damage_4-3",
       name = "Flawless 4-3",
-      description = "Complete mission 4-3 in normal mode without taking damage.",
+      description = "Complete mission 4-3 in hard mode without taking damage.",
     },
     {
       id = "no_damage_4-4",
       name = "Flawless 4-4",
-      description = "Complete mission 4-4 in normal mode without taking damage.",
+      description = "Complete mission 4-4 in hard mode without taking damage.",
     },
     {
       id = "no_damage_5-1",
       name = "Flawless 5-1",
-      description = "Complete mission 5-1 in normal mode without taking damage.",
+      description = "Complete mission 5-1 in hard mode without taking damage.",
     },
     {
       id = "no_damage_5-2",
       name = "Flawless 5-2",
-      description = "Complete mission 5-2 in normal mode without taking damage.",
+      description = "Complete mission 5-2 in hard mode without taking damage.",
     },
     {
       id = "no_damage_5-3",
       name = "Flawless 5-3",
-      description = "Complete mission 5-3 in normal mode without taking damage.",
+      description = "Complete mission 5-3 in hard mode without taking damage.",
     },
     {
       id = "no_damage_6-B",
       name = "Flawless 6-B",
-      description = "Complete mission 6-B in normal mode without taking damage.",
+      description = "Complete mission 6-B in hard mode without taking damage.",
     },
     {
       id = "no_damage_all",
       name = "Perfectionist",
-      description = "Complete all missions in normal mode without taking damage.",
+      description = "Complete all missions in hard mode without taking damage.",
       progressMax = 15
     },
   }
