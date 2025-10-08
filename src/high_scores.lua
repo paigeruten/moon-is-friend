@@ -76,26 +76,8 @@ local function requestScoreboard(name, callback)
 end
 
 local fakePlayers = {
-  "alex",
-  "sam",
-  "Taylor89",
-  "joey",
-  "river",
-  "quinn",
-  "pailey",
-  "morgan",
-  "casey_k",
-  "avery",
-  "jordan",
-  "skye42",
-  "Drew!",
-  "charlie",
-  "RoWaN",
-  "blake",
-  "dakota#7",
-  "reese",
-  "phoenix",
-  "2482053772263622"
+  "alex", "sam", "Taylor89", "joey", "river", "quinn", "pailey", "morgan", "casey_k", "avery", "jordan",
+  "skye42", "Drew!", "charlie", "RoWaN", "blake", "dakota#7", "reese", "phoenix", "2482053772263622"
 }
 local function fakeScores()
   local scores = {}
@@ -114,9 +96,28 @@ local function fakeScores()
   return scores
 end
 
+local baseBoxX, baseBoxY = 30, 5
+local boxWidth, boxHeight = 340, 230
+
+local moonText = { [1] = "One moon:", [2] = "Two moons:", [3] = "Three moons:" }
+local asteroidText = { [3] = "Three meteors:", [4] = "Four meteors:", [5] = "Five meteors:" }
+
+local pageSpacing = (screenWidth - 12) - baseBoxX
+local scrollX = 0
+local scrollStartX = 0
+local targetScrollX = 0
+local scrollTimer = 0
+local scrollDuration = 20
+
 function HighScores.switch()
   gs.scene = 'high-scores'
   gs.highScorePage = 1
+
+  scrollX = 0
+  scrollStartX = 0
+  targetScrollX = 0
+  scrollTimer = 0
+
   if scoreboardsEnabled then
     for _, page in ipairs(pages) do
       if page.type == 'global' then
@@ -136,14 +137,9 @@ function HighScores.switch()
       end
     end
   end
+
   Menu.reset()
 end
-
-local baseBoxX, baseBoxY = 30, 5
-local boxWidth, boxHeight = 340, 230
-
-local moonText = { [1] = "One moon:", [2] = "Two moons:", [3] = "Three moons:" }
-local asteroidText = { [3] = "Three meteors:", [4] = "Four meteors:", [5] = "Five meteors:" }
 
 local function drawBox(boxX, boxY)
   gfx.setColor(gfx.kColorBlack)
@@ -157,8 +153,7 @@ local function drawBox(boxX, boxY)
 
   if scoreboardsEnabled then
     gfx.drawText("⬅️ Previous", boxX + 20, boxY + boxHeight - 22)
-    gfx.drawTextAligned("Next ➡️", boxX + boxWidth - 20, boxY + boxHeight - 22,
-      kTextAlignment.right)
+    gfx.drawTextAligned("Next ➡️", boxX + boxWidth - 20, boxY + boxHeight - 22, kTextAlignment.right)
   else
     gfx.drawTextAligned("Ⓐ Done", boxX + boxWidth - 10, boxY + boxHeight - 22, kTextAlignment.right)
   end
@@ -176,13 +171,17 @@ local function drawLocalPage(boxX, boxY)
   local standardColX = boxX + 55
   local jugglingColX = boxX + 225
 
-  gfx.setFont(assets.fonts.menu)
-  local standardWidth, _ = gfx.drawText("Standard", standardColX, boxY + 78)
-  local jugglingWidth, _ = gfx.drawText(SaveData.isAnyEndlessModeUnlocked('juggling') and "Juggling" or "???",
-    jugglingColX, boxY + 78)
+  local standardText = "Standard"
+  local jugglingText = SaveData.isAnyEndlessModeUnlocked('juggling') and "Juggling" or "???"
+  local standardWidth = assets.fonts.menu:getTextWidth(standardText)
+  local jugglingWidth = assets.fonts.menu:getTextWidth(jugglingText)
 
-  assets.gfx.missionIcons.asteroids:drawAnchored(standardColX + standardWidth // 2, boxY + 50, 0.5, 0)
-  assets.gfx.missionIcons.collide:drawAnchored(jugglingColX + jugglingWidth // 2, boxY + 50, 0.5, 0)
+  gfx.setFont(assets.fonts.menu)
+  gfx.drawText(standardText, standardColX, boxY + 78)
+  gfx.drawText(jugglingText, jugglingColX, boxY + 78)
+
+  assets.gfx.missionIcons.asteroids:draw(standardColX + standardWidth // 2 - 13, boxY + 50)
+  assets.gfx.missionIcons.collide:draw(jugglingColX + jugglingWidth // 2 - 13, boxY + 50)
 
   gfx.setFont(assets.fonts.small)
   for numMoons = 1, 3 do
@@ -248,6 +247,26 @@ local function drawPage(page, boxX, boxY)
   end
 end
 
+local function changePage(direction)
+  local oldPage = gs.highScorePage
+
+  gs.highScorePage += direction
+  if gs.highScorePage > #pages then gs.highScorePage = 1 end
+  if gs.highScorePage == 0 then gs.highScorePage = #pages end
+
+  scrollX = (oldPage - 1) * pageSpacing
+  scrollStartX = scrollX
+  targetScrollX = (gs.highScorePage - 1) * pageSpacing
+
+  if oldPage == #pages and gs.highScorePage == 1 then
+    targetScrollX = #pages * pageSpacing
+  elseif oldPage == 1 and gs.highScorePage == #pages then
+    targetScrollX = -pageSpacing
+  end
+
+  scrollTimer = 0
+end
+
 function HighScores.update()
   gfx.clear()
 
@@ -256,31 +275,50 @@ function HighScores.update()
     gfx.drawPixel(star.x, star.y)
   end
 
-  local page = pages[gs.highScorePage]
-
-  drawPage(page, baseBoxX, baseBoxY)
-
   if scoreboardsEnabled then
-    local rightPage = pages[gs.highScorePage + 1] or pages[1]
-    drawPage(rightPage, screenWidth - 12, baseBoxY)
+    if scrollTimer < scrollDuration then
+      scrollX = scrollStartX + pd.easingFunctions.outCubic(scrollTimer, 0, targetScrollX - scrollStartX, scrollDuration)
+      scrollTimer += 1
+    else
+      scrollX = targetScrollX
 
-    local leftPage = pages[gs.highScorePage - 1] or pages[#pages]
-    drawPage(leftPage, 12 - boxWidth, baseBoxY)
+      local normalizedScrollX = (gs.highScorePage - 1) * pageSpacing
+      if scrollX ~= normalizedScrollX then
+        scrollX = normalizedScrollX
+        targetScrollX = normalizedScrollX
+      end
+    end
+
+    local totalScrollSpace = #pages * pageSpacing
+    for i = 1, #pages do
+      local pageAbsoluteX = (i - 1) * pageSpacing
+
+      local pageX = baseBoxX + pageAbsoluteX - scrollX
+      if pageX > -boxWidth and pageX < screenWidth then
+        drawPage(pages[i], pageX, baseBoxY)
+      end
+
+      local leftX = pageX - totalScrollSpace
+      if leftX > -boxWidth and leftX < screenWidth then
+        drawPage(pages[i], leftX, baseBoxY)
+      end
+
+      local rightX = pageX + totalScrollSpace
+      if rightX > -boxWidth and rightX < screenWidth then
+        drawPage(pages[i], rightX, baseBoxY)
+      end
+    end
+  else
+    drawPage(pages[gs.highScorePage], baseBoxX, baseBoxY)
   end
 
   if scoreboardsEnabled then
     if pd.buttonJustPressed(pd.kButtonRight) then
-      gs.highScorePage += 1
-      if gs.highScorePage > #pages then
-        gs.highScorePage = 1
-      end
+      changePage(1)
       assets.sfx.boop:play()
     end
     if pd.buttonJustPressed(pd.kButtonLeft) then
-      gs.highScorePage -= 1
-      if gs.highScorePage == 0 then
-        gs.highScorePage = #pages
-      end
+      changePage(-1)
       assets.sfx.boop:play()
     end
   end
