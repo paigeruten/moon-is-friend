@@ -15,7 +15,7 @@
     * [ ] Make "Hard mode" checkbox more obvious? (Difficulty select dialog when you re-play a mission?)
     * [ ] "Hard mode" unlocks after beating the game for the first time?
     * [ ] In boss fights, don't make asteroids come directly from the left of Earth (maybe in hard mode...)
-* [ ] Global scoreboards
+* [x] Global scoreboards
     * [ ] Final boss speedrun scoreboard?
 * [x] Zen/Practice mode (constant difficulty, no damage, probably a setting within Endless mode)
 * [ ] Performance tweaks

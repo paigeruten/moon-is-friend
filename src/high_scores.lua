@@ -5,6 +5,7 @@ local assets = Assets
 local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
 local scoreboardsEnabled = SCOREBOARDS_ENABLED
+local fakeScoreboards = false
 
 HighScores = {}
 
@@ -44,7 +45,7 @@ local pages = {
     type = 'global',
     boardId = 'juggling4meteor',
     mode = 'juggling',
-    desc = 'Jugging, 4 meteors',
+    desc = 'Juggling, 4 meteors',
     isUnlocked = function() SaveData.isEndlessModeUnlocked('juggling', 4) end
   },
   {
@@ -55,6 +56,9 @@ local pages = {
     isUnlocked = function() SaveData.isEndlessModeUnlocked('juggling', 5) end
   },
 }
+for id, page in ipairs(pages) do
+  page.id = id
+end
 
 -- Ensures scoreboards are fetched sequentially
 -- See: https://devforum.play.date/t/calling-scoreboards-on-difrent-boardids-at-once-only-returns-the-first/16379/9
@@ -128,7 +132,7 @@ function HighScores.switch()
           requestScoreboard(currentPage.boardId, function(status, result)
             currentPage.loading = false
             if status.code == 'OK' then
-              currentPage.scores = fakeScores() --result.scores
+              currentPage.scores = fakeScoreboards and fakeScores() or result.scores
             else
               currentPage.error = status.message
             end
@@ -141,7 +145,7 @@ function HighScores.switch()
   Menu.reset()
 end
 
-local function drawBox(boxX, boxY)
+local function drawBox(page, boxX, boxY)
   gfx.setColor(gfx.kColorBlack)
   gfx.fillRect(boxX, boxY, boxWidth, boxHeight)
   gfx.setColor(gfx.kColorWhite)
@@ -152,15 +156,28 @@ local function drawBox(boxX, boxY)
   gfx.setFont(assets.fonts.menu)
 
   if scoreboardsEnabled then
-    gfx.drawText("⬅️ Previous", boxX + 20, boxY + boxHeight - 22)
+    gfx.drawText("⬅️ Prev", boxX + 20, boxY + boxHeight - 22)
     gfx.drawTextAligned("Next ➡️", boxX + boxWidth - 20, boxY + boxHeight - 22, kTextAlignment.right)
+
+    local circleSpacing = 8
+    local circleRowWidth = circleSpacing * (#pages - 1)
+    local circleRowX = boxX + boxWidth // 2 - circleRowWidth // 2
+
+    gfx.setColor(gfx.kColorBlack)
+    for i = 1, #pages do
+      if i == page.id then
+        gfx.fillCircleAtPoint(circleRowX + (i - 1) * circleSpacing, boxY + boxHeight - 14, 3)
+      else
+        gfx.drawCircleAtPoint(circleRowX + (i - 1) * circleSpacing, boxY + boxHeight - 14, 3)
+      end
+    end
   else
     gfx.drawTextAligned("Ⓐ Done", boxX + boxWidth - 10, boxY + boxHeight - 22, kTextAlignment.right)
   end
 end
 
-local function drawLocalPage(boxX, boxY)
-  drawBox(boxX, boxY)
+local function drawLocalPage(page, boxX, boxY)
+  drawBox(page, boxX, boxY)
 
   gfx.setFont(assets.fonts.large)
   gfx.drawTextAligned("*Local High Scores*", boxX + boxWidth // 2, boxY + 12, kTextAlignment.center)
@@ -213,7 +230,7 @@ local function drawLocalPage(boxX, boxY)
 end
 
 local function drawGlobalPage(page, boxX, boxY)
-  drawBox(boxX, boxY)
+  drawBox(page, boxX, boxY)
 
   gfx.setFont(assets.fonts.large)
   gfx.drawTextAligned("*Global High Scores* (" .. page.desc .. ")", boxX + boxWidth // 2, boxY + 12,
@@ -241,7 +258,7 @@ end
 
 local function drawPage(page, boxX, boxY)
   if page.type == 'local' then
-    drawLocalPage(boxX, boxY)
+    drawLocalPage(page, boxX, boxY)
   else
     drawGlobalPage(page, boxX, boxY)
   end

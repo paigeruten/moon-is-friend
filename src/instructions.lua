@@ -43,13 +43,12 @@ local pages = {
     }
   },
   {
-    title = "Easy mode",
+    title = "Hard mode",
     text = {
-      "If you are struggling with some missions,\ntry turning on Easy mode from the Select\nMission screen. This changes the game in\na few ways:",
-      "- Asteroids spawn less often\n"
-      .. "- You have 5 hearts instead of 3\n"
-      .. "- You do higher damage to bosses\n"
-      .. "- No rewards for not taking damage"
+      "Turn on Hard mode from the Select\nMission screen. You earn a Star badge for\neach mission completed on Hard, and a\nHeart badge if you take no damage. Hard\nmode changes the game in a few ways:",
+      "- Asteroids spawn more often\n"
+      .. "- You have 3 hearts instead of 5\n"
+      .. "- You do less damage to bosses"
     }
   },
   {
