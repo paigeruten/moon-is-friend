@@ -115,6 +115,7 @@ function Game.reset()
 
   gs.asteroids = {}
   gs.numAsteroids = 0
+  gs.numAsteroidsOnScreen = 0
   gs.curAsteroidId = 0
   gs.lastAsteroidAt = 0
 

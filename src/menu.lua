@@ -7,6 +7,7 @@ Menu = {}
 Menu.showPathsItem = menu:addCheckmarkMenuItem('show paths', SaveData.getShowAsteroidPaths(), function(checked)
   SaveData.setShowAsteroidPaths(checked)
   if checked then
+    gs.recalcPathLengths = true
     Asteroid.resetAllPaths()
     if gs.asteroidPathsEverEnabled ~= nil then
       gs.asteroidPathsEverEnabled = true

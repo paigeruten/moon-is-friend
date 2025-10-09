@@ -6,9 +6,9 @@ local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
 local sidebarWidth = SIDEBAR_WIDTH
 
-local pathSegments = PATH_SEGMENTS
-local pathSegmentLength = PATH_SEGMENT_LENGTH
-local pathLength = pathSegmentLength * pathSegments
+local pathSegmentLength = 24
+local maxPathLength = 48
+local pathLength = maxPathLength
 
 local polarCoordinates = Util.polarCoordinates
 local angleFromVec = Util.angleFromVec
@@ -148,7 +148,7 @@ end
 
 function Asteroid.resetPath(asteroid)
   local curLength = #asteroid.path
-  for i = 1, pathLength do
+  for i = 1, maxPathLength do
     if i > curLength then
       asteroid.path[i] = {}
     end
@@ -164,20 +164,16 @@ function Asteroid.resetAllPaths()
   end
 end
 
-function playdate.mirrorStarted()
-  pathSegments = MIRROR_PATH_SEGMENTS
-  pathSegmentLength = MIRROR_PATH_SEGMENT_LENGTH
-  pathLength = pathSegmentLength * pathSegments
+local isMirror = false
 
-  Asteroid.resetAllPaths()
+function playdate.mirrorStarted()
+  isMirror = true
+  gs.recalcPathLengths = true
 end
 
 function playdate.mirrorEnded()
-  pathSegments = PATH_SEGMENTS
-  pathSegmentLength = PATH_SEGMENT_LENGTH
-  pathLength = pathSegmentLength * pathSegments
-
-  Asteroid.resetAllPaths()
+  isMirror = false
+  gs.recalcPathLengths = true
 end
 
 function Asteroid.closestAsteroidDirection()
@@ -322,9 +318,14 @@ function Asteroid.update()
   end
 
   local showAsteroidPaths = SaveData.data.settings.showAsteroidPaths
+  local nextNumAsteroidsOnScreen = 0
   local idsToRemove = {}
   for id, asteroid in pairs(gs.asteroids) do
     local isOnScreen = isAsteroidOnScreen(asteroid)
+
+    if isOnScreen then
+      nextNumAsteroidsOnScreen += 1
+    end
 
     asteroid.pos.x, asteroid.pos.y, asteroid.vel.x, asteroid.vel.y = calculateAsteroidPath(
       1,
@@ -354,8 +355,10 @@ function Asteroid.update()
         pathVelY = asteroid.lastPathState.velY
       end
 
+      local segmentLength = math.min(pathSegmentLength, pathLength - lastFrame + 1)
+
       local _, _, lastVelX, lastVelY = calculateAsteroidPath(
-        pathSegmentLength,
+        segmentLength,
         pathX,
         pathY,
         pathVelX,
@@ -370,7 +373,7 @@ function Asteroid.update()
         end
       )
 
-      asteroid.lastPathState.frame = lastFrame + pathSegmentLength
+      asteroid.lastPathState.frame = lastFrame + segmentLength
       if asteroid.lastPathState.frame > pathLength then
         asteroid.lastPathState.frame = 1
       end
@@ -399,6 +402,46 @@ function Asteroid.update()
   for _, id in ipairs(idsToRemove) do
     Asteroid.despawn(id)
   end
+
+  if showAsteroidPaths and (nextNumAsteroidsOnScreen ~= gs.numAsteroidsOnScreen or gs.recalcPathLengths) then
+    gs.recalcPathLengths = false
+
+    local prevPathLength = pathLength
+    if nextNumAsteroidsOnScreen <= 1 then
+      pathLength = 40
+      pathSegmentLength = 20
+    elseif nextNumAsteroidsOnScreen == 2 then
+      pathLength = 36
+      pathSegmentLength = 18
+    elseif nextNumAsteroidsOnScreen == 3 then
+      pathLength = 30
+      pathSegmentLength = 10
+    elseif nextNumAsteroidsOnScreen == 4 then
+      pathLength = 32
+      pathSegmentLength = 8
+    else
+      pathLength = 30
+      pathSegmentLength = 5
+    end
+
+    if isMirror then
+      pathSegmentLength = (pathSegmentLength + 1) // 2
+      pathLength -= pathSegmentLength
+    end
+
+    for _, asteroid in pairs(gs.asteroids) do
+      asteroid.lastPathState.frame = 1
+
+      if pathLength > prevPathLength then
+        for i = prevPathLength + 1, pathLength do
+          asteroid.path[i].x = asteroid.pos.x
+          asteroid.path[i].y = asteroid.pos.y
+        end
+      end
+    end
+  end
+
+  gs.numAsteroidsOnScreen = nextNumAsteroidsOnScreen
 
   Asteroid.checkCollisions()
 end
@@ -563,42 +606,48 @@ function Asteroid.draw()
       gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
       gfx.fillCircleAtPoint(asteroid.pos.x, asteroid.pos.y, asteroid.radius)
 
-      -- Spawn a particle for the asteroid tail every frame
-      local velAngle = angleFromVec(asteroid.vel.x, asteroid.vel.y)
-      local pX, pY = polarCoordinates(asteroid.radius, velAngle + math.random(-35, 35))
-      local velX, velY = polarCoordinates(
-        math.random(1, asteroid.radius) / 10,
-        velAngle + math.random(-15, 15)
-      )
-      local minRadius, maxRadius = 1, 2
-      if asteroid.radius > 6 then
-        minRadius, maxRadius = 2, 5
-      elseif asteroid.radius > 5 then
-        minRadius, maxRadius = 2, 4
-      elseif asteroid.radius > 4 then
-        minRadius, maxRadius = 1, 4
-      elseif asteroid.radius > 3 then
-        minRadius, maxRadius = 1, 3
+      local framesPerParticle, velFactor, particleTtl = 1, 10, 7
+      if gs.numAsteroidsOnScreen == 3 then
+        framesPerParticle, velFactor, particleTtl = 1, 6, 5
+      elseif gs.numAsteroidsOnScreen >= 4 then
+        framesPerParticle, velFactor, particleTtl = 2, 3, 4
       end
-      Particle.spawn(
-        asteroid.pos.x - pX,
-        asteroid.pos.y - pY,
-        velX,
-        velY,
-        7,
-        minRadius,
-        maxRadius,
-        0.5
-      )
+
+      if gs.frameCount % framesPerParticle == 0 then
+        local velAngle = angleFromVec(asteroid.vel.x, asteroid.vel.y)
+        local pX, pY = polarCoordinates(asteroid.radius, velAngle + math.random(-35, 35))
+        local velX, velY = polarCoordinates(
+          math.random(1, asteroid.radius) / velFactor,
+          velAngle + math.random(-15, 15)
+        )
+        local minRadius, maxRadius = 1, 2
+        if asteroid.radius > 6 then
+          minRadius, maxRadius = 2, 5
+        elseif asteroid.radius > 5 then
+          minRadius, maxRadius = 2, 4
+        elseif asteroid.radius > 4 then
+          minRadius, maxRadius = 1, 4
+        elseif asteroid.radius > 3 then
+          minRadius, maxRadius = 1, 3
+        end
+        Particle.spawn(
+          asteroid.pos.x - pX,
+          asteroid.pos.y - pY,
+          velX,
+          velY,
+          particleTtl,
+          minRadius,
+          maxRadius,
+          0.5
+        )
+      end
 
       if showAsteroidPaths then
         gfx.setColor(gfx.kColorWhite)
         gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
         local path = asteroid.path
         for i = 1, pathLength, 3 do
-          local avgX = (path[i].x + path[i + 1].x + path[i + 2].x) / 3
-          local avgY = (path[i].y + path[i + 1].y + path[i + 2].y) / 3
-          gfx.fillCircleAtPoint(avgX, avgY, 1)
+          gfx.fillCircleAtPoint(path[i].x, path[i].y, 1)
         end
       end
     elseif (gs.frameCount // 10) % 3 ~= 0 then
