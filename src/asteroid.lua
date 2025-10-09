@@ -59,7 +59,21 @@ function Asteroid.spawn()
   posY += gs.earth.pos.y
   local asteroidRadius
   if gs.mission.mode == 'juggling' then
-    asteroidRadius = math.random(4, 5)
+    if gs.mission.winType == 'endless' and not gs.zenMode then
+      if gs.frameCount < 3000 then
+        asteroidRadius = math.random(5, 6)
+      elseif gs.frameCount < 9000 then
+        asteroidRadius = math.random(4, 5)
+      elseif gs.frameCount < 15000 then
+        asteroidRadius = math.random(3, 4)
+      elseif gs.frameCount < 21000 then
+        asteroidRadius = math.random(2, 3)
+      else
+        asteroidRadius = 2
+      end
+    else
+      asteroidRadius = gs.hardMode and math.random(4, 5) or math.random(5, 6)
+    end
   else
     local chooseRadius = math.random()
     if chooseRadius < 0.6 then
@@ -493,6 +507,12 @@ function Asteroid.checkCollisions()
             achievements.advance("asteroid_collisions", 1)
             if achievements.isGranted("asteroid_collisions") then
               Achievement.queue("asteroid_collisions", true)
+            end
+          end
+
+          if gs.mission.mode == 'juggling' and gs.mission.winType == 'endless' and asteroid.radius == 2 and asteroid2.radius == 2 then
+            if achievements.grant("tiny_asteroid_collision") then
+              Achievement.queue("tiny_asteroid_collision", true)
             end
           end
         end

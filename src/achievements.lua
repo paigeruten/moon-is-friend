@@ -115,6 +115,11 @@ achievements.initialize({
       description = "Get 50 points in any Endless Juggling run."
     },
     {
+      id = "tiny_asteroid_collision",
+      name = "Particle collider",
+      description = "Survive long enough in Endless Juggling to cause two of the tiniest possible asteroids to collide."
+    },
+    {
       id = "endless_hero",
       name = "Endless hero",
       description = "Accumulate 2,500 points over the course of all your Endless runs.",
