@@ -50,12 +50,7 @@ function Target.update()
     if gs.bossPhaseFrame > 100 then
       if gs.bossPhaseFrame % 4 == 0 then
         gs.earth.basePos.x -= 1
-        for _, star in ipairs(gs.stars) do
-          star.x -= 1
-          if star.x < 0 then
-            star.x = screenWidth - 1
-          end
-        end
+        gs.starsOffset += 1
       end
       if gs.bossPhaseFrame % 2 == 0 then
         for _, target in pairs(gs.targets) do
@@ -72,12 +67,7 @@ function Target.update()
     if gs.bossPhaseFrame < 200 then
       if gs.bossPhaseFrame % 4 == 0 then
         gs.earth.basePos.x += 1
-        for _, star in ipairs(gs.stars) do
-          star.x += 1
-          if star.x >= screenWidth then
-            star.x = 0
-          end
-        end
+        gs.starsOffset -= 1
       end
     elseif gs.bossPhaseFrame == 230 then
       gs.earth.isSafe = true

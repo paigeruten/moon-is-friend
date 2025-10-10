@@ -19,6 +19,10 @@
     * [ ] Final boss speedrun scoreboard?
 * [x] Zen/Practice mode (constant difficulty, no damage, probably a setting within Endless mode)
 * [ ] Performance tweaks
+    * [x] Stop drawing stars individually!!!
+    * [ ] Do the same with sidebar (background part at least)?
+    * [ ] Do the same with Earth/Moon?
+    * [ ] Drawing particles is a bottleneck
 * [ ] Update story text
 * [ ] Upload Catalog assets
 

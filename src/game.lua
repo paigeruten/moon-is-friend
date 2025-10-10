@@ -131,15 +131,14 @@ function Game.reset()
   gs.particles = {}
   gs.curParticleId = 0
 
-  gs.stars = gs.stars or {}
-  for i = 1, 100 do
-    local starX, starY = math.random() * screenWidth, math.random() * screenHeight
-    if gs.stars[i] then
-      gs.stars[i].x, gs.stars[i].y = starX, starY
-    else
-      gs.stars[i] = { x = starX, y = starY }
-    end
+  gs.stars = gfx.image.new(screenWidth, screenHeight, gfx.kColorBlack)
+  gs.starsOffset = 0
+  gfx.pushContext(gs.stars)
+  gfx.setColor(gfx.kColorWhite)
+  for _ = 1, 100 do
+    gfx.drawPixel(math.random(0, screenWidth), math.random(0, screenHeight))
   end
+  gfx.popContext()
 
   gs.curMessage = nil
   gs.curMessageAt = nil
@@ -358,12 +357,11 @@ function Game.update()
 end
 
 function Game.draw()
-  gfx.clear()
-
-  -- Stars
-  gfx.setColor(gfx.kColorWhite)
-  for _, star in ipairs(gs.stars) do
-    gfx.drawPixel(star.x, star.y)
+  if gs.starsOffset <= 0 then
+    gs.stars:draw(0, 0)
+  else
+    gs.stars:draw(0, 0, gfx.kImageUnflipped, gs.starsOffset, 0, screenWidth - gs.starsOffset, screenHeight)
+    gs.stars:draw(screenWidth - gs.starsOffset, 0, gfx.kImageUnflipped, 0, 0, gs.starsOffset, screenHeight)
   end
 
   Earth.draw()

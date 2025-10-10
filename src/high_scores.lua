@@ -285,12 +285,7 @@ local function changePage(direction)
 end
 
 function HighScores.update()
-  gfx.clear()
-
-  gfx.setColor(gfx.kColorWhite)
-  for _, star in ipairs(gs.stars) do
-    gfx.drawPixel(star.x, star.y)
-  end
+  gs.stars:draw(0, 0)
 
   if scoreboardsEnabled then
     if scrollTimer < scrollDuration then

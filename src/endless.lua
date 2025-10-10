@@ -29,12 +29,7 @@ local boxX, boxY = 80, 37
 local boxWidth, boxHeight = 240, 154
 
 function Endless.update()
-  gfx.clear()
-
-  gfx.setColor(gfx.kColorWhite)
-  for _, star in ipairs(gs.stars) do
-    gfx.drawPixel(star.x, star.y)
-  end
+  gs.stars:draw(0, 0)
 
   gfx.setColor(gfx.kColorBlack)
   gfx.fillRect(boxX, boxY, boxWidth, boxHeight)
