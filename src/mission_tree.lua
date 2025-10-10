@@ -128,7 +128,7 @@ MISSIONS = {
   ["3-B"] = {
     mode = "standard",
     winType = "boss",
-    winGoal = 100,
+    winGoal = function(isHardMode) return isHardMode and 150 or 100 end,
     difficulty = 85,
     card = "Type: Boss\nGoal: ???\nChaos: ******\nMoons: 1",
     introText = {
@@ -222,8 +222,8 @@ MISSIONS = {
   ["6-B"] = {
     mode = "standard",
     winType = "boss",
-    winGoal = 100,
-    winGoal2 = 33,
+    winGoal = function(isHardMode) return isHardMode and 150 or 100 end,
+    winGoal2 = function(isHardMode) return isHardMode and 50 or 33 end,
     difficulty = 75,
     unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!",
     card = "Type: Boss\nGoal: ???\nChaos: ********\nMoons: 1",
@@ -255,6 +255,24 @@ local function setColumnUnlockText(numMissions)
     columnUnlockText[3] = numMissions == 1 and "mission" or "missions"
   end
 end
+
+local showDifficultySelect = false
+local difficultyOptions = { "normal", "hard", "one_heart" }
+local selectedDifficultyIdx = 1
+local difficultyInfo = {
+  normal = {
+    label = "Normal",
+    description = "Standard difficulty.",
+  },
+  hard = {
+    label = "Hard",
+    description = "More meteors, less health.",
+  },
+  one_heart = {
+    label = "One Heart",
+    description = "Same as Hard, but you die in one hit."
+  }
+}
 
 function MissionTree.selectNextMission()
   for colIdx, missionCol in ipairs(MISSION_TREE) do
@@ -293,6 +311,8 @@ end
 
 local showUnlockMessage = false
 local unlockShakeTtl = 0
+local completedAllHard = false
+local completedAllOneHeart = false
 
 function MissionTree.switch()
   gs.scene = 'mission-tree'
@@ -300,6 +320,10 @@ function MissionTree.switch()
   gs.highestUnlocked = MissionTree.highestUnlockedColumn()
   Menu.reset()
   showUnlockMessage = false
+  showDifficultySelect = false
+  selectedDifficultyIdx = 1
+  completedAllHard = SaveData.countMissionsComplete(true) >= 15
+  completedAllOneHeart = SaveData.countMissionsFlawless() >= 15
 end
 
 function MissionTree.update()
@@ -310,34 +334,15 @@ function MissionTree.update()
   gfx.drawTextAligned('*Select Mission*', screenWidth // 2, 8, kTextAlignment.center)
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
-  local checkboxX, checkboxY = screenWidth - 97, 10
-  local checkboxSize = 12
-  gfx.setColor(gfx.kColorBlack)
-  gfx.fillRect(checkboxX, checkboxY, checkboxSize, checkboxSize)
-
-  if SaveData.getDifficulty() == 'hard' then
+  if completedAllHard or completedAllOneHeart then
     gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    assets.gfx.checkmark:draw(checkboxX, checkboxY)
+    local badgeX, badgeY = 16, 12
+    for i = 1, 20 do
+      (completedAllOneHeart and assets.gfx.flawlessIcon or assets.gfx.starIcon):draw(badgeX, badgeY, gfx.kImageUnflipped,
+        2, 2, 9, 9)
+      badgeX += (i == 10) and 142 or 12
+    end
     gfx.setImageDrawMode(gfx.kDrawModeCopy)
-  else
-    gfx.setImageDrawMode(gfx.kDrawModeNXOR)
-    assets.gfx.noCheckmark:draw(checkboxX, checkboxY)
-    gfx.setImageDrawMode(gfx.kDrawModeCopy)
-  end
-
-  gfx.setFont(assets.fonts.small)
-  gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
-  local hardWidth, hardHeight = gfx.drawText('hard mode', screenWidth - 80, 8)
-  gfx.setImageDrawMode(gfx.kDrawModeCopy)
-
-  if gs.missionRow == 0 then
-    local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
-    gfx.setColor(gfx.kColorWhite)
-    gfx.fillRect(screenWidth - 80, 8 + hardHeight + 2 + perlY, hardWidth, 3)
-  else
-    gfx.setColor(gfx.kColorWhite)
-    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRect(screenWidth - 80, 8 + hardHeight + 1, hardWidth, 2)
   end
 
   gfx.setFont(assets.fonts.small)
@@ -352,7 +357,7 @@ function MissionTree.update()
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(missionX + 13 - 28 + 1 + shakeX, 32 + 1, 61 - 2, 204 - 2, 5)
 
-    if gs.missionCol == columnNum and gs.missionRow > 0 then
+    if gs.missionCol == columnNum then
       gfx.setColor(gfx.kColorBlack)
       gfx.setLineWidth(2)
       gfx.drawRoundRect(missionX + 13 - 28 + 1 + 3 + shakeX, 32 + 1 + 3, 61 - 2 - 6, 204 - 2 - 6, 5)
@@ -396,7 +401,8 @@ function MissionTree.update()
         textWidth += 1
       end
       if missionId == gs.missionId then
-        local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
+        local perlY = showDifficultySelect and -1 or
+            math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
         gfx.setColor(gfx.kColorBlack)
         gfx.fillRect(missionX + 5 + shakeX, missionY + 26 + textHeight + 2 + perlY, textWidth, 3)
       else
@@ -487,73 +493,153 @@ function MissionTree.update()
     gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
     gfx.drawText(gs.missionId, cardX + 10 + 9, cardY - 15 + 2)
     gfx.drawText(MISSIONS[gs.missionId].card, cardX + 5, cardY + 5)
-  else
-    local cardWidth, cardHeight = 140, 70
-    local cardX, cardY = screenWidth - cardWidth - 8, screenHeight - cardHeight - 6
-    gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(cardX - 3, cardY - 3, cardWidth + 6, cardHeight + 6, 10)
+  end
+
+  if showDifficultySelect then
     gfx.setColor(gfx.kColorBlack)
-    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeDiagonalLine)
-    gfx.fillRoundRect(cardX - 3, cardY - 3, cardWidth + 6, cardHeight + 6, 10)
+    gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer2x2)
+    gfx.fillRect(0, 0, screenWidth, screenHeight)
 
-    gfx.setColor(gfx.kColorBlack)
-    gfx.drawRoundRect(cardX, cardY, cardWidth, cardHeight, 5)
+    local difficultyWidth = 276
+    local difficultyHeight = 120
+    local difficultyX = (screenWidth - difficultyWidth) // 2
+    local difficultyY = (screenHeight - difficultyHeight) // 2
 
     gfx.setColor(gfx.kColorWhite)
-    gfx.fillRoundRect(cardX + 1, cardY + 1, cardWidth - 2, cardHeight - 2, 5)
+    gfx.fillRoundRect(difficultyX, difficultyY, difficultyWidth, difficultyHeight, 5)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setLineWidth(2)
+    gfx.drawRoundRect(difficultyX + 3, difficultyY + 3, difficultyWidth - 6, difficultyHeight - 6, 5)
+    gfx.setLineWidth(1)
 
-    local hardModeDesc = SaveData.getDifficulty() == 'hard'
-        and "Hard mode is on.\n\nTurn it off for a\nbit less stress!"
-        or "Hard mode is off.\n\nSome achievements\nwill be disabled."
-    gfx.drawText(hardModeDesc, cardX + 5, cardY + 5)
+    gfx.setFont(assets.fonts.large)
+    gfx.drawTextAligned('*Mission ' .. gs.missionId .. '*', difficultyX + difficultyWidth // 2, difficultyY + 10,
+      kTextAlignment.center)
+
+    gfx.setFont(assets.fonts.menu)
+    local optionY = difficultyY + 44
+    local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.frameCount % 100) / 100, 0, 0) * 20 - 10))
+
+    local optionX = difficultyX + 43
+    for difficultyIdx, difficulty in ipairs(difficultyOptions) do
+      local textWidth, textHeight = gfx.drawText(difficultyInfo[difficulty].label, optionX, optionY)
+
+      if difficultyIdx == selectedDifficultyIdx then
+        gfx.setColor(gfx.kColorBlack)
+        gfx.fillRect(optionX, optionY + textHeight + 3 + perlY, textWidth, 3)
+      else
+        gfx.setColor(gfx.kColorBlack)
+        gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+        gfx.fillRect(optionX, optionY + textHeight + 1, textWidth, 2)
+      end
+
+      if difficulty == "normal" then
+        if SaveData.isMissionComplete(gs.missionId, false) then
+          assets.gfx.checkmark:draw(optionX - 13, optionY + 3, gfx.kImageUnflipped, 2, 2, 9, 9)
+        else
+          assets.gfx.emptyCircle:draw(optionX - 13, optionY + 3)
+        end
+      elseif difficulty == "hard" then
+        if SaveData.isMissionComplete(gs.missionId, true) then
+          assets.gfx.starIcon:draw(optionX - 13, optionY + 3, gfx.kImageUnflipped, 2, 2, 9, 9)
+        else
+          assets.gfx.emptyCircle:draw(optionX - 13, optionY + 3)
+        end
+      else
+        if achievements.isGranted("no_damage_" .. gs.missionId) then
+          assets.gfx.flawlessIcon:draw(optionX - 13, optionY + 3, gfx.kImageUnflipped, 2, 2, 9, 9)
+        else
+          assets.gfx.emptyCircle:draw(optionX - 13, optionY + 3)
+        end
+      end
+
+      optionX += textWidth + 30
+    end
+
+    gfx.setFont(assets.fonts.small)
+    gfx.drawTextAligned(difficultyInfo[difficultyOptions[selectedDifficultyIdx]].description, screenWidth // 2,
+      difficultyY + 70,
+      kTextAlignment.center)
+
+    gfx.setFont(assets.fonts.menu)
+    gfx.drawTextAligned("Ⓑ Cancel     Ⓐ Start", difficultyX + difficultyWidth - 10, difficultyY + difficultyHeight - 22,
+      kTextAlignment
+      .right)
   end
 
   gs.frameCount += 1
 
-  if pd.buttonJustPressed(pd.kButtonDown) then
-    showUnlockMessage = false
-    gs.missionRow += 1
-    if gs.missionRow > #MISSION_TREE[gs.missionCol] then
-      gs.missionRow = 0
-    end
-  elseif pd.buttonJustPressed(pd.kButtonUp) then
-    showUnlockMessage = false
-    gs.missionRow -= 1
-    if gs.missionRow == -1 then
-      gs.missionRow = #MISSION_TREE[gs.missionCol]
-    end
-  elseif pd.buttonJustPressed(pd.kButtonLeft) and gs.missionRow > 0 then
-    showUnlockMessage = false
-    if gs.missionCol > 1 then
-      gs.missionCol -= 1
-      gs.missionRow = 1
-    end
-  elseif pd.buttonJustPressed(pd.kButtonRight) and gs.missionRow > 0 then
-    showUnlockMessage = false
-    if gs.missionCol < gs.highestUnlocked then
-      gs.missionCol += 1
-      gs.missionRow = 1
-    else
-      showUnlockMessage = true
-      unlockShakeTtl = 20
-      assets.sfx.boop:play(55)
-    end
-  end
-
-  gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
-
-  if pd.buttonJustReleased(pd.kButtonA) then
-    if gs.missionRow == 0 then
-      SaveData.setDifficulty(SaveData.getDifficulty() == 'hard' and 'normal' or 'hard')
+  if showDifficultySelect then
+    if pd.buttonJustPressed(pd.kButtonLeft) then
+      selectedDifficultyIdx -= 1
+      if selectedDifficultyIdx < 1 then
+        selectedDifficultyIdx = #difficultyOptions
+      end
       assets.sfx.boop:play()
-    else
+    elseif pd.buttonJustPressed(pd.kButtonRight) then
+      selectedDifficultyIdx += 1
+      if selectedDifficultyIdx > #difficultyOptions then
+        selectedDifficultyIdx = 1
+      end
+      assets.sfx.boop:play()
+    elseif pd.buttonJustReleased(pd.kButtonA) then
+      gs.selectedDifficulty = difficultyOptions[selectedDifficultyIdx]
+      showDifficultySelect = false
       MissionIntro.switch()
       assets.sfx.boop:play(77)
+    elseif pd.buttonJustReleased(pd.kButtonB) then
+      showDifficultySelect = false
+      assets.sfx.boop:play()
     end
-  end
+  else
+    if pd.buttonJustPressed(pd.kButtonDown) then
+      showUnlockMessage = false
+      gs.missionRow += 1
+      if gs.missionRow > #MISSION_TREE[gs.missionCol] then
+        gs.missionRow = 1
+      end
+    elseif pd.buttonJustPressed(pd.kButtonUp) then
+      showUnlockMessage = false
+      gs.missionRow -= 1
+      if gs.missionRow == 0 then
+        gs.missionRow = #MISSION_TREE[gs.missionCol]
+      end
+    elseif pd.buttonJustPressed(pd.kButtonLeft) then
+      showUnlockMessage = false
+      if gs.missionCol > 1 then
+        gs.missionCol -= 1
+        gs.missionRow = 1
+      end
+    elseif pd.buttonJustPressed(pd.kButtonRight) then
+      showUnlockMessage = false
+      if gs.missionCol < gs.highestUnlocked then
+        gs.missionCol += 1
+        gs.missionRow = 1
+      else
+        showUnlockMessage = true
+        unlockShakeTtl = 20
+        assets.sfx.boop:play(55)
+      end
+    end
 
-  if pd.buttonJustReleased(pd.kButtonB) then
-    Title.switch()
-    assets.sfx.boop:play()
+    gs.missionId = MISSION_TREE[gs.missionCol][gs.missionRow]
+
+    if pd.buttonJustReleased(pd.kButtonA) then
+      showDifficultySelect = true
+      selectedDifficultyIdx = 1
+      if not SaveData.isMissionComplete(gs.missionId, false) then
+        selectedDifficultyIdx = 1
+      elseif not SaveData.isMissionComplete(gs.missionId, true) then
+        selectedDifficultyIdx = 2
+      elseif not achievements.isGranted("no_damage_" .. gs.missionId) then
+        selectedDifficultyIdx = 3
+      end
+      assets.sfx.boop:play()
+    end
+
+    if pd.buttonJustReleased(pd.kButtonB) then
+      Title.switch()
+      assets.sfx.boop:play()
+    end
   end
 end

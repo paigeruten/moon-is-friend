@@ -114,11 +114,12 @@ function Target.update()
         end
 
         if targetsLeft == 0 and gs.mission.winGoal2 and gs.bossPhase == 1 then
+          local actualWinGoal2 = gs.mission.winGoal2(gs.hardMode)
           gs.bossPhase = 2
-          gs.bossMaxHealth = gs.mission.winGoal2 * 3
-          Target.spawn(screenWidth - 40, 120, 20, gs.mission.winGoal2)
-          Target.spawn(screenWidth - 65, 40, 20, gs.mission.winGoal2)
-          Target.spawn(screenWidth - 65, 200, 20, gs.mission.winGoal2)
+          gs.bossMaxHealth = actualWinGoal2 * 3
+          Target.spawn(screenWidth - 40, 120, 20, actualWinGoal2)
+          Target.spawn(screenWidth - 65, 40, 20, actualWinGoal2)
+          Target.spawn(screenWidth - 65, 200, 20, actualWinGoal2)
         elseif targetsLeft == 0 and gs.bossPhase == 2 then
           gs.bossPhase = 3
           gs.bossPhaseFrame = 0

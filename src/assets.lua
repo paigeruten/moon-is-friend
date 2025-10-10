@@ -60,6 +60,7 @@ Assets = {
     zeds = gfx.imagetable.new("images/zeds"),
     eyelid = gfx.image.new("images/eyelid"),
     hard = gfx.image.new("images/hard"),
+    oneHeart = gfx.image.new("images/one-heart"),
     zen = gfx.image.new("images/zen"),
 
     labelMeteors = gfx.image.new("images/label-meteors"),

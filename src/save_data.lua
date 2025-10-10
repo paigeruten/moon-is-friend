@@ -18,11 +18,6 @@ end
 if SaveData.data.settings.showAsteroidPaths == nil then
   SaveData.data.settings.showAsteroidPaths = true
 end
--- 'easy' difficulty was renamed to 'normal' after version 1.0.1, so this handles
--- those old save files.
-if SaveData.data.settings.difficulty == nil or SaveData.data.settings.difficulty == 'easy' then
-  SaveData.data.settings.difficulty = 'normal'
-end
 
 function SaveData.completeMission(missionId, isHardMode)
   if not SaveData.data.missions[missionId] then
@@ -126,14 +121,5 @@ end
 
 function SaveData.setShowAsteroidPaths(enabled)
   SaveData.data.settings.showAsteroidPaths = enabled
-  pd.datastore.write(SaveData.data)
-end
-
-function SaveData.getDifficulty()
-  return SaveData.data.settings.difficulty
-end
-
-function SaveData.setDifficulty(difficulty)
-  SaveData.data.settings.difficulty = difficulty
   pd.datastore.write(SaveData.data)
 end

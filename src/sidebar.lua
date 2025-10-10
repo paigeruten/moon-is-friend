@@ -59,7 +59,9 @@ function Sidebar.draw()
     gfx.setFont(assets.fonts.small)
     gfx.drawText(gs.missionId, 14, missionTextY)
 
-    if gs.hardMode then
+    if gs.oneHeartMode then
+      assets.gfx.oneHeart:draw(11, missionTextY + 15)
+    elseif gs.hardMode then
       assets.gfx.hard:draw(13, missionTextY + 15)
     end
 

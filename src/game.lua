@@ -49,8 +49,12 @@ function Game.reset()
     gs.missionIcon = assets.gfx.missionIcons[gs.mission.winType]
   end
   gs.difficulty = gs.mission.difficulty
-  gs.hardMode = SaveData.getDifficulty() == 'hard' and gs.mission.winType ~= 'endless'
-  if gs.mission.mode == 'standard' and gs.mission.winType ~= 'endless' and not gs.hardMode then
+
+  local selectedDifficulty = gs.selectedDifficulty or 'normal'
+  gs.hardMode = (selectedDifficulty == 'hard' or selectedDifficulty == 'one_heart') and gs.mission.winType ~= 'endless'
+  gs.oneHeartMode = selectedDifficulty == 'one_heart' and gs.mission.winType ~= 'endless'
+
+  if gs.mission.mode == 'standard' and gs.mission.winType ~= 'endless' and selectedDifficulty == 'normal' then
     if type(gs.difficulty) == 'table' then
       gs.difficulty[1] += 25
       gs.difficulty[2] += 25
@@ -58,13 +62,16 @@ function Game.reset()
       gs.difficulty += 25
     end
   end
+
   gs.zenMode = gs.mission.winType == 'endless' and gs.endlessZenMode
   if gs.zenMode and gs.mission.mode == 'standard' then
     gs.difficulty = 125
   end
 
   local maxHealth = 5
-  if gs.hardMode then
+  if gs.oneHeartMode then
+    maxHealth = 1
+  elseif gs.hardMode then
     maxHealth = 3
   end
   gs.earth = {
@@ -123,10 +130,12 @@ function Game.reset()
   gs.curTargetId = 0
   gs.bossPhase = 0
   gs.bossPhaseFrame = 0
-  gs.bossMaxHealth = gs.mission.winGoal
+  gs.bossMaxHealth = 0
   if gs.mission.winType == "boss" then
+    gs.bossMaxHealth = gs.mission.winGoal(gs.hardMode)
+
     local bossRadius = gs.mission.winGoal2 and 120 or 75
-    Target.spawn(screenWidth - 20 + 25 + bossRadius, screenHeight // 2, bossRadius, gs.mission.winGoal)
+    Target.spawn(screenWidth - 20 + 25 + bossRadius, screenHeight // 2, bossRadius, gs.mission.winGoal(gs.hardMode))
   end
 
   gs.particles = {}
@@ -238,7 +247,7 @@ local function checkEndState()
   elseif gs.mission.winType == "collide" then
     win = gs.asteroidsCollided >= gs.mission.winGoal
   elseif gs.mission.winType == "boss" then
-    win = (Target.count() == 0 and not gs.mission.winGoal2) or (gs.bossPhase == 4 and gs.bossPhaseFrame > 0)
+    win = (Target.count() == 0 and not gs.mission.winGoal2(gs.hardMode)) or (gs.bossPhase == 4 and gs.bossPhaseFrame > 0)
   end
 
   local menuOptions = {
@@ -265,7 +274,7 @@ local function checkEndState()
         achievements.toasts.toast("beat_the_game")
       end
     end
-    if gs.earth.pristine and gs.hardMode then
+    if gs.oneHeartMode then
       if achievements.grant("no_damage_" .. gs.missionId) then
         achievements.toasts.toast("no_damage_" .. gs.missionId)
 

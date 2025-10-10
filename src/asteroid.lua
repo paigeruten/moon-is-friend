@@ -505,10 +505,7 @@ function Asteroid.checkCollisions()
         end
         if target.state == 'active' then
           local asteroidSpeed = math.sqrt(asteroid.vel.x * asteroid.vel.x + asteroid.vel.y * asteroid.vel.y)
-          local damage = math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3))
-          if not gs.hardMode then
-            damage = math.floor(damage * 1.5)
-          end
+          local damage = math.floor(1.5 * math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3)))
           target.health -= damage
           target.shakeTtl = damage * 2
           assets.sfx.goodBoom:play()

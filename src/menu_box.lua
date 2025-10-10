@@ -8,6 +8,9 @@ local sidebarWidth = SIDEBAR_WIDTH
 
 MenuBox = {}
 
+local completedAllHard = false
+local completedAllOneHeart = false
+
 -- options: { withSidebar = boolean, animated = boolean, width = number, adjustY = number, selected = number }
 function MenuBox.init(items, options, selectCallback)
   gs.menuFrameCount = 0
@@ -16,6 +19,9 @@ function MenuBox.init(items, options, selectCallback)
   gs.menuOptions = options
   gs.menuCallback = selectCallback
   gs.menuHeight = 15 + 20 * #items
+
+  completedAllHard = SaveData.countMissionsComplete(true) >= 15
+  completedAllOneHeart = SaveData.countMissionsFlawless() >= 15
 end
 
 function MenuBox.update()
@@ -46,6 +52,18 @@ function MenuBox.update()
     local itemX = menuCenterX - itemWidth // 2
     local itemY = menuBoxY + 10 + 20 * (itemId - 1)
     gfx.drawText(itemText, itemX, itemY)
+
+    if itemText == 'Missions' and (completedAllHard or completedAllOneHeart) then
+      gfx.setImageDrawMode(gfx.kDrawModeNXOR)
+      local badgeX, badgeY = itemX - 13, itemY + 3
+      for _ = 1, 2 do
+        (completedAllOneHeart and assets.gfx.flawlessIcon or assets.gfx.starIcon):draw(badgeX, badgeY,
+          gfx.kImageUnflipped,
+          2, 2, 9, 9)
+        badgeX += 71
+      end
+      gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    end
 
     if gs.menuSelected == itemId then
       local perlY = math.min(2, math.max(-2, gfx.perlin(0, (gs.menuFrameCount % 100) / 100, 0, 0) * 20 - 10))
