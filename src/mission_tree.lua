@@ -104,8 +104,8 @@ MISSIONS = {
     unlockMessage = "You've unlocked Endless Juggling!",
     card = "Type: Juggling\nGoal: 3 collisions\nChaos: ****\nMoons: 1",
     introText = {
-      "Some asteroids got captured in Earth's\norbit, and just won't leave."
-      .. " In this\nmission you must obliterate 3 pairs of\nasteroids by making"
+      "Some meteors got captured in Earth's\norbit, and just won't leave."
+      .. " In this\nmission you must obliterate 3 pairs of\nmeteors by making"
       .. " them collide with\neach other.",
       "It's too dangerous for rockets here, but\ncollisions give you +1 Health, and you\ncan boost your"
       .. " gravitational pull for a\nshort time by holding B."

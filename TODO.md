@@ -4,7 +4,7 @@
 
 * [x] Asteroid paths
     * [x] Better way of toggling this (system menu + new settings menu)
-    * [ ] Fix performance when there are 3+ asteroids
+    * [x] Fix performance when there are 3+ asteroids
     * [ ] Add page to manual about paths, and how they impact performance
     * [x] Add achievement for winning a mission without showing asteroid paths ("Training wheels off")
 * [x] Fidgety Earth
@@ -18,11 +18,10 @@
 * [x] Global scoreboards
     * [ ] Final boss speedrun scoreboard?
 * [x] Zen/Practice mode (constant difficulty, no damage, probably a setting within Endless mode)
-* [ ] Performance tweaks
+* [x] Performance tweaks
     * [x] Stop drawing stars individually!!!
-    * [ ] Do the same with sidebar (background part at least)?
-    * [ ] Do the same with Earth/Moon?
-    * [ ] Drawing particles is a bottleneck
+    * [x] Drawing particles is a bottleneck
+* [ ] Invincibility as soon as boss dies
 * [ ] Update story text
 * [ ] Upload Catalog assets
 

@@ -41,7 +41,7 @@ function Settings.update()
   end
 
   gfx.setFont(assets.fonts.small)
-  local pathsWidth, pathsHeight = gfx.drawText('Show asteroid paths', checkboxX + checkboxWidth + 7, pathsCheckboxY - 1)
+  local pathsWidth, pathsHeight = gfx.drawText('Show meteor paths', checkboxX + checkboxWidth + 7, pathsCheckboxY - 1)
 
   local shakeCheckboxY = pathsCheckboxY + checkboxSpacing
   if SaveData.isScreenShakeEnabled() then

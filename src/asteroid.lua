@@ -565,7 +565,12 @@ function Asteroid.checkCollisions()
             gs.earth.health += 1
             Game.flashMessage('Nice collision! +1 health')
           else
-            Game.flashMessage('Nice collision!')
+            Game.increaseScore(2)
+            if gs.mission.winType == 'endless' then
+              Game.flashMessage('Nice collision! +2 bonus points')
+            else
+              Game.flashMessage('Nice collision!')
+            end
           end
         elseif gs.mission.winType == 'asteroids' then
           gs.asteroidsDiverted += 4

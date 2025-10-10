@@ -29,7 +29,7 @@ achievements.initialize({
     {
       id = "no_asteroid_paths",
       name = "No more training wheels",
-      description = "Complete any mission with asteroid paths turned off the entire time.",
+      description = "Complete any mission with meteor paths turned off the entire time.",
     },
     {
       id = "big_damage",
@@ -117,7 +117,7 @@ achievements.initialize({
     {
       id = "tiny_asteroid_collision",
       name = "Particle collider",
-      description = "Survive long enough in Endless Juggling to cause two of the tiniest possible asteroids to collide."
+      description = "Survive long enough in Endless Juggling to cause two of the tiniest possible meteors to collide."
     },
     {
       id = "endless_hero",
