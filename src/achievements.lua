@@ -34,7 +34,7 @@ achievements.initialize({
     {
       id = "big_damage",
       name = "The Big One",
-      description = "Do 12 or more damage to a boss with a single meteor.",
+      description = "Do 15 or more damage to a boss with a single meteor.",
     },
     {
       id = "chaos_averted",
@@ -83,6 +83,11 @@ achievements.initialize({
       id = "quadruple_shield",
       name = "Quad shield",
       description = "Have 4 shield power-ups active at the same time.",
+    },
+    {
+      id = "max_powerups_mission",
+      name = "Fully stocked",
+      description = "Have full health, 3 bombs, an Earth shield, and a shield on each Moon at the end of any mission.",
     },
     {
       id = "max_powerups_endless",

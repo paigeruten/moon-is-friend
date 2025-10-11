@@ -12,8 +12,7 @@
     * [x] The "Easy mode" checkbox should be changed to "Hard mode", so that the old "Easy mode" becomes the default/standard.
     * [ ] Difficulty of each level can be tweaked/balanced from there.
     * [x] Stars should be earned by playing on "Hard mode" instead of playing flawlessly, and new achievement should be added for getting all stars. (Make star look more fancy if they played flawlessly?)
-    * [ ] Make "Hard mode" checkbox more obvious? (Difficulty select dialog when you re-play a mission?)
-    * [ ] "Hard mode" unlocks after beating the game for the first time?
+    * [x] Make "Hard mode" checkbox more obvious? (Difficulty select dialog when you re-play a mission?)
     * [ ] In boss fights, don't make asteroids come directly from the left of Earth (maybe in hard mode...)
 * [x] Global scoreboards
     * [ ] Final boss speedrun scoreboard?
@@ -21,7 +20,9 @@
 * [x] Performance tweaks
     * [x] Stop drawing stars individually!!!
     * [x] Drawing particles is a bottleneck
+* [ ] Store whether they beat missions on One Heart in the game data, not just as an achievement
 * [ ] Invincibility as soon as boss dies
+* [ ] Fix performance when paths are enabled with 2 or 3 moons
 * [ ] Update story text
 * [ ] Upload Catalog assets
 

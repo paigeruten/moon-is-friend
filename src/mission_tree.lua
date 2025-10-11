@@ -267,6 +267,7 @@ local difficultyInfo = {
   hard = {
     label = "Hard",
     description = "More meteors, less health.",
+    descriptionJuggling = "Smaller meteors, less health."
   },
   one_heart = {
     label = "One Heart",
@@ -556,10 +557,14 @@ function MissionTree.update()
       optionX += textWidth + 30
     end
 
+    local selectedDifficultyInfo = difficultyInfo[difficultyOptions[selectedDifficultyIdx]]
+    local difficultyDescription = selectedDifficultyInfo.description
+    if MISSIONS[gs.missionId].mode == "juggling" and selectedDifficultyInfo.descriptionJuggling then
+      difficultyDescription = selectedDifficultyInfo.descriptionJuggling
+    end
+
     gfx.setFont(assets.fonts.small)
-    gfx.drawTextAligned(difficultyInfo[difficultyOptions[selectedDifficultyIdx]].description, screenWidth // 2,
-      difficultyY + 70,
-      kTextAlignment.center)
+    gfx.drawTextAligned(difficultyDescription, screenWidth // 2, difficultyY + 70, kTextAlignment.center)
 
     gfx.setFont(assets.fonts.menu)
     gfx.drawTextAligned("Ⓑ Cancel     Ⓐ Start", difficultyX + difficultyWidth - 10, difficultyY + difficultyHeight - 22,

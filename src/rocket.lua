@@ -173,6 +173,18 @@ function Rocket.update()
     elseif collidingMoon then
       gs.rocketsCaught += 1
 
+      local moonWithoutShield = nil
+      if not collidingMoon.hasShield then
+        moonWithoutShield = collidingMoon
+      else
+        for _, moon in ipairs(gs.moons) do
+          if not moon.hasShield then
+            moonWithoutShield = moon
+            break
+          end
+        end
+      end
+
       local powerups = {}
       if gs.mission.winType == 'rocket' then
         table.insert(powerups, 'nothing')
@@ -187,7 +199,7 @@ function Rocket.update()
       if gs.earth.bombs < gs.earth.maxBombs then
         table.insert(powerups, 'bomb')
       end
-      if not collidingMoon.hasShield then
+      if moonWithoutShield then
         table.insert(powerups, 'moon-shield')
       end
       if not gs.earth.hasShield then
@@ -219,7 +231,7 @@ function Rocket.update()
           end
         end
       elseif powerup == 'moon-shield' then
-        collidingMoon.hasShield = true
+        moonWithoutShield.hasShield = true
         Game.flashMessage('You got a shield!')
         assets.sfx.shieldUp:play()
       elseif powerup == 'earth-shield' then

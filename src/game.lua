@@ -247,7 +247,7 @@ local function checkEndState()
   elseif gs.mission.winType == "collide" then
     win = gs.asteroidsCollided >= gs.mission.winGoal
   elseif gs.mission.winType == "boss" then
-    win = (Target.count() == 0 and not gs.mission.winGoal2(gs.hardMode)) or (gs.bossPhase == 4 and gs.bossPhaseFrame > 0)
+    win = (Target.count() == 0 and not gs.mission.winGoal2) or (gs.bossPhase == 4 and gs.bossPhaseFrame > 0)
   end
 
   local menuOptions = {
@@ -264,6 +264,17 @@ local function checkEndState()
     SaveData.completeMission(gs.missionId, gs.hardMode)
     gs.newMissionsUnlocked = MissionTree.highestUnlockedColumn() > prevHighestUnlocked
 
+    if gs.earth.health == gs.earth.maxHealth and gs.earth.bombs == gs.earth.maxBombs and gs.earth.bombs > 0 and gs.earth.hasShield then
+      local allMoonShields = true
+      for _, moon in ipairs(gs.moons) do
+        if not moon.hasShield then
+          allMoonShields = false
+        end
+      end
+      if allMoonShields and achievements.grant("max_powerups_mission") then
+        achievements.toasts.toast("max_powerups_mission")
+      end
+    end
     if gs.missionId == "3-B" then
       if achievements.grant("beat_first_boss") then
         achievements.toasts.toast("beat_first_boss")
