@@ -657,7 +657,7 @@ function Asteroid.draw()
         gfx.setColor(gfx.kColorWhite)
         gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
         local path = asteroid.path
-        for i = 1, pathLength, 3 do
+        for i = 4, pathLength, 3 do
           gfx.fillCircleAtPoint(path[i].x, path[i].y, 1)
         end
       end
