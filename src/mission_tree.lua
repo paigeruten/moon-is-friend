@@ -68,8 +68,9 @@ MISSIONS = {
     difficulty = 125,
     card = "Type: Survive\nGoal: 1 minute\nChaos: **\nMoons: 1",
     introText = {
-      "After a short rest, you see an even\nlonger line of meteors approaching.",
+      "After a short rest, you see another\nwave of meteors approaching.",
       "Defend yourself and the Earth for 60\nseconds to complete this mission.",
+      "Tip: In tough situations, remember to use\nyour bombs by pressing B!"
     }
   },
   ["2-1"] = {
@@ -79,10 +80,9 @@ MISSIONS = {
     difficulty = 100,
     card = "Type: Colonize\nGoal: 20 rockets\nChaos: ****\nMoons: 1",
     introText = {
-      "Earth wants to send a team of\nscientists and astronauts up to the\nMoon "
+      "Earth is sending a large team of\nscientists and astronauts up to the\nMoon "
       .. "to help resupply and bolster your\ndefenses.",
-      "Land 20 rockets on the Moon to\ncomplete this mission.",
-      "Tip: There is a penalty when a rocket is\ndestroyed by a meteor. Remember to\nuse your bombs!"
+      "Land 20 rockets on the Moon to\ncomplete this mission."
     }
   },
   ["2-2"] = {
@@ -92,7 +92,7 @@ MISSIONS = {
     difficulty = 100,
     card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 1",
     introText = {
-      "The meteors are starting to come in\nmore frequently, and in longer waves.",
+      "The meteors are starting to come in\nmore frequently, and in larger waves.",
       "Protect the Earth and survive for\n2 minutes to complete this mission."
     }
   },
@@ -120,9 +120,8 @@ MISSIONS = {
     unlockMessage = "You've unlocked Endless mode (2 Moons)!",
     card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 2",
     introText = {
-      "Saturn has sent one of its moons, your\ngood friend Enceladus, to join the fray\nand help protect the Earth.",
-      "Survive for 2 minutes with both moons\norbiting the Earth.",
-      "Tip: For a moon to get a shield from a\nrocket, it must be the one to catch the\nrocket."
+      "Saturn kindly sends one of its moons,\nEnceladus, to join the fray and help\nprotect the Earth.",
+      "Survive for 2 minutes with both moons\norbiting the Earth."
     }
   },
   ["3-B"] = {
@@ -154,7 +153,7 @@ MISSIONS = {
     difficulty = 75,
     card = "Type: Colonize\nGoal: 30 rockets\nChaos: ******\nMoons: 1",
     introText = {
-      "The Moon bases are overwhelmed by\nthis constant stream of meteors. They\nneed more supplies and workers, in order\nto have any hope of keeping up.",
+      "The Moon bases are being overwhelmed\nby the onslaught of meteors. They need\nmore supplies and workers, in order to\nhave any hope of keeping up.",
       "Land 30 rockets on the Moon to\ncomplete this mission."
     }
   },
@@ -166,7 +165,7 @@ MISSIONS = {
     unlockMessage = "You've unlocked Endless Juggling (4 Meteors)!",
     card = "Type: Juggling\nGoal: 5 collisions\nChaos: ******\nMoons: 1",
     introText = {
-      "Even more meteors have gotten caught\nin Earth's orbit.",
+      "The latest wave of meteors trapped\nsome more debris in Earth's orbit. It's\ntime to clean up.",
       "Destroy 5 pairs of meteors by making\nthem collide with each other to complete\nthis mission."
     }
   },
@@ -178,7 +177,7 @@ MISSIONS = {
     numMoons = 2,
     card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 2",
     introText = {
-      "Enceladus is back, and ready to help\nwith this next wave of meteors!",
+      "Enceladus has returned to help with the\nnext wave of meteors!",
       "Survive 2 minutes together to complete\nthis mission."
     }
   },
@@ -215,7 +214,7 @@ MISSIONS = {
     unlockMessage = "You've unlocked Endless mode (3 Moons)!",
     card = "Type: Survive\nGoal: 2 minutes\nChaos: ****\nMoons: 3",
     introText = {
-      "Another visiting moon, called Io, has\ndecided to join! Can the three of you\nwork together to keep the Earth safe?",
+      "A third moon, Jupiter's Io, has joined\nEarth's orbit! Can the three of you\nwork together to keep the Earth safe?",
       "Survive a gentler wave of meteors for\n2 minutes to complete this mission.",
     }
   },
@@ -228,7 +227,7 @@ MISSIONS = {
     unlockMessage = "You've unlocked Endless Juggling (5 Meteors)!",
     card = "Type: Boss\nGoal: ???\nChaos: ********\nMoons: 1",
     introText = {
-      "This must be it, the true source of all\nthe meteors! You must win this final\nbattle to ensure the Earth's safety, for\ngood this time.",
+      "This must be it, the true source of all\nthe meteors! This is your chance to\nensure that the Earth will never have to\nworry about meteors ever again.",
       "Good luck."
     }
   },
