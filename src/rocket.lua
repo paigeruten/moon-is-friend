@@ -290,7 +290,7 @@ function Rocket.update()
           Asteroid.despawn(id)
           gs.rockets[rocketId] = nil
           if gs.mission.winType == 'rocket' then
-            if gs.rocketsCaught > 0 then
+            if gs.hardMode and gs.rocketsCaught > 0 then
               gs.rocketsCaught -= 1
               Game.flashMessage('Oops! -1 rocket')
             end
