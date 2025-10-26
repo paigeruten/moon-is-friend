@@ -11,8 +11,8 @@ function Moon.create()
   return {
     pos = { x = 0, y = 0 },
     radius = 7,
-    gravityRadius = 75,
-    mass = 2.5,
+    gravityRadius = 80,
+    mass = 3,
     hasShield = false,
   }
 end
@@ -36,7 +36,8 @@ function Moon.update()
   end
 
   if gs.earth.maxBombs == 0 and gs.bossPhase < 3 then
-    if pd.buttonIsPressed(pd.kButtonB) and ((gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and gs.extraSuctionFuel == gs.extraSuctionMaxFuel)) then
+    local abPressed = pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonB)
+    if abPressed and ((gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and gs.extraSuctionFuel == gs.extraSuctionMaxFuel)) then
       if not gs.extraSuction then
         assets.sfx.suck:start()
       end

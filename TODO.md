@@ -10,10 +10,9 @@
 * [x] Fidgety Earth
 * [ ] Difficulty tweaks
     * [x] The "Easy mode" checkbox should be changed to "Hard mode", so that the old "Easy mode" becomes the default/standard.
-    * [ ] Difficulty of each level can be tweaked/balanced from there.
     * [x] Stars should be earned by playing on "Hard mode" instead of playing flawlessly, and new achievement should be added for getting all stars. (Make star look more fancy if they played flawlessly?)
     * [x] Make "Hard mode" checkbox more obvious? (Difficulty select dialog when you re-play a mission?)
-    * [ ] In boss fights, don't make asteroids come directly from the left of Earth (maybe in hard mode...)
+    * [x] In boss fights, don't make asteroids come directly from the left of Earth (maybe in hard mode...)
 * [x] Global scoreboards
     * [ ] Final boss speedrun scoreboard?
 * [x] Zen/Practice mode (constant difficulty, no damage, probably a setting within Endless mode)

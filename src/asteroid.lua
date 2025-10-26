@@ -97,7 +97,17 @@ function Asteroid.spawn()
   if gs.mission.winType == "boss" then
     speed *= 0.7
   end
-  local velX, velY = polarCoordinates(speed, angle + (math.random() * 40 - 20))
+  local velAngle = angle
+  if gs.mission.winType == "boss" and not gs.hardMode then
+    if math.random() < 0.5 then
+      velAngle += 10 + math.random() * 10
+    else
+      velAngle -= 10 + math.random() * 10
+    end
+  else
+    velAngle += math.random() * 40 - 20
+  end
+  local velX, velY = polarCoordinates(speed, velAngle)
   gs.asteroids[id] = {
     id = id,
     pos = { x = posX, y = posY },
@@ -505,7 +515,7 @@ function Asteroid.checkCollisions()
         end
         if target.state == 'active' then
           local asteroidSpeed = math.sqrt(asteroid.vel.x * asteroid.vel.x + asteroid.vel.y * asteroid.vel.y)
-          local damage = math.floor(1.5 * math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3)))
+          local damage = math.floor(1.3 * math.max(1, math.floor(asteroid.radius * asteroidSpeed / 3)))
           target.health -= damage
           target.shakeTtl = damage * 2
           assets.sfx.goodBoom:play()

@@ -36,7 +36,8 @@ function Bomb.update()
     end
   end
 
-  if gs.earth.maxBombs > 0 and pd.buttonJustPressed(pd.kButtonB) and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
+  local abPressed = pd.buttonJustPressed(pd.kButtonA) or pd.buttonJustPressed(pd.kButtonB)
+  if gs.earth.maxBombs > 0 and abPressed and gs.earth.bombs > 0 and gs.bombShockwave == 0 then
     gs.earth.bombs -= 1
     gs.bombShockwave = 1
     gs.bombShockwavePos = gs.earth.pos

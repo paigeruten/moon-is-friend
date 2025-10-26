@@ -87,7 +87,7 @@ achievements.initialize({
     {
       id = "max_powerups_mission",
       name = "Fully stocked",
-      description = "Have full health, 3 bombs, an Earth shield, and a shield on each Moon at the end of any mission.",
+      description = "Have full health, full shields, and 3 bombs at the end of any mission.",
     },
     {
       id = "max_powerups_endless",
@@ -122,7 +122,7 @@ achievements.initialize({
     {
       id = "tiny_asteroid_collision",
       name = "Particle collider",
-      description = "Survive long enough in Endless Juggling to cause two of the tiniest possible meteors to collide."
+      description = "Survive long enough in Endless Juggling to collide two of the tiniest possible meteors."
     },
     {
       id = "endless_hero",
