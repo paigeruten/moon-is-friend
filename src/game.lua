@@ -260,9 +260,9 @@ local function checkEndState()
   if win then
     Game.stopSounds()
     gs.endState = 'complete'
-    gs.firstTimeCompleted = not SaveData.isMissionComplete(gs.missionId, false)
+    gs.firstTimeCompleted = not SaveData.isMissionComplete(gs.missionId)
     local prevHighestUnlocked = MissionTree.highestUnlockedColumn()
-    SaveData.completeMission(gs.missionId, gs.hardMode)
+    SaveData.completeMission(gs.missionId, gs.selectedDifficulty)
     gs.newMissionsUnlocked = MissionTree.highestUnlockedColumn() > prevHighestUnlocked
 
     if gs.earth.health == gs.earth.maxHealth and gs.earth.bombs == gs.earth.maxBombs and gs.earth.bombs > 0 and gs.earth.hasShield then
@@ -291,7 +291,7 @@ local function checkEndState()
         achievements.toasts.toast("no_damage_" .. gs.missionId)
 
         if not achievements.isGranted("no_damage_all") then
-          achievements.advanceTo("no_damage_all", SaveData.countMissionsFlawless())
+          achievements.advanceTo("no_damage_all", SaveData.countMissionsComplete('one_heart'))
           if achievements.isGranted("no_damage_all") then
             achievements.toasts.toast("no_damage_all")
           end
@@ -304,13 +304,13 @@ local function checkEndState()
       end
     end
     if not achievements.isGranted("complete_all_missions") then
-      achievements.advanceTo("complete_all_missions", SaveData.countMissionsComplete(false))
+      achievements.advanceTo("complete_all_missions", SaveData.countMissionsComplete())
       if achievements.isGranted("complete_all_missions") then
         achievements.toasts.toast("complete_all_missions")
       end
     end
     if gs.hardMode and not achievements.isGranted("complete_all_missions_on_hard") then
-      achievements.advanceTo("complete_all_missions_on_hard", SaveData.countMissionsComplete(true))
+      achievements.advanceTo("complete_all_missions_on_hard", SaveData.countMissionsComplete('hard'))
       if achievements.isGranted("complete_all_missions_on_hard") then
         achievements.toasts.toast("complete_all_missions_on_hard")
       end

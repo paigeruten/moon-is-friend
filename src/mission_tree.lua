@@ -278,7 +278,7 @@ local difficultyInfo = {
 function MissionTree.selectNextMission()
   for colIdx, missionCol in ipairs(MISSION_TREE) do
     for rowIdx, missionId in ipairs(missionCol) do
-      if not SaveData.isMissionComplete(missionId, false) then
+      if not SaveData.isMissionComplete(missionId) then
         gs.missionRow = rowIdx
         gs.missionCol = colIdx
         gs.missionId = missionId
@@ -297,7 +297,7 @@ function MissionTree.highestUnlockedColumn()
   for colIdx, missionCol in ipairs(MISSION_TREE) do
     local numCompleted = 0
     for _, missionId in ipairs(missionCol) do
-      if SaveData.isMissionComplete(missionId, false) then
+      if SaveData.isMissionComplete(missionId) then
         numCompleted += 1
       end
     end
@@ -323,8 +323,8 @@ function MissionTree.switch()
   showUnlockMessage = false
   showDifficultySelect = false
   selectedDifficultyIdx = 1
-  completedAllHard = SaveData.countMissionsComplete(true) >= 15
-  completedAllOneHeart = SaveData.countMissionsFlawless() >= 15
+  completedAllHard = SaveData.countMissionsComplete('hard') >= 15
+  completedAllOneHeart = SaveData.countMissionsComplete('one_heart') >= 15
 end
 
 function MissionTree.update()
@@ -388,10 +388,10 @@ function MissionTree.update()
         end
       end
       assets.gfx.missionIcons[mission.winType]:draw(missionX + 2 + shakeX, missionY)
-      if SaveData.isMissionComplete(missionId, false) then
-        if achievements.isGranted("no_damage_" .. missionId) then
+      if SaveData.isMissionComplete(missionId) then
+        if SaveData.isMissionComplete(missionId, 'one_heart') then
           assets.gfx.flawlessIcon:draw(missionX + 19 + shakeX, missionY - 3)
-        elseif SaveData.isMissionComplete(missionId, true) then
+        elseif SaveData.isMissionComplete(missionId, 'hard') then
           assets.gfx.starIcon:draw(missionX + 19 + shakeX, missionY - 3)
         else
           assets.gfx.checkmark:draw(missionX + 19 + shakeX, missionY - 3)
@@ -422,7 +422,7 @@ function MissionTree.update()
     if showUnlockMessage and columnNum == gs.highestUnlocked + 1 then
       local missionsCompleted = 0
       for _, missionId in ipairs(MISSION_TREE[gs.highestUnlocked]) do
-        if SaveData.isMissionComplete(missionId, false) then
+        if SaveData.isMissionComplete(missionId) then
           missionsCompleted += 1
         end
       end
@@ -470,21 +470,21 @@ function MissionTree.update()
     gfx.fillRoundRect(cardX + 10 + 1, cardY - 15 + 1, 40 - 2, 20, 5)
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(cardX + cardWidth - 64 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
-    if SaveData.isMissionComplete(gs.missionId, false) then
+    if SaveData.isMissionComplete(gs.missionId) then
       assets.gfx.checkmark:draw(cardX + cardWidth - 64 + 4, cardY - 15 + 5, gfx.kImageUnflipped, 2, 2, 9, 9)
     else
       assets.gfx.emptyCircle:draw(cardX + cardWidth - 64 + 4, cardY - 15 + 4)
     end
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(cardX + cardWidth - 44 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
-    if SaveData.isMissionComplete(gs.missionId, true) then
+    if SaveData.isMissionComplete(gs.missionId, 'hard') then
       assets.gfx.starIcon:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
     else
       assets.gfx.emptyCircle:draw(cardX + cardWidth - 44 + 4, cardY - 15 + 4)
     end
     gfx.setColor(gfx.kColorWhite)
     gfx.fillRoundRect(cardX + cardWidth - 24 + 1, cardY - 15 + 1, 17 - 2, 20, 5)
-    if achievements.isGranted("no_damage_" .. gs.missionId) then
+    if SaveData.isMissionComplete(gs.missionId, 'one_heart') then
       assets.gfx.flawlessIcon:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4, gfx.kImageUnflipped, 2, 2, 9, 9)
     else
       assets.gfx.emptyCircle:draw(cardX + cardWidth - 24 + 4, cardY - 15 + 4)
@@ -535,19 +535,19 @@ function MissionTree.update()
       end
 
       if difficulty == "normal" then
-        if SaveData.isMissionComplete(gs.missionId, false) then
+        if SaveData.isMissionComplete(gs.missionId) then
           assets.gfx.checkmark:draw(optionX - 13, optionY + 3, gfx.kImageUnflipped, 2, 2, 9, 9)
         else
           assets.gfx.emptyCircle:draw(optionX - 13, optionY + 3)
         end
       elseif difficulty == "hard" then
-        if SaveData.isMissionComplete(gs.missionId, true) then
+        if SaveData.isMissionComplete(gs.missionId, 'hard') then
           assets.gfx.starIcon:draw(optionX - 13, optionY + 3, gfx.kImageUnflipped, 2, 2, 9, 9)
         else
           assets.gfx.emptyCircle:draw(optionX - 13, optionY + 3)
         end
       else
-        if achievements.isGranted("no_damage_" .. gs.missionId) then
+        if SaveData.isMissionComplete(gs.missionId, 'one_heart') then
           assets.gfx.flawlessIcon:draw(optionX - 13, optionY + 3, gfx.kImageUnflipped, 2, 2, 9, 9)
         else
           assets.gfx.emptyCircle:draw(optionX - 13, optionY + 3)
@@ -632,11 +632,11 @@ function MissionTree.update()
     if pd.buttonJustReleased(pd.kButtonA) then
       showDifficultySelect = true
       selectedDifficultyIdx = 1
-      if not SaveData.isMissionComplete(gs.missionId, false) then
+      if not SaveData.isMissionComplete(gs.missionId) then
         selectedDifficultyIdx = 1
-      elseif not SaveData.isMissionComplete(gs.missionId, true) then
+      elseif not SaveData.isMissionComplete(gs.missionId, 'hard') then
         selectedDifficultyIdx = 2
-      elseif not achievements.isGranted("no_damage_" .. gs.missionId) then
+      elseif not SaveData.isMissionComplete(gs.missionId, 'one_heart') then
         selectedDifficultyIdx = 3
       end
       assets.sfx.boop:play()

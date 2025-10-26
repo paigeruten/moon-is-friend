@@ -67,7 +67,7 @@ function Title.update()
   -- Earth eyes
   local leftEyeX, leftEyeY = earthX - 9, earthY - 9
   local rightEyeX, rightEyeY = earthX + 9, earthY - 9
-  if SaveData.isMissionComplete("6-B", false) then
+  if SaveData.isMissionComplete("6-B") then
     assets.gfx.eyelid:draw(leftEyeX - 5, leftEyeY)
     assets.gfx.eyelid:draw(rightEyeX - 5, rightEyeY)
 

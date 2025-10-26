@@ -20,8 +20,8 @@ function MenuBox.init(items, options, selectCallback)
   gs.menuCallback = selectCallback
   gs.menuHeight = 15 + 20 * #items
 
-  completedAllHard = SaveData.countMissionsComplete(true) >= 15
-  completedAllOneHeart = SaveData.countMissionsFlawless() >= 15
+  completedAllHard = SaveData.countMissionsComplete('hard') >= 15
+  completedAllOneHeart = SaveData.countMissionsComplete('one_heart') >= 15
 end
 
 function MenuBox.update()
