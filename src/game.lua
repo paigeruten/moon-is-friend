@@ -396,7 +396,7 @@ function Game.draw()
   Sidebar.draw()
   Achievement.draw()
 
-  if pd.isCrankDocked() then
+  if not gs.endState and pd.isCrankDocked() then
     pd.ui.crankIndicator:draw()
   end
 
