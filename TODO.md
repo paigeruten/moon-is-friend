@@ -21,7 +21,7 @@
     * [x] Stop drawing stars individually!!!
     * [x] Drawing particles is a bottleneck
 * [ ] Store whether they beat missions on One Heart in the game data, not just as an achievement
-* [ ] Invincibility as soon as boss dies
+* [x] Invincibility as soon as boss dies (or clear asteroids)
 * [ ] Fix performance when paths are enabled with 2 or 3 moons
 * [ ] Update story text
 * [ ] Upload Catalog assets

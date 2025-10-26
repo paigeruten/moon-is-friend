@@ -23,6 +23,7 @@ function Target.spawn(x, y, r, health)
     maxHealth = health,
     shakeTtl = 0
   }
+  gs.pauseAsteroidSpawning = false
   return gs.targets[id]
 end
 
@@ -30,6 +31,16 @@ function Target.count()
   local count = 0
   for _, _ in pairs(gs.targets) do
     count += 1
+  end
+  return count
+end
+
+function Target.countActive()
+  local count = 0
+  for _, target in pairs(gs.targets) do
+    if target.state == 'active' then
+      count += 1
+    end
   end
   return count
 end
@@ -132,11 +143,11 @@ function Target.update()
           gs.curMessage = nil
           Game.stopSounds()
 
-          for asteroidId, asteroid in pairs(gs.asteroids) do
-            Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
+          for asteroidId, _ in pairs(gs.asteroids) do
             Asteroid.despawn(asteroidId)
           end
           gs.asteroids = {}
+          gs.pauseAsteroidSpawning = true
         end
       else
         if math.random(1, 10) == 1 then

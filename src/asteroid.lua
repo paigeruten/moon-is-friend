@@ -302,7 +302,7 @@ local function calculateAsteroidPath(steps, x, y, velX, velY, radius, isOnScreen
 end
 
 function Asteroid.update()
-  if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
+  if gs.mission.mode == 'standard' and not gs.pauseAsteroidSpawning then
     if gs.frameCount - gs.lastAsteroidAt >= (gs.rampUpDifficulty or gs.difficulty) then
       Asteroid.spawn()
       gs.lastAsteroidAt = gs.frameCount
@@ -523,6 +523,15 @@ function Asteroid.checkCollisions()
             target.health = 0
             target.state = 'splode'
             target.splodeTtl = 100
+
+            if Target.countActive() == 0 then
+              for asteroidId, asteroid2 in pairs(gs.asteroids) do
+                Explosion.spawn(asteroid2.pos.x, asteroid2.pos.y)
+                Asteroid.despawn(asteroidId)
+              end
+              gs.asteroids = {}
+              gs.pauseAsteroidSpawning = true
+            end
           end
         end
         goto continue

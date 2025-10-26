@@ -131,6 +131,7 @@ function Game.reset()
   gs.bossPhase = 0
   gs.bossPhaseFrame = 0
   gs.bossMaxHealth = 0
+  gs.pauseAsteroidSpawning = false
   if gs.mission.winType == "boss" then
     gs.bossMaxHealth = gs.mission.winGoal(gs.hardMode)
 
@@ -347,7 +348,7 @@ local function checkEndState()
 end
 
 function Game.update()
-  if not gs.endState and not pd.isCrankDocked() then
+  if not gs.endState and (gs.moons[1].holdAngle or not pd.isCrankDocked()) then
     Earth.update()
     Moon.update()
     Bomb.update()
@@ -396,7 +397,7 @@ function Game.draw()
   Sidebar.draw()
   Achievement.draw()
 
-  if not gs.endState and pd.isCrankDocked() then
+  if not gs.endState and not gs.moons[1].holdAngle and pd.isCrankDocked() then
     pd.ui.crankIndicator:draw()
   end
 
