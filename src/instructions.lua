@@ -38,17 +38,8 @@ local pages = {
     title = "Missions",
     text = {
       "Missions take you on a journey to save\nthe Earth from the meteors, for good.",
-      "Each mission gets a checkmark upon\ncompletion, and a star if you completed it\nwithout taking damage.",
+      "They can be played on 3 difficulty levels,\neach one earning a different badge:\nCheckmark, Star, and Heart.",
       "Some missions unlock new game modes.\nNot all missions need to be completed to\nreach the end of the game."
-    }
-  },
-  {
-    title = "Hard mode",
-    text = {
-      "Turn on Hard mode from the Select\nMission screen. You earn a Star badge for\neach mission completed on Hard, and a\nHeart badge if you take no damage. Hard\nmode changes the game in a few ways:",
-      "- Asteroids spawn more often\n"
-      .. "- You have 3 hearts instead of 5\n"
-      .. "- You do less damage to bosses"
     }
   },
   {
@@ -64,9 +55,8 @@ local pages = {
   {
     title = "Juggling",
     text = {
-      "In Juggling mode, meteors stay on-screen\nuntil they are destroyed. "
-      .. "The only way to\ndestroy them is to make them collide\nwith each other.",
-      "Each collision gives you +1 Health (and +5\nPoints in Endless mode).",
+      "In Juggling mode, meteors stay on-screen\nuntil they are destroyed by making them\ncollide with each other.",
+      "Collisions give you +1 Health and +5 Points\n(or +7 Points if at full health). In Endless\nJuggling, meteors slowly shrink over time.",
       "Use your gravity booster (by holding B) to\nmaneuver the meteors in this mode."
     }
   },

@@ -11,7 +11,7 @@ function Title.switch()
   gs.scene = 'title'
   gs.frameCount = 0
   Menu.reset()
-  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Achievements', 'Manual', 'Settings' },
+  MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Achievements', 'How to play', 'Settings' },
     { width = 120, adjustY = 14, selected = gs.titleSelected },
     function(selected)
       gs.titleSelected = selected

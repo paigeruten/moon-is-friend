@@ -18,7 +18,7 @@ achievements.initialize({
   achievements = {
     {
       id = "first_collision",
-      name = "My first collision",
+      name = "Splat!",
       description = "Cause two meteors to collide with each other.",
     },
     {
@@ -43,7 +43,7 @@ achievements.initialize({
     },
     {
       id = "beat_first_boss",
-      name = "Halfway there",
+      name = "Half Moon",
       description = "Beat the first boss."
     },
     {
@@ -53,13 +53,13 @@ achievements.initialize({
     },
     {
       id = "complete_all_missions",
-      name = "Overachiever",
+      name = "Full Moon",
       description = "Complete every mission.",
       progressMax = 15
     },
     {
       id = "complete_all_missions_on_hard",
-      name = "Overoverachiever",
+      name = "Super Moon",
       description = "Complete every mission in hard mode.",
       progressMax = 15
     },
@@ -91,7 +91,7 @@ achievements.initialize({
     },
     {
       id = "max_powerups_endless",
-      name = "Power-up hoarder",
+      name = "Bonus points!",
       description = "Catch a rocket after maxing out all your power-ups in Endless mode.",
     },
     {
@@ -213,7 +213,7 @@ achievements.initialize({
     },
     {
       id = "no_damage_all",
-      name = "Perfectionist",
+      name = "Blood Moon",
       description = "Complete all missions in One Heart mode.",
       progressMax = 15
     },

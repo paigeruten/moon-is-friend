@@ -1,5 +1,5 @@
 CATALOG_BUILD = true
-VERSION = '1.0.1' .. (CATALOG_BUILD and 'c' or 'i')
+VERSION = '1.1.0' .. (CATALOG_BUILD and 'c' or 'i')
 SCOREBOARDS_ENABLED = CATALOG_BUILD
 
 SCREEN_WIDTH, SCREEN_HEIGHT = playdate.display.getSize()
