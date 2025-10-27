@@ -12,7 +12,7 @@ function Title.switch()
   gs.frameCount = 0
   Menu.reset()
   MenuBox.init({ 'Missions', 'Endless', 'High scores', 'Achievements', 'How to play', 'Settings' },
-    { width = 120, adjustY = 14, selected = gs.titleSelected },
+    { width = 120, adjustY = 20, selected = gs.titleSelected },
     function(selected)
       gs.titleSelected = selected
       if selected == 1 then
@@ -109,10 +109,13 @@ function Title.update()
   gfx.fillCircleAtPoint(moonX - 8, moonY - 8, moonRadius - 16)
 
   -- Logo
-  local logoWidth, logoHeight = 75, 49
-  local logoX, logoY = screenWidth // 2 - logoWidth // 2, 19
+  local logoWidth, logoHeight = 86, 64
+  local logoX, logoY = screenWidth // 2 - logoWidth // 2, 13
   gfx.setColor(gfx.kColorBlack)
-  gfx.fillRoundRect(logoX - 5, logoY - 5, logoWidth + 10, logoHeight + 10, 5)
+  gfx.fillRoundRect(logoX - 7, logoY - 7, logoWidth + 14, logoHeight + 14, 5)
+  gfx.setColor(gfx.kColorWhite)
+  gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
+  gfx.drawRoundRect(logoX - 7, logoY - 7, logoWidth + 14, logoHeight + 14, 5)
   assets.gfx.logo:draw(logoX, logoY)
 
   MenuBox.update()
