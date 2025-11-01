@@ -34,10 +34,10 @@
         * [x] Wide
         * [x] Small
         * [x] Game page header
-    * [ ] Web catalog assets
-        * [ ] Feature header
-        * [ ] Wide
-        * [ ] Small
+    * [x] Web catalog assets
+        * [x] Feature header
+        * [x] Wide
+        * [x] Small
         * [ ] Title image (optional)
     * [x] Screenshots
         * [x] GIF showing meteor with path going between moon and earth
