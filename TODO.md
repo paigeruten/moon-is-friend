@@ -24,28 +24,33 @@
 * [x] Update story text
 * [ ] Upload Catalog assets
     * [x] Change logo font
-    * [ ] Game menu assets
-        * [ ] Card: Update logo, add rounded corners, maybe tweak animation
-        * [ ] Achievements banner: Update logo, add rounded corners
-        * [ ] Icon: Animate googly eyes to look left and right
-        * [ ] Wrapping paper (optional)
-    * [ ] Device catalog assets
-        * [ ] Billboard
-        * [ ] Wide
-        * [ ] Small
-        * [ ] Game page header
+    * [x] Game menu assets
+        * [x] Card: Update logo, add rounded corners, maybe tweak animation
+        * [x] Achievements banner: Update logo, add rounded corners
+        * [x] Icon: Animate googly eyes to look left and right
+        * [x] Wrapping paper (optional)
+    * [x] Device catalog assets
+        * [x] Billboard
+        * [x] Wide
+        * [x] Small
+        * [x] Game page header
     * [ ] Web catalog assets
         * [ ] Feature header
         * [ ] Wide
         * [ ] Small
         * [ ] Title image (optional)
-    * [ ] Screenshots
-        * [ ] GIF showing meteor with path going between moon and earth
-        * [ ] Title screen
-        * [ ] Select Mission
-        * [ ] Normal level gameplay
-        * [ ] Boss teaser
+    * [x] Screenshots
+        * [x] GIF showing meteor with path going between moon and earth
+        * [x] Title screen
+        * [x] Select Mission
+        * [x] Normal level gameplay
+        * [x] Boss teaser
     * [ ] Game description on web
+* [ ] Before/during release
+    * [ ] Clear scoreboards
+    * [ ] Update Itch.io (header, screenshots, catalog badge, release?)
+    * [ ] Update pd-achievements site
+    * [ ] Reddit
 
 ## Old list
 
