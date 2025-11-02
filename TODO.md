@@ -20,9 +20,9 @@
     * [x] Drawing particles is a bottleneck
 * [x] Store whether they beat missions on One Heart in the game data, not just as an achievement
 * [x] Invincibility as soon as boss dies (or clear asteroids)
-* [ ] Fix performance when paths are enabled with 2 or 3 moons
+* [?] Fix performance when paths are enabled with 2 or 3 moons
 * [x] Update story text
-* [ ] Upload Catalog assets
+* [x] Upload Catalog assets
     * [x] Change logo font
     * [x] Game menu assets
         * [x] Card: Update logo, add rounded corners, maybe tweak animation
@@ -45,7 +45,7 @@
         * [x] Select Mission
         * [x] Normal level gameplay
         * [x] Boss teaser
-    * [ ] Game description on web
+    * [x] Game description on web
 * [ ] Before/during release
     * [ ] Clear scoreboards
     * [ ] Update Itch.io (header, screenshots, catalog badge, release?)
