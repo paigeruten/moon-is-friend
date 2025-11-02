@@ -51,7 +51,6 @@ MISSIONS = {
     winType = "asteroids",
     winGoal = 20,
     difficulty = 125,
-    unlockMessage = "You've unlocked Endless mode!",
     card = "Type: Divert\nGoal: 20 meteors\nChaos: **\nMoons: 1",
     introText = {
       "You are the Moon. After a large-scale\nasteroid mining expedition gone wrong,\n"

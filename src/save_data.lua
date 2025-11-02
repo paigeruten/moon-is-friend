@@ -55,7 +55,7 @@ end
 function SaveData.isEndlessModeUnlocked(mode, n)
   if mode == 'standard' then
     if n == 1 then
-      return SaveData.isMissionComplete('1-1'), '1-1'
+      return true
     elseif n == 2 then
       return SaveData.isMissionComplete('2-4'), '2-4'
     elseif n == 3 then
