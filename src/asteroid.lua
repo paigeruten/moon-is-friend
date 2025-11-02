@@ -463,14 +463,12 @@ function Asteroid.checkCollisions()
       goto continue
     end
 
-    if areCirclesColliding(asteroid.pos, asteroid.radius, gs.earth.pos, gs.earth.radius + (gs.earth.hasShield and 4 or 0)) then
+    if not gs.zenMode and areCirclesColliding(asteroid.pos, asteroid.radius, gs.earth.pos, gs.earth.radius + (gs.earth.hasShield and 4 or 0)) then
       if gs.earth.hasShield then
         gs.earth.hasShield = false
         assets.sfx.shieldDown:play()
       else
-        if not gs.zenMode then
-          gs.earth.health -= 1
-        end
+        gs.earth.health -= 1
         gs.earth.pristine = false
         Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
         Explosion.screenShake(500, 5)
@@ -482,7 +480,7 @@ function Asteroid.checkCollisions()
     end
 
     for _, moon in ipairs(gs.moons) do
-      if areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
+      if not gs.zenMode and areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
         if moon.hasShield then
           moon.hasShield = false
           assets.sfx.shieldDown:play()

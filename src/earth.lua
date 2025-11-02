@@ -46,8 +46,10 @@ function Earth.draw()
   if gs.earth.isSafe then
     assets.gfx.safeEyes:draw(gs.earth.pos.x - 9, gs.earth.pos.y - 5)
 
-    local zFrame = ((gs.bossPhaseFrame - 30) // 25) % 4 + 1
-    assets.gfx.zeds:getImage(zFrame):draw(gs.earth.pos.x + 10, gs.earth.pos.y - 28)
+    if not gs.zenMode then
+      local zFrame = ((gs.bossPhaseFrame - 30) // 25) % 4 + 1
+      assets.gfx.zeds:getImage(zFrame):draw(gs.earth.pos.x + 10, gs.earth.pos.y - 28)
+    end
   else
     local leftEyeX, leftEyeY = gs.earth.pos.x - 5, gs.earth.pos.y - 5
     local rightEyeX, rightEyeY = gs.earth.pos.x + 5, gs.earth.pos.y - 5

@@ -82,9 +82,10 @@ function Game.reset()
     pristine = true,
     health = maxHealth,
     maxHealth = maxHealth,
-    bombs = 1,
+    bombs = gs.hardMode and 0 or 1,
     maxBombs = 3,
     hasShield = false,
+    isSafe = gs.zenMode,
   }
   if gs.mission.mode == "juggling" or gs.mission.winType == "boss" then
     gs.earth.bombs = 0

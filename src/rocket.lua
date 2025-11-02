@@ -310,7 +310,7 @@ function Rocket.update()
     if (gs.frameCount - gs.lastRocketAt > gs.rocketMinTime and math.random(gs.rocketSpawnRate) == 1)
         or gs.frameCount - gs.lastRocketAt > gs.rocketMaxTime
     then
-      if gs.mission.mode == 'standard' and gs.bossPhase < 3 then
+      if gs.mission.mode == 'standard' and gs.bossPhase < 3 and not gs.zenMode then
         if gs.mission.winType == 'endless' or gs.mission.winType == 'rocket' or not isMaxPowerUps() then
           Rocket.spawn()
           if gs.mission.winType == 'rocket' then

@@ -37,12 +37,14 @@ function Moon.update()
 
   if gs.earth.maxBombs == 0 and gs.bossPhase < 3 then
     local abPressed = pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonB)
-    if abPressed and ((gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and gs.extraSuctionFuel == gs.extraSuctionMaxFuel)) then
+    if abPressed and (gs.zenMode or (gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and gs.extraSuctionFuel == gs.extraSuctionMaxFuel)) then
       if not gs.extraSuction then
         assets.sfx.suck:start()
       end
       gs.extraSuction = true
-      gs.extraSuctionFuel = math.max(0, gs.extraSuctionFuel - 2)
+      if not gs.zenMode then
+        gs.extraSuctionFuel = math.max(0, gs.extraSuctionFuel - 2)
+      end
     elseif gs.extraSuctionFuel < gs.extraSuctionMaxFuel then
       assets.sfx.suck:stop()
       gs.extraSuction = false
