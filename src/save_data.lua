@@ -1,4 +1,5 @@
 local pd = playdate
+local gs = Game.state
 
 SaveData = {}
 
@@ -113,5 +114,41 @@ end
 
 function SaveData.setShowAsteroidPaths(enabled)
   SaveData.data.settings.showAsteroidPaths = enabled
+  pd.datastore.write(SaveData.data)
+end
+
+function SaveData.loadLastEndlessOptions()
+  if not SaveData.data.settings.lastEndlessOptions then
+    SaveData.data.settings.lastEndlessOptions = {}
+  end
+
+  gs.endlessMode = SaveData.data.settings.lastEndlessOptions.mode
+  if gs.endlessMode ~= 'standard' and gs.endlessMode ~= 'juggling' then
+    gs.endlessMode = 'standard'
+  end
+
+  gs.endlessMoons = SaveData.data.settings.lastEndlessOptions.moons
+  if gs.endlessMoons ~= 1 and gs.endlessMoons ~= 2 and gs.endlessMoons ~= 3 then
+    gs.endlessMoons = 1
+  end
+
+  gs.endlessAsteroids = SaveData.data.settings.lastEndlessOptions.asteroids
+  if gs.endlessAsteroids ~= 3 and gs.endlessAsteroids ~= 4 and gs.endlessAsteroids ~= 5 then
+    gs.endlessAsteroids = 3
+  end
+
+  gs.endlessZenMode = SaveData.data.settings.lastEndlessOptions.zen
+  if type(gs.endlessZenMode) ~= 'boolean' then
+    gs.endlessZenMode = false
+  end
+end
+
+function SaveData.saveLastEndlessOptions()
+  SaveData.data.settings.lastEndlessOptions = {
+    mode = gs.endlessMode,
+    moons = gs.endlessMoons,
+    asteroids = gs.endlessAsteroids,
+    zen = gs.endlessZenMode,
+  }
   pd.datastore.write(SaveData.data)
 end

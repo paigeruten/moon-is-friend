@@ -9,11 +9,8 @@ Endless = {}
 function Endless.switch()
   gs.scene = 'endless'
   gs.frameCount = 0
-  gs.endlessSelected = 'mode'
-  gs.endlessMode = 'standard'
-  gs.endlessMoons = 1
-  gs.endlessAsteroids = 3
-  gs.endlessZenMode = false
+  gs.endlessSelected = 'start'
+  SaveData.loadLastEndlessOptions()
   Menu.reset()
 end
 
@@ -275,6 +272,7 @@ function Endless.update()
       gs.endlessZenMode = not gs.endlessZenMode
       assets.sfx.boop:play()
     elseif isUnlocked and gs.endlessSelected == 'start' then
+      SaveData.saveLastEndlessOptions()
       gs.scene = 'game'
       Game.reset()
       assets.sfx.boop:play(77)
