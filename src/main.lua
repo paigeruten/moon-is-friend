@@ -39,6 +39,7 @@ local gfx = pd.graphics
 local gs = Game.state
 local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
+local showFps = SHOW_FPS
 
 Game.init()
 Game.reset()
@@ -72,7 +73,7 @@ function pd.update()
     Achievement.displayToasts()
   end
 
-  -- if gs.scene ~= 'mission-tree' then
-  --   pd.drawFPS(screenWidth - 20, screenHeight - 15)
-  -- end
+  if showFps and gs.scene ~= 'mission-tree' then
+    pd.drawFPS(screenWidth - 20, screenHeight - 15)
+  end
 end

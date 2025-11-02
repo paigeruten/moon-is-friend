@@ -152,6 +152,12 @@ function Game.reset()
   end
   gfx.popContext()
 
+  gs.sidebar = gfx.image.new(sidebarWidth, screenHeight, gfx.kColorBlack)
+  gfx.pushContext(gs.sidebar)
+  Sidebar.drawStatic()
+  gfx.popContext()
+  Sidebar.invalidate()
+
   gs.curMessage = nil
   gs.curMessageAt = nil
 
@@ -381,9 +387,10 @@ end
 
 function Game.draw()
   if gs.starsOffset <= 0 then
-    gs.stars:draw(0, 0)
+    gs.stars:draw(sidebarWidth, 0, gfx.kImageUnflipped, 0, 0, screenWidth - sidebarWidth, screenHeight)
   else
-    gs.stars:draw(0, 0, gfx.kImageUnflipped, gs.starsOffset, 0, screenWidth - gs.starsOffset, screenHeight)
+    gs.stars:draw(sidebarWidth, 0, gfx.kImageUnflipped, gs.starsOffset, 0, screenWidth - sidebarWidth - gs.starsOffset,
+      screenHeight)
     gs.stars:draw(screenWidth - gs.starsOffset, 0, gfx.kImageUnflipped, 0, 0, gs.starsOffset, screenHeight)
   end
 

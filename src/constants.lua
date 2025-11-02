@@ -1,6 +1,7 @@
 CATALOG_BUILD = true
 VERSION = '1.1.0' .. (CATALOG_BUILD and 'c' or 'i')
 SCOREBOARDS_ENABLED = CATALOG_BUILD
+SHOW_FPS = false
 
 SCREEN_WIDTH, SCREEN_HEIGHT = playdate.display.getSize()
 SIDEBAR_WIDTH = 52

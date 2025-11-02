@@ -13,10 +13,7 @@ local goalY = 185
 local difficultyY = 175
 local scoreY = 205
 
-function Sidebar.draw()
-  local heartsY = (gs.hardMode or gs.zenMode) and 70 or 60
-
-  -- Sidebar
+function Sidebar.drawStatic()
   gfx.setColor(gfx.kColorBlack)
   gfx.fillRect(sidebarWidth - 8, 0, 8, screenHeight)
   gfx.setColor(gfx.kColorWhite)
@@ -35,24 +32,13 @@ function Sidebar.draw()
       assets.gfx.zen:draw(13, missionTextY + 16)
     end
 
-    -- Score
     gfx.setFont(assets.fonts.small)
     gfx.drawText("Score", 6, scoreY)
-    gfx.drawText(gs.score, 6, scoreY + 13)
 
-    -- Difficulty
     if gs.rampUpDifficulty and type(gs.difficulty) == 'table' then
       gfx.setFont(assets.fonts.small)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       gfx.drawText("Level", 6, difficultyY - 12)
-      gfx.setImageDrawMode(gfx.kDrawModeCopy)
-
-      local curLevel = math.min(50, math.floor(49 * gs.frameCount / 22500) + 1)
-      gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
-      gfx.drawText(curLevel, 6, difficultyY + 1)
-      if curLevel >= 50 then
-        gfx.drawText("Max", 6, difficultyY - 25)
-      end
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
     end
   else
@@ -64,12 +50,86 @@ function Sidebar.draw()
     elseif gs.hardMode then
       assets.gfx.hard:draw(13, missionTextY + 15)
     end
+  end
+end
 
+local lastScore = nil
+local lastCurLevel = nil
+local lastBossPhase = nil
+local lastAsteroidsDiverted = nil
+local lastRocketsCaught = nil
+local lastAsteroidsCollided = nil
+local lastBossHealth = nil
+local lastBossMaxHealth = nil
+local lastSurviveSeconds = nil
+local lastHealth = nil
+local lastBombs = nil
+local lastExtraSuction = nil
+local lastExtraSuctionFuel = nil
+
+function Sidebar.invalidate()
+  lastHealth = nil
+end
+
+function Sidebar.draw()
+  local curLevel = math.min(50, math.floor(49 * gs.frameCount / 22500) + 1)
+  local bossHealth = Target.totalHealth()
+  local surviveSeconds = gs.surviveFrameCount // 50
+
+  local noChange = (gs.score == lastScore) and
+      (curLevel == lastCurLevel) and
+      (gs.bossPhase == lastBossPhase) and
+      (gs.asteroidsDiverted == lastAsteroidsDiverted) and
+      (gs.rocketsCaught == lastRocketsCaught) and
+      (gs.asteroidsCollided == lastAsteroidsCollided) and
+      (bossHealth == lastBossHealth) and
+      (gs.bossMaxHealth == lastBossMaxHealth) and
+      (surviveSeconds == lastSurviveSeconds) and
+      (gs.earth.health == lastHealth) and
+      (gs.earth.bombs == lastBombs) and
+      (gs.extraSuction == lastExtraSuction) and
+      (gs.extraSuctionFuel == lastExtraSuctionFuel) and
+      gs.bombShockwave == 0 -- prevent bomb shockwave from being drawn over sidebar
+
+  if noChange then
+    return
+  end
+
+  lastScore = gs.score
+  lastCurLevel = curLevel
+  lastBossPhase = gs.bossPhase
+  lastAsteroidsDiverted = gs.asteroidsDiverted
+  lastRocketsCaught = gs.rocketsCaught
+  lastAsteroidsCollided = gs.asteroidsCollided
+  lastBossHealth = bossHealth
+  lastBossMaxHealth = gs.bossMaxHealth
+  lastSurviveSeconds = surviveSeconds
+  lastHealth = gs.earth.health
+  lastBombs = gs.earth.bombs
+  lastExtraSuction = gs.extraSuction
+  lastExtraSuctionFuel = gs.extraSuctionFuel
+
+  gs.sidebar:draw(0, 0)
+
+  local heartsY = (gs.hardMode or gs.zenMode) and 70 or 60
+
+  if gs.mission.winType == 'endless' then
+    -- Score
+    gfx.setFont(assets.fonts.small)
+    gfx.drawText(gs.score, 6, scoreY + 13)
+
+    -- Difficulty
+    if gs.rampUpDifficulty and type(gs.difficulty) == 'table' then
+      gfx.setFont(assets.fonts.small)
+      gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
+      gfx.drawText(curLevel, 6, difficultyY + 1)
+      if curLevel >= 50 then
+        gfx.drawText("Max", 6, difficultyY - 25)
+      end
+      gfx.setImageDrawMode(gfx.kDrawModeCopy)
+    end
+  else
     if not (gs.mission.winType == 'boss' and gs.bossPhase == 0) then
-      -- Goal outline
-      gfx.setColor(gfx.kColorBlack)
-      -- gfx.drawRoundRect(3, goalY, 37, 47, 3)
-
       -- Goal
       local goal = gs.mission.winGoal
       local progress, progressText, leftText, label
@@ -86,7 +146,6 @@ function Sidebar.draw()
         progressText = table.concat({ progress, '/', goal })
         label = assets.gfx.labelCollisions
       elseif gs.mission.winType == "boss" then
-        local bossHealth = Target.totalHealth()
         goal = gs.bossMaxHealth
         progress = bossHealth
         progressText = table.concat({ bossHealth, 'hp' })
