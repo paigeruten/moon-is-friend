@@ -16,44 +16,37 @@ local pages = {
   {
     type = 'global',
     boardId = 'endless1moon',
-    mode = 'standard',
     desc = 'Endless, 1 moon',
-    isUnlocked = function() SaveData.isEndlessModeUnlocked('standard', 1) end
   },
   {
     type = 'global',
     boardId = 'endless2moon',
-    mode = 'standard',
     desc = 'Endless, 2 moons',
-    isUnlocked = function() SaveData.isEndlessModeUnlocked('standard', 2) end
   },
   {
     type = 'global',
     boardId = 'endless3moon',
-    mode = 'standard',
     desc = 'Endless, 3 moons',
-    isUnlocked = function() SaveData.isEndlessModeUnlocked('standard', 3) end
   },
   {
     type = 'global',
     boardId = 'juggling3meteor',
-    mode = 'juggling',
     desc = 'Juggling, 3 meteors',
-    isUnlocked = function() SaveData.isEndlessModeUnlocked('juggling', 3) end
   },
   {
     type = 'global',
     boardId = 'juggling4meteor',
-    mode = 'juggling',
     desc = 'Juggling, 4 meteors',
-    isUnlocked = function() SaveData.isEndlessModeUnlocked('juggling', 4) end
   },
   {
     type = 'global',
     boardId = 'juggling5meteor',
-    mode = 'juggling',
     desc = 'Juggling, 5 meteors',
-    isUnlocked = function() SaveData.isEndlessModeUnlocked('juggling', 5) end
+  },
+  {
+    type = 'global',
+    boardId = 'rubdubdub',
+    desc = 'RUBDUBDUB',
   },
 }
 for id, page in ipairs(pages) do
@@ -227,10 +220,23 @@ local function drawLocalPage(page, boxX, boxY)
     gfx.drawText(text, boxX + boxWidth // 2 + 15, boxY + 110 + 20 * (numAsteroids - 3))
     gfx.drawTextAligned(score, boxX + boxWidth - 15, boxY + 110 + 20 * (numAsteroids - 3), kTextAlignment.right)
   end
+
+  local rubdubdubScore = SaveData.getHighScore("endless.rubdubdub")
+  if rubdubdubScore then
+    gfx.drawText("RUBDUBDUB:", boxX + 15, boxY + 110 + 20 * 3 + 7)
+    gfx.drawTextAligned(rubdubdubScore, boxX + boxWidth // 2 - 15, boxY + 110 + 20 * 3 + 7, kTextAlignment.right)
+  end
 end
 
 local function drawGlobalPage(page, boxX, boxY)
   drawBox(page, boxX, boxY)
+
+  if page.boardId == "rubdubdub" and not SaveData.getHighScore("endless.rubdubdub") then
+    gfx.setFont(assets.fonts.small)
+    gfx.drawTextAligned('(This page intentionally left blank)', boxX + boxWidth // 2, screenHeight // 2,
+      kTextAlignment.center)
+    return
+  end
 
   gfx.setFont(assets.fonts.large)
   gfx.drawTextAligned("*Global High Scores* (" .. page.desc .. ")", boxX + boxWidth // 2, boxY + 12,

@@ -28,7 +28,9 @@ function Sidebar.drawStatic()
   if gs.mission.winType == 'endless' then
     assets.gfx.endless:draw(12, missionTextY + 2)
 
-    if gs.zenMode then
+    if gs.missionId == 'endless.rubdubdub' then
+      assets.gfx.rubdubdub:draw(13, missionTextY + 16)
+    elseif gs.zenMode then
       assets.gfx.zen:draw(13, missionTextY + 16)
     end
 
@@ -111,7 +113,7 @@ function Sidebar.draw()
 
   gs.sidebar:draw(0, 0)
 
-  local heartsY = (gs.hardMode or gs.zenMode) and 70 or 60
+  local heartsY = (gs.hardMode or gs.zenMode or gs.missionId == 'endless.rubdubdub') and 70 or 60
 
   if gs.mission.winType == 'endless' then
     -- Score

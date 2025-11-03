@@ -63,7 +63,7 @@ function Game.reset()
     end
   end
 
-  gs.zenMode = gs.mission.winType == 'endless' and gs.endlessZenMode
+  gs.zenMode = gs.mission.winType == 'endless' and gs.endlessZenMode and gs.missionId ~= 'endless.rubdubdub'
   if gs.zenMode and gs.mission.mode == 'standard' then
     gs.difficulty = 125
   end
@@ -333,8 +333,9 @@ local function checkEndState()
     Game.stopSounds()
     if gs.mission.winType == 'endless' then
       gs.endState = 'game-over'
-      gs.isHighScore = not gs.zenMode and SaveData.checkAndSaveHighScore(gs.missionId, gs.score)
-      if scoreboardsEnabled and not gs.zenMode then
+      gs.isHighScore = not gs.zenMode and gs.mission.scoreboardId and
+          SaveData.checkAndSaveHighScore(gs.missionId, gs.score)
+      if scoreboardsEnabled and not gs.zenMode and gs.mission.scoreboardId then
         gs.scoreStatus = 'submitting'
         pd.scoreboards.addScore(gs.mission.scoreboardId, gs.score, function(status, result)
           if status.code == 'OK' then

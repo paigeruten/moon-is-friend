@@ -87,6 +87,9 @@ function Asteroid.spawn()
     else
       asteroidRadius = 7
     end
+    if gs.missionId == 'endless.rubdubdub' then
+      asteroidRadius = math.floor(asteroidRadius * (1 + (gs.frameCount // 250) / 5))
+    end
   end
   local speed
   if posX < 0 or posX >= screenWidth then
@@ -96,6 +99,8 @@ function Asteroid.spawn()
   end
   if gs.mission.winType == "boss" then
     speed *= 0.7
+  elseif gs.missionId == 'endless.rubdubdub' then
+    speed *= 1 + math.random(0, 20) / 10
   end
   local velAngle = angle
   if gs.mission.winType == "boss" and not gs.hardMode then
@@ -255,7 +260,7 @@ local function calculateAsteroidPath(steps, x, y, velX, velY, radius, isOnScreen
         for _, moon in ipairs(gs.moons) do
           local moonVecX, moonVecY = moon.pos.x - x, moon.pos.y - y
           local moonDistanceSquared = moonVecX * moonVecX + moonVecY * moonVecY
-          if moonDistanceSquared <= moonGravityRadiusSquared then
+          if moonDistanceSquared <= moonGravityRadiusSquared and moonDistanceSquared > 4 then
             local moonMass = moon.mass
             if gs.extraSuction then
               moonMass *= 2
@@ -480,7 +485,7 @@ function Asteroid.checkCollisions()
     end
 
     for _, moon in ipairs(gs.moons) do
-      if not gs.zenMode and areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
+      if not gs.zenMode and gs.missionId ~= 'endless.rubdubdub' and areCirclesColliding(asteroid.pos, asteroid.radius, moon.pos, moon.radius + (moon.hasShield and 3 or 0)) then
         if moon.hasShield then
           moon.hasShield = false
           assets.sfx.shieldDown:play()

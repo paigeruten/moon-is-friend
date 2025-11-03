@@ -5,9 +5,31 @@ local assets = Assets
 local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
 
+local allButtons = {
+  pd.kButtonUp,
+  pd.kButtonDown,
+  pd.kButtonLeft,
+  pd.kButtonRight,
+  pd.kButtonA,
+  pd.kButtonB,
+}
+local rubDubDub = {
+  pd.kButtonRight,
+  pd.kButtonUp,
+  pd.kButtonB,
+  pd.kButtonDown,
+  pd.kButtonUp,
+  pd.kButtonB,
+  pd.kButtonDown,
+  pd.kButtonUp,
+  pd.kButtonB,
+}
+local rubDubDubIdx = 1
+
 Title = {}
 
 function Title.switch()
+  rubDubDubIdx = 1
   gs.scene = 'title'
   gs.frameCount = 0
   Menu.reset()
@@ -44,7 +66,7 @@ function Title.update()
   local animFrame = math.min(gs.frameCount, 700)
 
   -- Earth
-  local earthX = screenWidth - 60
+  local earthX = screenWidth - 59 + rubDubDubIdx
   local earthY = screenHeight // 4
   gfx.setColor(gfx.kColorWhite)
   gfx.setDitherPattern(0.4, gfx.image.kDitherTypeBayer8x8)
@@ -117,6 +139,27 @@ function Title.update()
   gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
   gfx.drawRoundRect(logoX - 7, logoY - 7, logoWidth + 14, logoHeight + 14, 5)
   assets.gfx.logo:draw(logoX, logoY)
+
+  for _, button in ipairs(allButtons) do
+    if pd.buttonJustPressed(button) then
+      if button == rubDubDub[rubDubDubIdx] then
+        rubDubDubIdx += 1
+      elseif button == rubDubDub[1] then
+        rubDubDubIdx = 2
+      else
+        rubDubDubIdx = 1
+      end
+      if rubDubDubIdx > #rubDubDub then
+        rubDubDubIdx = 1
+        gs.scene = 'game'
+        gs.missionId = 'endless.rubdubdub'
+        Game.reset()
+        assets.sfx.boop:play(77)
+        Menu.addInGameMenuItems()
+        return
+      end
+    end
+  end
 
   MenuBox.update()
 

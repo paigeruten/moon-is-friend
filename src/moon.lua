@@ -12,8 +12,8 @@ function Moon.create()
     pos = { x = 0, y = 0 },
     radius = 7,
     gravityRadius = 80,
-    mass = 3,
-    hasShield = false,
+    mass = gs.missionId == 'endless.rubdubdub' and 5 or 3,
+    hasShield = gs.missionId == 'endless.rubdubdub',
   }
 end
 
@@ -83,6 +83,9 @@ function Moon.draw()
       gfx.setColor(gfx.kColorWhite)
       gfx.setDitherPattern(0.5, gfx.image.kDitherTypeBayer8x8)
       gfx.drawCircleAtPoint(moon.pos.x, moon.pos.y, moon.radius + 3)
+      if gs.missionId == 'endless.rubdubdub' then
+        gfx.drawCircleAtPoint(moon.pos.x, moon.pos.y, moon.radius + 4)
+      end
     end
   end
 end

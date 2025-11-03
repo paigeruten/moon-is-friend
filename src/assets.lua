@@ -62,6 +62,7 @@ Assets = {
     hard = gfx.image.new("images/hard"),
     oneHeart = gfx.image.new("images/one-heart"),
     zen = gfx.image.new("images/zen"),
+    rubdubdub = gfx.image.new("images/rubdubdub"),
 
     labelMeteors = gfx.image.new("images/label-meteors"),
     labelRockets = gfx.image.new("images/label-rockets"),

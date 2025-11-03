@@ -46,6 +46,12 @@ MISSIONS = {
     difficulty = 5,
     scoreboardId = "juggling5meteor"
   },
+  ["endless.rubdubdub"] = {
+    mode = "standard",
+    winType = "endless",
+    difficulty = 65,
+    scoreboardId = "rubdubdub"
+  },
   ["1-1"] = {
     mode = "standard",
     winType = "asteroids",
