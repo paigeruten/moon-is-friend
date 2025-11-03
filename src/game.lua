@@ -394,6 +394,10 @@ function Game.draw()
     gs.stars:draw(screenWidth - gs.starsOffset, 0, gfx.kImageUnflipped, 0, 0, gs.starsOffset, screenHeight)
   end
 
+  Sidebar.draw()
+  -- Prevent anything (e.g. particles) from being drawn over the sidebar
+  gfx.setClipRect(sidebarWidth, 0, screenWidth - sidebarWidth, screenHeight)
+
   Earth.draw()
   Rocket.draw()
   Moon.draw()
@@ -402,7 +406,6 @@ function Game.draw()
   Asteroid.draw()
   Explosion.draw()
   Bomb.draw()
-  Sidebar.draw()
   Achievement.draw()
 
   if not gs.endState and not gs.moons[1].holdAngle and pd.isCrankDocked() then
