@@ -82,7 +82,7 @@ function Game.reset()
     pristine = true,
     health = maxHealth,
     maxHealth = maxHealth,
-    bombs = gs.hardMode and 0 or 1,
+    bombs = gs.zenMode and 3 or (gs.hardMode and 0 or 1),
     maxBombs = 3,
     hasShield = false,
     isSafe = gs.zenMode,
