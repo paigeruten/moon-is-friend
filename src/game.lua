@@ -152,12 +152,6 @@ function Game.reset()
   end
   gfx.popContext()
 
-  gs.sidebar = gfx.image.new(sidebarWidth, screenHeight, gfx.kColorBlack)
-  gfx.pushContext(gs.sidebar)
-  Sidebar.drawStatic()
-  gfx.popContext()
-  Sidebar.invalidate()
-
   gs.curMessage = nil
   gs.curMessageAt = nil
 
@@ -173,6 +167,12 @@ function Game.reset()
   if type(gs.difficulty) == 'table' then
     Game.updateRampUpDifficulty()
   end
+
+  gs.sidebar = gfx.image.new(sidebarWidth, screenHeight, gfx.kColorBlack)
+  gfx.pushContext(gs.sidebar)
+  Sidebar.drawStatic()
+  gfx.popContext()
+  Sidebar.invalidate()
 
   Game.stopSounds()
 end
