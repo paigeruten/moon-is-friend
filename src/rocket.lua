@@ -167,6 +167,7 @@ function Rocket.update()
 
     if not isRocketOnScreen(rocket) then
       gs.rockets[rocketId] = nil
+      gs.rocketsLost += 1
       if gs.mission.winType ~= 'rocket' then
         gs.lastRocketAt = gs.frameCount
       end
@@ -289,6 +290,7 @@ function Rocket.update()
           assets.sfx.goodBoom:play()
           Asteroid.despawn(id)
           gs.rockets[rocketId] = nil
+          gs.rocketsLost += 1
           if gs.mission.winType == 'rocket' then
             if gs.hardMode and gs.rocketsCaught > 0 then
               gs.rocketsCaught -= 1

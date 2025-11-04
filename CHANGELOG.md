@@ -30,7 +30,7 @@
 
 #### Achievements
 
-* Reworded/renamed some achievements and added 4 new ones: **No more training wheels**, **Fully stocked**, **Bonus points!**, **Particle collider**
+* Reworded/renamed some achievements and added 5 new ones: **No more training wheels**, **Fully stocked**, **Bonus points!**, **Particle collider**, **No casualties**
 * Meteors do a bit more damage now, so the "The Big One" achievement now requires doing 15 damage to a boss (and can be done on any difficulty level)
 * "Flawless" achievements now require you to complete missions in One Heart mode (rather than not taking any damage in Hard mode)
 

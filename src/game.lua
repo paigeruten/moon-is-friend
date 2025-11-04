@@ -162,6 +162,7 @@ function Game.reset()
   gs.scoreStatus = nil
   gs.scoreGlobalRank = nil
   gs.asteroidPathsEverEnabled = SaveData.getShowAsteroidPaths()
+  gs.rocketsLost = 0
 
   gs.rampUpDifficulty = nil
   if type(gs.difficulty) == 'table' then
@@ -281,6 +282,11 @@ local function checkEndState()
       end
       if allMoonShields and achievements.grant("max_powerups_mission") then
         achievements.toasts.toast("max_powerups_mission")
+      end
+    end
+    if gs.mission.winType == "rocket" and gs.rocketsLost == 0 then
+      if achievements.grant("catch_all_rockets") then
+        achievements.toasts.toast("catch_all_rockets")
       end
     end
     if gs.missionId == "3-B" then

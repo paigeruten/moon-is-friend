@@ -85,6 +85,11 @@ achievements.initialize({
       description = "Have 4 shield power-ups active at the same time.",
     },
     {
+      id = "catch_all_rockets",
+      name = "No casualties",
+      description = "Complete any Colonize mission without letting any rockets drift away or explode.",
+    },
+    {
       id = "max_powerups_mission",
       name = "Fully stocked",
       description = "Have full health, full shields, and 3 bombs at the end of any mission.",

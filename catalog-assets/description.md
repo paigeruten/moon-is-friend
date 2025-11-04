@@ -6,6 +6,6 @@ There are multiple ways to play this arcade-style game, all featuring crank-base
 
 - **Mission/Story mode:** Progress through 15 missions with a variety of goals and playstyles, each one taking you closer to defeating the source of all the meteors.
     - **3 difficulty levels:** For an optional extra challenge, earn badges for completing missions on **Hard** or **One Heart** (die in one hit) difficulty.
-- **Endless mode:** See how long you can survive as more and more meteors spawn, and try to get on the global scoreboards!
+- **Endless mode:** See how long you can survive as more and more meteors spawn, and try to get on the global leaderboards!
 - **Zen mode:** Meteors can't hurt you, just fling meteors around and enjoy the space physics.
-- **39 achievements** to collect!
+- **40 achievements** to collect!
