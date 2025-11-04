@@ -79,6 +79,7 @@ function Game.reset()
     basePos = { x = screenWidth // 2 + sidebarWidth // 2, y = screenHeight // 2 },
     radius = 14,
     mass = 0.75,
+    moonDistance = 75,
     pristine = true,
     health = maxHealth,
     maxHealth = maxHealth,

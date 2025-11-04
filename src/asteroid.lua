@@ -119,6 +119,7 @@ function Asteroid.spawn()
     vel = { x = -velX, y = -velY },
     initialVel = { x = -velX, y = -velY },
     radius = asteroidRadius,
+    anti = gs.missionId == 'endless.rubdubdub' and math.random() < 0.1,
     state = 'entering',
     path = {},
     lastPathState = { frame = 1, velX = 0, velY = 0 },
@@ -242,7 +243,8 @@ local function clamp(value, low, high)
   return math.min(high, math.max(low, value))
 end
 
-local function calculateAsteroidPath(steps, x, y, velX, velY, radius, isOnScreen, stopWhenOffScreen, stopOnCollision,
+local function calculateAsteroidPath(steps, x, y, velX, velY, radius, anti, isOnScreen, stopWhenOffScreen,
+                                     stopOnCollision,
                                      callback)
   local earthX, earthY = gs.earth.pos.x, gs.earth.pos.y
   local earthMass = gs.earth.mass
@@ -261,7 +263,7 @@ local function calculateAsteroidPath(steps, x, y, velX, velY, radius, isOnScreen
           local moonVecX, moonVecY = moon.pos.x - x, moon.pos.y - y
           local moonDistanceSquared = moonVecX * moonVecX + moonVecY * moonVecY
           if moonDistanceSquared <= moonGravityRadiusSquared and moonDistanceSquared > 4 then
-            local moonMass = moon.mass
+            local moonMass = moon.mass * anti
             if gs.extraSuction then
               moonMass *= 2
             end
@@ -349,6 +351,7 @@ function Asteroid.update()
       asteroid.vel.x,
       asteroid.vel.y,
       asteroid.radius,
+      asteroid.anti and -0.5 or 1,
       isOnScreen,
       false,
       false
@@ -379,6 +382,7 @@ function Asteroid.update()
         pathVelX,
         pathVelY,
         asteroid.radius,
+        asteroid.anti and -0.5 or 1,
         isOnScreen,
         gs.mission.mode ~= 'juggling',
         true,
@@ -627,7 +631,7 @@ function Asteroid.draw()
   for _, asteroid in pairs(gs.asteroids) do
     if Asteroid.isOnScreen(asteroid) then
       gfx.setColor(gfx.kColorWhite)
-      gfx.setDitherPattern(0.1, gfx.image.kDitherTypeBayer8x8)
+      gfx.setDitherPattern(asteroid.anti and 0.75 or 0.1, gfx.image.kDitherTypeBayer8x8)
       gfx.fillCircleAtPoint(asteroid.pos.x, asteroid.pos.y, asteroid.radius)
 
       local framesPerParticle, velFactor, particleTtl = 1, 10, 7
