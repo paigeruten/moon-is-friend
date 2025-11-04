@@ -56,10 +56,10 @@ function Game.reset()
 
   if gs.mission.mode == 'standard' and gs.mission.winType ~= 'endless' and selectedDifficulty == 'normal' then
     if type(gs.difficulty) == 'table' then
-      gs.difficulty[1] += 25
-      gs.difficulty[2] += 25
+      gs.difficulty[1] += 20
+      gs.difficulty[2] += 20
     else
-      gs.difficulty += 25
+      gs.difficulty += 20
     end
   end
 

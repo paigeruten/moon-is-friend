@@ -16,7 +16,7 @@
 
 #### Gameplay
 
-* Increased the Moon's gravitation pull, and added slightly more distance between the Moon and the Earth
+* Increased the Moon's gravitation pull, and added slightly more distance between the Moon and the Earth. This made the game a bit easier overall, so the meteor spawn rate has been slightly increased across all missions to compensate.
 * Meteor collisions in Endless Juggling now give +2 bonus points when you're at full health (collisions normally give you +1 health as a reward, but there was no reward for a collision at full health)
 * Smaller and smaller meteors now spawn over time in Endless Juggling, to increase the difficulty the longer you survive
 * All meteors on screen now explode as soon as the boss reaches 0 HP, to prevent unfair deaths
