@@ -155,6 +155,10 @@ function Game.reset()
 
   gs.curMessage = nil
   gs.curMessageAt = nil
+  gs.lastButton = 0
+  if gs.zenMode then
+    Game.flashMessage("Use ✛ to change physics!", true)
+  end
 
   gs.achievementTtl = 0
 
@@ -241,9 +245,9 @@ function Game.increaseScore(points)
   end
 end
 
-function Game.flashMessage(message)
+function Game.flashMessage(message, long)
   gs.curMessage = message
-  gs.curMessageAt = gs.frameCount
+  gs.curMessageAt = gs.frameCount + (long and 100 or 0)
 end
 
 local function checkEndState()

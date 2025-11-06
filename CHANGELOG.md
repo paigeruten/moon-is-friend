@@ -6,7 +6,7 @@
 
 * **Meteor paths** showing each meteor's current trajectory are now shown (can be turned off in settings)
 * **Global scoreboards** are available for each of the Endless game modes (Catalog version only). These are shown in-game on the High Scores screen, and your global rank is shown on the Game Over screen in Endless.
-* **Zen mode** can be enabled from the Endless mode menu, and disables any meteor collisions that would cause damage. It also gives you infinite bombs (or an infinite gravity booster in Juggling). Achievements and high scores are disabled in this mode.
+* **Zen mode** can be enabled from the Endless mode menu, and disables any meteor collisions that would cause damage. It also lets you adjust the gravity of the Moon and Earth with the D-pad. Achievements and high scores are disabled in this mode.
 * **3 difficulty levels** can be selected from when starting each mission, each one giving a different badge on completion:
     * **Normal** difficulty is basically what "Easy mode" used to be (and should have been)
     * **Hard** difficulty is basically what the default difficulty used to be

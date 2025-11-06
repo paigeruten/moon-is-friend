@@ -2,6 +2,8 @@ local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
 local assets = Assets
+local screenWidth = SCREEN_WIDTH
+local screenHeight = SCREEN_HEIGHT
 
 local polarCoordinates = Util.polarCoordinates
 
@@ -15,6 +17,20 @@ function Moon.create()
     mass = gs.missionId == 'endless.rubdubdub' and 5 or 3,
     hasShield = gs.missionId == 'endless.rubdubdub',
   }
+end
+
+local function nextIncrement(value, neg)
+  if math.abs(value) < 2 then
+    return value + 0.25 * neg
+  elseif math.abs(value) < 5 then
+    return value + 0.5 * neg
+  elseif math.abs(value) < 15 then
+    return value + 1 * neg
+  elseif math.abs(value) < 50 then
+    return value + 5 * neg
+  else
+    return value + 10 * neg
+  end
 end
 
 function Moon.update()
@@ -37,6 +53,41 @@ function Moon.update()
 
   if gs.missionId == 'endless.rubdubdub' then
     gs.earth.moonDistance -= pd.getCrankChange() / 30
+  end
+
+  if gs.zenMode then
+    local buttonHold = gs.frameCount - (gs.lastButton or 0) >= 10
+    if pd.buttonJustPressed(pd.kButtonUp) or (pd.buttonIsPressed(pd.kButtonUp) and buttonHold) then
+      for i, moon in ipairs(gs.moons) do
+        moon.mass = nextIncrement(moon.mass, 1)
+        if i == 1 then
+          Game.flashMessage("Moon mass = " .. moon.mass)
+        end
+      end
+      gs.lastButton = gs.frameCount
+    end
+    if pd.buttonJustPressed(pd.kButtonDown) or (pd.buttonIsPressed(pd.kButtonDown) and buttonHold) then
+      for i, moon in ipairs(gs.moons) do
+        moon.mass = nextIncrement(moon.mass, -1)
+        if i == 1 then
+          Game.flashMessage("Moon mass = " .. moon.mass)
+        end
+      end
+      gs.lastButton = gs.frameCount
+    end
+    if pd.buttonJustPressed(pd.kButtonRight) or (pd.buttonIsPressed(pd.kButtonRight) and buttonHold) then
+      gs.earth.mass = nextIncrement(gs.earth.mass, 1)
+      Game.flashMessage("Earth mass = " .. gs.earth.mass)
+      gs.lastButton = gs.frameCount
+    end
+    if pd.buttonJustPressed(pd.kButtonLeft) or (pd.buttonIsPressed(pd.kButtonLeft) and buttonHold) then
+      gs.earth.mass = nextIncrement(gs.earth.mass, -1)
+      if gs.earth.mass < 0 then
+        gs.earth.mass = 0.0
+      end
+      Game.flashMessage("Earth mass = " .. gs.earth.mass)
+      gs.lastButton = gs.frameCount
+    end
   end
 
   if gs.earth.maxBombs == 0 and gs.bossPhase < 3 then

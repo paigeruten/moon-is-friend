@@ -255,14 +255,17 @@ local function calculateAsteroidPath(steps, x, y, velX, velY, radius, anti, isOn
     if not collided and (not stopWhenOffScreen or posIsOnScreen(x, y, radius)) then
       local earthVecX, earthVecY = earthX - x, earthY - y
       local earthDistanceSquared = earthVecX * earthVecX + earthVecY * earthVecY
-      local accX = earthVecX * (earthMass / earthDistanceSquared)
-      local accY = earthVecY * (earthMass / earthDistanceSquared)
+      local accX, accY = 0, 0
+      if earthDistanceSquared >= 196 then
+        accX = earthVecX * (earthMass / earthDistanceSquared)
+        accY = earthVecY * (earthMass / earthDistanceSquared)
+      end
 
       if isOnScreen then
         for _, moon in ipairs(gs.moons) do
           local moonVecX, moonVecY = moon.pos.x - x, moon.pos.y - y
           local moonDistanceSquared = moonVecX * moonVecX + moonVecY * moonVecY
-          if moonDistanceSquared <= moonGravityRadiusSquared and moonDistanceSquared > 4 then
+          if moonDistanceSquared <= moonGravityRadiusSquared and moonDistanceSquared >= 49 then
             local moonMass = moon.mass * anti
             if gs.extraSuction then
               moonMass *= 2
@@ -385,7 +388,7 @@ function Asteroid.update()
         asteroid.anti and -0.7 or 1,
         isOnScreen,
         gs.mission.mode ~= 'juggling',
-        true,
+        not gs.zenMode,
         function(i, curX, curY)
           asteroidPath[lastFrame + i - 1].x = curX
           asteroidPath[lastFrame + i - 1].y = curY
