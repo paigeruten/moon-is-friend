@@ -416,7 +416,7 @@ function Asteroid.update()
       table.insert(idsToRemove, id)
       Game.increaseScore(1)
       gs.asteroidsDiverted += 1
-      if gs.mission.winType == 'asteroids' or (gs.mission.winType == 'endless' and gs.mission.mode == 'standard') then
+      if gs.mission.winType == 'asteroids' or (gs.mission.winType == 'endless' and gs.mission.mode == 'standard' and not gs.zenMode) then
         assets.sfx.point:play()
       end
     end
@@ -592,10 +592,12 @@ function Asteroid.checkCollisions()
             Game.flashMessage('Nice collision! +1 health')
           else
             Game.increaseScore(2)
-            if gs.mission.winType == 'endless' then
-              Game.flashMessage('Nice collision! +2 bonus points')
-            else
-              Game.flashMessage('Nice collision!')
+            if not gs.zenMode then
+              if gs.mission.winType == 'endless' then
+                Game.flashMessage('Nice collision! +2 bonus points')
+              else
+                Game.flashMessage('Nice collision!')
+              end
             end
           end
         elseif gs.mission.winType == 'asteroids' then
@@ -604,7 +606,7 @@ function Asteroid.checkCollisions()
         elseif gs.mission.winType == 'survive' then
           gs.surviveFrameCount += 50 * 5
           Game.flashMessage('2 meteors collided! -0:05')
-        elseif gs.mission.mode == 'standard' and gs.mission.winType == 'endless' then
+        elseif gs.mission.mode == 'standard' and gs.mission.winType == 'endless' and not gs.zenMode then
           Game.flashMessage('2 meteors collided! +5 points')
         end
         local explosionPos = pd.geometry.lineSegment.new(
