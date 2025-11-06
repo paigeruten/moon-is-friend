@@ -72,7 +72,7 @@ function GameEnd.update()
     local highScoreParts = gs.isHighScore and { "New high score!" } or {}
     if gs.scoreStatus == 'submitting' then
       table.insert(highScoreParts, "Submitting score...")
-    else
+    elseif SCOREBOARDS_ENABLED then
       table.insert(highScoreParts, "Global rank:")
       table.insert(highScoreParts, gs.scoreGlobalRank or "?")
     end

@@ -36,7 +36,7 @@ function Moon.update()
   end
 
   if gs.missionId == 'endless.rubdubdub' then
-    gs.earth.moonDistance += pd.getCrankChange() / 30
+    gs.earth.moonDistance -= pd.getCrankChange() / 30
   end
 
   if gs.earth.maxBombs == 0 and gs.bossPhase < 3 then

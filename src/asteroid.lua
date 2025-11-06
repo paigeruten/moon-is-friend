@@ -351,7 +351,7 @@ function Asteroid.update()
       asteroid.vel.x,
       asteroid.vel.y,
       asteroid.radius,
-      asteroid.anti and -0.5 or 1,
+      asteroid.anti and -0.7 or 1,
       isOnScreen,
       false,
       false
@@ -382,7 +382,7 @@ function Asteroid.update()
         pathVelX,
         pathVelY,
         asteroid.radius,
-        asteroid.anti and -0.5 or 1,
+        asteroid.anti and -0.7 or 1,
         isOnScreen,
         gs.mission.mode ~= 'juggling',
         true,
