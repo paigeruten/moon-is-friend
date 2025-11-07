@@ -60,6 +60,9 @@ function Moon.update()
     if pd.buttonJustPressed(pd.kButtonUp) or (pd.buttonIsPressed(pd.kButtonUp) and buttonHold) then
       for i, moon in ipairs(gs.moons) do
         moon.mass = nextIncrement(moon.mass, 1)
+        if moon.mass >= 100.0 then
+          moon.mass = 100.0
+        end
         if i == 1 then
           Game.flashMessage("Moon mass = " .. moon.mass)
         end
@@ -69,6 +72,9 @@ function Moon.update()
     if pd.buttonJustPressed(pd.kButtonDown) or (pd.buttonIsPressed(pd.kButtonDown) and buttonHold) then
       for i, moon in ipairs(gs.moons) do
         moon.mass = nextIncrement(moon.mass, -1)
+        if moon.mass <= -100.0 then
+          moon.mass = -100.0
+        end
         if i == 1 then
           Game.flashMessage("Moon mass = " .. moon.mass)
         end
@@ -77,6 +83,9 @@ function Moon.update()
     end
     if pd.buttonJustPressed(pd.kButtonRight) or (pd.buttonIsPressed(pd.kButtonRight) and buttonHold) then
       gs.earth.mass = nextIncrement(gs.earth.mass, 1)
+      if gs.earth.mass >= 100.0 then
+        gs.earth.mass = 100.0
+      end
       Game.flashMessage("Earth mass = " .. gs.earth.mass)
       gs.lastButton = gs.frameCount
     end
