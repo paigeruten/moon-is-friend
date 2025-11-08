@@ -2,8 +2,6 @@ local pd = playdate
 local gfx = pd.graphics
 local gs = Game.state
 local assets = Assets
-local screenWidth = SCREEN_WIDTH
-local screenHeight = SCREEN_HEIGHT
 
 local polarCoordinates = Util.polarCoordinates
 
@@ -100,8 +98,9 @@ function Moon.update()
   end
 
   if gs.earth.maxBombs == 0 and gs.bossPhase < 3 then
+    local abJustPressed = pd.buttonJustPressed(pd.kButtonA) or pd.buttonJustPressed(pd.kButtonB)
     local abPressed = pd.buttonIsPressed(pd.kButtonA) or pd.buttonIsPressed(pd.kButtonB)
-    if abPressed and (gs.zenMode or (gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and gs.extraSuctionFuel == gs.extraSuctionMaxFuel)) then
+    if abPressed and (gs.zenMode or (gs.extraSuction and gs.extraSuctionFuel > 1) or (not gs.extraSuction and abJustPressed)) then
       if not gs.extraSuction then
         assets.sfx.suck:start()
       end
