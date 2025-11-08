@@ -40,6 +40,7 @@
 
 * When you restart a boss level, the boss intro animation is now skipped
 * The A button can now be used as an alternative to the B button (to trigger bombs on some levels, and activate the gravity booster on other levels)
+* Added **Local Stats** page to High Scores, that shows 10 different stats that are tracked over the course of all missions and Endless runs
 * Added new **Settings** menu, where you can toggle **Meteor paths** and **Screen shake**
 * Playdate system menu lets you toggle **Meteor paths** at any time, instead of **Screen shake**
 * Endless mode menu persists your last selected options

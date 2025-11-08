@@ -7,6 +7,9 @@ SaveData.data = pd.datastore.read() or {}
 if not SaveData.data.highScores then
   SaveData.data.highScores = {}
 end
+if not SaveData.data.stats then
+  SaveData.data.stats = {}
+end
 if not SaveData.data.missions then
   SaveData.data.missions = {}
 end
@@ -18,6 +21,10 @@ if SaveData.data.settings.screenShakeEnabled == nil then
 end
 if SaveData.data.settings.showAsteroidPaths == nil then
   SaveData.data.settings.showAsteroidPaths = true
+end
+
+function SaveData.save()
+  pd.datastore.write(SaveData.data)
 end
 
 function SaveData.completeMission(missionId, difficulty)
@@ -97,6 +104,35 @@ function SaveData.checkAndSaveHighScore(missionId, score)
     return true
   end
   return false
+end
+
+function SaveData.incrementStat(statId, amount)
+  if gs.zenMode then
+    return
+  end
+  if not SaveData.data.stats[statId] then
+    SaveData.data.stats[statId] = 0
+  end
+  SaveData.data.stats[statId] += amount or 1
+end
+
+function SaveData.getStat(statId)
+  return SaveData.data.stats[statId] or 0
+end
+
+function SaveData.getStatsSummary()
+  return {
+    { 'meteors seen',                      SaveData.getStat('asteroids_spawned') },
+    { 'pairs of meteors collided',         SaveData.getStat('asteroid_collisions') },
+    { 'meteors blocked with a shield',     SaveData.getStat('asteroids_blocked') },
+    { 'meteors hit Earth',                 SaveData.getStat('earth_damaged') },
+    { 'meteors hit a moon',                SaveData.getStat('moon_damaged') },
+    { 'bombs detonated',                   SaveData.getStat('bombs_used') },
+    { 'rockets made it to the moon',       SaveData.getStat('rockets_caught') },
+    { 'rockets hit by a meteor',           SaveData.getStat('rockets_exploded') },
+    { 'rockets lost in space',             SaveData.getStat('rockets_lost') },
+    { 'total points collected in Endless', SaveData.getStat('endless_points') },
+  }
 end
 
 function SaveData.isScreenShakeEnabled()

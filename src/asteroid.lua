@@ -126,6 +126,7 @@ function Asteroid.spawn()
   }
   Asteroid.resetPath(gs.asteroids[id])
   gs.numAsteroids += 1
+  SaveData.incrementStat('asteroids_spawned')
   return id
 end
 
@@ -150,6 +151,7 @@ function Asteroid.spawnFromTarget(target)
   }
   Asteroid.resetPath(gs.asteroids[id])
   gs.numAsteroids += 1
+  SaveData.incrementStat('asteroids_spawned')
   return id
 end
 
@@ -479,12 +481,14 @@ function Asteroid.checkCollisions()
       if gs.earth.hasShield then
         gs.earth.hasShield = false
         assets.sfx.shieldDown:play()
+        SaveData.incrementStat('asteroids_blocked')
       else
         gs.earth.health -= 1
         gs.earth.pristine = false
         Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
         Explosion.screenShake(500, 5)
         assets.sfx.boom:play()
+        SaveData.incrementStat('earth_damaged')
       end
       table.insert(idsToRemove, id)
       asteroid.state = 'dead'
@@ -496,6 +500,7 @@ function Asteroid.checkCollisions()
         if moon.hasShield then
           moon.hasShield = false
           assets.sfx.shieldDown:play()
+          SaveData.incrementStat('asteroids_blocked')
         else
           if not gs.zenMode then
             gs.earth.health -= 1
@@ -504,6 +509,7 @@ function Asteroid.checkCollisions()
           Explosion.spawn(asteroid.pos.x, asteroid.pos.y)
           Explosion.screenShake(500, 5)
           assets.sfx.boom:play()
+          SaveData.incrementStat('moon_damaged')
         end
         table.insert(idsToRemove, id)
         asteroid.state = 'dead'
@@ -566,6 +572,7 @@ function Asteroid.checkCollisions()
         asteroid2.state = 'dead'
         Game.increaseScore(5)
         gs.asteroidsCollided += 1
+        SaveData.incrementStat('asteroid_collisions')
 
         if not gs.zenMode then
           if achievements.grant("first_collision") then

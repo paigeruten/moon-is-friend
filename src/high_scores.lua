@@ -14,6 +14,9 @@ local pages = {
     type = 'local',
   },
   {
+    type = 'local-stats',
+  },
+  {
     type = 'global',
     boardId = 'endless1moon',
     desc = 'Endless, 1 moon',
@@ -49,6 +52,12 @@ local pages = {
     desc = 'RUBDUBDUB',
   },
 }
+if not scoreboardsEnabled then
+  for i = 3, #pages do
+    pages[i] = nil
+  end
+  pages[3] = { type = 'how-to-global' }
+end
 for id, page in ipairs(pages) do
   page.id = id
 end
@@ -105,6 +114,7 @@ local scrollStartX = 0
 local targetScrollX = 0
 local scrollTimer = 0
 local scrollDuration = 20
+local statsSummary = {}
 
 function HighScores.switch()
   gs.scene = 'high-scores'
@@ -135,6 +145,8 @@ function HighScores.switch()
     end
   end
 
+  statsSummary = SaveData.getStatsSummary()
+
   Menu.reset()
 end
 
@@ -148,24 +160,20 @@ local function drawBox(page, boxX, boxY)
   gfx.fillRect(boxX + 3, boxY + 3, boxWidth - 6, boxHeight - 6)
   gfx.setFont(assets.fonts.menu)
 
-  if scoreboardsEnabled then
-    gfx.drawText("⬅️ Prev", boxX + 20, boxY + boxHeight - 22)
-    gfx.drawTextAligned("Next ➡️", boxX + boxWidth - 20, boxY + boxHeight - 22, kTextAlignment.right)
+  gfx.drawText("⬅️ Prev", boxX + 20, boxY + boxHeight - 22)
+  gfx.drawTextAligned("Next ➡️", boxX + boxWidth - 20, boxY + boxHeight - 22, kTextAlignment.right)
 
-    local circleSpacing = 8
-    local circleRowWidth = circleSpacing * (#pages - 1)
-    local circleRowX = boxX + boxWidth // 2 - circleRowWidth // 2
+  local circleSpacing = 8
+  local circleRowWidth = circleSpacing * (#pages - 1)
+  local circleRowX = boxX + boxWidth // 2 - circleRowWidth // 2
 
-    gfx.setColor(gfx.kColorBlack)
-    for i = 1, #pages do
-      if i == page.id then
-        gfx.fillCircleAtPoint(circleRowX + (i - 1) * circleSpacing, boxY + boxHeight - 14, 3)
-      else
-        gfx.drawCircleAtPoint(circleRowX + (i - 1) * circleSpacing, boxY + boxHeight - 14, 3)
-      end
+  gfx.setColor(gfx.kColorBlack)
+  for i = 1, #pages do
+    if i == page.id then
+      gfx.fillCircleAtPoint(circleRowX + (i - 1) * circleSpacing, boxY + boxHeight - 14, 3)
+    else
+      gfx.drawCircleAtPoint(circleRowX + (i - 1) * circleSpacing, boxY + boxHeight - 14, 3)
     end
-  else
-    gfx.drawTextAligned("Ⓐ Done", boxX + boxWidth - 10, boxY + boxHeight - 22, kTextAlignment.right)
   end
 end
 
@@ -228,6 +236,20 @@ local function drawLocalPage(page, boxX, boxY)
   end
 end
 
+local function drawLocalStatsPage(page, boxX, boxY)
+  drawBox(page, boxX, boxY)
+
+  gfx.setFont(assets.fonts.large)
+  gfx.drawTextAligned("*Local Stats*", boxX + boxWidth // 2, boxY + 12, kTextAlignment.center)
+
+  gfx.setFont(assets.fonts.small)
+  for i, stat in ipairs(statsSummary) do
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillCircleAtPoint(boxX + 43, boxY + 32 + 16 * i, 2)
+    gfx.drawText(stat[2] .. ' ' .. stat[1], boxX + 50, boxY + 25 + 16 * i)
+  end
+end
+
 local function drawGlobalPage(page, boxX, boxY)
   drawBox(page, boxX, boxY)
 
@@ -262,9 +284,26 @@ local function drawGlobalPage(page, boxX, boxY)
   end
 end
 
+local function drawHowToGlobalPage(page, boxX, boxY)
+  drawBox(page, boxX, boxY)
+
+  gfx.setFont(assets.fonts.large)
+  gfx.drawTextAligned("*Global High Scores*", boxX + boxWidth // 2, boxY + 12, kTextAlignment.center)
+
+  gfx.setFont(assets.fonts.small)
+  gfx.drawTextAligned('Global leaderboards are only available on the', boxX + boxWidth // 2, screenHeight // 2 - 16,
+    kTextAlignment.center)
+  gfx.drawTextAligned('Catalog version of The Moon is our Friend.', boxX + boxWidth // 2, screenHeight // 2,
+    kTextAlignment.center)
+end
+
 local function drawPage(page, boxX, boxY)
   if page.type == 'local' then
     drawLocalPage(page, boxX, boxY)
+  elseif page.type == 'local-stats' then
+    drawLocalStatsPage(page, boxX, boxY)
+  elseif page.type == 'how-to-global' then
+    drawHowToGlobalPage(page, boxX, boxY)
   else
     drawGlobalPage(page, boxX, boxY)
   end
@@ -281,9 +320,9 @@ local function changePage(direction)
   scrollStartX = scrollX
   targetScrollX = (gs.highScorePage - 1) * pageSpacing
 
-  if oldPage == #pages and gs.highScorePage == 1 then
+  if oldPage == #pages and gs.highScorePage == 1 and (#pages > 2 or direction == 1) then
     targetScrollX = #pages * pageSpacing
-  elseif oldPage == 1 and gs.highScorePage == #pages then
+  elseif oldPage == 1 and gs.highScorePage == #pages and (#pages > 2 or direction == -1) then
     targetScrollX = -pageSpacing
   end
 
@@ -293,52 +332,46 @@ end
 function HighScores.update()
   gs.stars:draw(0, 0)
 
-  if scoreboardsEnabled then
-    if scrollTimer < scrollDuration then
-      scrollX = scrollStartX + pd.easingFunctions.outCubic(scrollTimer, 0, targetScrollX - scrollStartX, scrollDuration)
-      scrollTimer += 1
-    else
-      scrollX = targetScrollX
-
-      local normalizedScrollX = (gs.highScorePage - 1) * pageSpacing
-      if scrollX ~= normalizedScrollX then
-        scrollX = normalizedScrollX
-        targetScrollX = normalizedScrollX
-      end
-    end
-
-    local totalScrollSpace = #pages * pageSpacing
-    for i = 1, #pages do
-      local pageAbsoluteX = (i - 1) * pageSpacing
-
-      local pageX = baseBoxX + pageAbsoluteX - scrollX
-      if pageX > -boxWidth and pageX < screenWidth then
-        drawPage(pages[i], pageX, baseBoxY)
-      end
-
-      local leftX = pageX - totalScrollSpace
-      if leftX > -boxWidth and leftX < screenWidth then
-        drawPage(pages[i], leftX, baseBoxY)
-      end
-
-      local rightX = pageX + totalScrollSpace
-      if rightX > -boxWidth and rightX < screenWidth then
-        drawPage(pages[i], rightX, baseBoxY)
-      end
-    end
+  if scrollTimer < scrollDuration then
+    scrollX = scrollStartX + pd.easingFunctions.outCubic(scrollTimer, 0, targetScrollX - scrollStartX, scrollDuration)
+    scrollTimer += 1
   else
-    drawPage(pages[gs.highScorePage], baseBoxX, baseBoxY)
+    scrollX = targetScrollX
+
+    local normalizedScrollX = (gs.highScorePage - 1) * pageSpacing
+    if scrollX ~= normalizedScrollX then
+      scrollX = normalizedScrollX
+      targetScrollX = normalizedScrollX
+    end
   end
 
-  if scoreboardsEnabled then
-    if pd.buttonJustPressed(pd.kButtonRight) then
-      changePage(1)
-      assets.sfx.boop:play()
+  local totalScrollSpace = #pages * pageSpacing
+  for i = 1, #pages do
+    local pageAbsoluteX = (i - 1) * pageSpacing
+
+    local pageX = baseBoxX + pageAbsoluteX - scrollX
+    if pageX > -boxWidth and pageX < screenWidth then
+      drawPage(pages[i], pageX, baseBoxY)
     end
-    if pd.buttonJustPressed(pd.kButtonLeft) then
-      changePage(-1)
-      assets.sfx.boop:play()
+
+    local leftX = pageX - totalScrollSpace
+    if leftX > -boxWidth and leftX < screenWidth then
+      drawPage(pages[i], leftX, baseBoxY)
     end
+
+    local rightX = pageX + totalScrollSpace
+    if rightX > -boxWidth and rightX < screenWidth then
+      drawPage(pages[i], rightX, baseBoxY)
+    end
+  end
+
+  if pd.buttonJustPressed(pd.kButtonRight) then
+    changePage(1)
+    assets.sfx.boop:play()
+  end
+  if pd.buttonJustPressed(pd.kButtonLeft) then
+    changePage(-1)
+    assets.sfx.boop:play()
   end
 
   if pd.buttonJustReleased(pd.kButtonA) or pd.buttonJustReleased(pd.kButtonB) then

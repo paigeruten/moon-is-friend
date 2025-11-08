@@ -168,11 +168,13 @@ function Rocket.update()
     if not isRocketOnScreen(rocket) then
       gs.rockets[rocketId] = nil
       gs.rocketsLost += 1
+      SaveData.incrementStat('rockets_lost')
       if gs.mission.winType ~= 'rocket' then
         gs.lastRocketAt = gs.frameCount
       end
     elseif collidingMoon then
       gs.rocketsCaught += 1
+      SaveData.incrementStat('rockets_caught')
 
       local moonWithoutShield = nil
       if not collidingMoon.hasShield then
@@ -291,6 +293,7 @@ function Rocket.update()
           Asteroid.despawn(id)
           gs.rockets[rocketId] = nil
           gs.rocketsLost += 1
+          SaveData.incrementStat('rockets_exploded')
           if gs.mission.winType ~= 'rocket' then
             gs.lastRocketAt = gs.frameCount
           end

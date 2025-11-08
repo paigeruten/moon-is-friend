@@ -164,15 +164,15 @@ function Endless.update()
   if isUnlocked then
     if gs.endlessZenMode then
       gfx.setColor(gfx.kColorBlack)
-      gfx.fillRect(15, 215, 370, 30)
+      gfx.fillRect(10, 215, 380, 30)
       gfx.setColor(gfx.kColorWhite)
       gfx.setDitherPattern(0.4, gfx.image.kDitherTypeDiagonalLine)
-      gfx.fillRect(15, 215, 370, 30)
+      gfx.fillRect(10, 215, 380, 30)
       gfx.setColor(gfx.kColorWhite)
-      gfx.fillRect(15 + 3, 215 + 3, 370 - 6, 30 - 6)
+      gfx.fillRect(10 + 3, 215 + 3, 380 - 6, 30 - 6)
 
       gfx.setFont(assets.fonts.menu)
-      gfx.drawTextAligned('Achievements and high scores disabled in Zen mode.', screenWidth // 2, 222,
+      gfx.drawTextAligned('Achievements, scores, and stats disabled in Zen mode.', screenWidth // 2, 222,
         kTextAlignment.center)
     else
       local highScore = SaveData.getHighScore(gs.missionId)

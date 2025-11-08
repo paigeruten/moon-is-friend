@@ -220,6 +220,8 @@ function Game.increaseScore(points)
   gs.score += points
 
   if gs.mission.winType == "endless" and not gs.zenMode then
+    SaveData.incrementStat('endless_points', points)
+
     if not achievements.isGranted("endless_hero") then
       achievements.advance("endless_hero", points)
       if achievements.isGranted("endless_hero") then
@@ -349,6 +351,8 @@ local function checkEndState()
       GameEnd.menuSelect
     )
     assets.sfx.win:play()
+
+    SaveData.save()
   elseif gs.earth.health <= 0 then
     Game.stopSounds()
     if gs.mission.winType == 'endless' then
@@ -372,6 +376,8 @@ local function checkEndState()
       MenuBox.init({ 'Retry', 'Back to missions' }, menuOptions, GameEnd.menuSelect)
     end
     assets.sfx.lose:play()
+
+    SaveData.save()
   end
 end
 

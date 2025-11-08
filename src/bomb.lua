@@ -45,6 +45,7 @@ function Bomb.update()
     gs.bombShockwavePos = gs.earth.pos
     gs.bombedAsteroids = 0
     Explosion.screenShake(500, 5)
+    SaveData.incrementStat('bombs_used')
   end
 end
 
