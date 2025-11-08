@@ -102,7 +102,7 @@ achievements.initialize({
     {
       id = "endless_one_moon_expert",
       name = "Single moon expert",
-      description = "Get 200 points in an Endless run with one moon."
+      description = "Get 150 points in an Endless run with one moon."
     },
     {
       id = "endless_two_moon_expert",

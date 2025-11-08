@@ -21,6 +21,7 @@
 * Smaller and smaller meteors now spawn over time in Endless Juggling, to increase the difficulty the longer you survive
 * All meteors on screen now explode as soon as the boss reaches 0 HP, to prevent unfair deaths
 * Gravity booster can now be used anytime there is fuel available (previously you'd have to wait for it to fully refill before using it again)
+* Endless mode now reaches max level at 5 minutes (previously was 7.5 minutes), and there are half as many levels displayed as before
 
 #### Difficulty
 

@@ -186,7 +186,7 @@ end
 function Game.updateRampUpDifficulty()
   ---@diagnostic disable-next-line: param-type-mismatch
   local maxDifficulty, minDifficulty = table.unpack(gs.difficulty)
-  local minDifficultyTime = 22500 -- 7.5 minutes
+  local minDifficultyTime = 15000 -- 5 minutes
 
   if gs.frameCount >= minDifficultyTime then
     gs.rampUpDifficulty = minDifficulty
@@ -200,7 +200,7 @@ function Game.updateRampUpDifficulty()
       pd.easingFunctions.outSine(
         gs.frameCount,
         0,
-        maxDifficulty - minDifficulty,
+        maxDifficulty - minDifficulty - 5,
         minDifficultyTime
       )
     )
@@ -225,7 +225,7 @@ function Game.increaseScore(points)
       end
     end
 
-    if gs.missionId == "endless.s1" and gs.score >= 200 then
+    if gs.missionId == "endless.s1" and gs.score >= 150 then
       if achievements.grant("endless_one_moon_expert") then
         Achievement.queue("endless_one_moon_expert", true)
       end

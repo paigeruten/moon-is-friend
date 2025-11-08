@@ -11,13 +11,13 @@ MISSIONS = {
   ["endless.s1"] = {
     mode = "standard",
     winType = "endless",
-    difficulty = { 125, 45 },
+    difficulty = { 110, 35 },
     scoreboardId = "endless1moon"
   },
   ["endless.s2"] = {
     mode = "standard",
     winType = "endless",
-    difficulty = { 125, 50 },
+    difficulty = { 115, 45 },
     numMoons = 2,
     scoreboardId = "endless2moon"
   },

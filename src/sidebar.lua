@@ -74,7 +74,7 @@ function Sidebar.invalidate()
 end
 
 function Sidebar.draw()
-  local curLevel = math.min(50, math.floor(49 * gs.frameCount / 22500) + 1)
+  local curLevel = math.min(25, math.floor(24 * gs.frameCount / 15000) + 1)
   local bossHealth = Target.totalHealth()
   local surviveSeconds = gs.surviveFrameCount // 50
 
@@ -125,7 +125,7 @@ function Sidebar.draw()
       gfx.setFont(assets.fonts.small)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       gfx.drawText(curLevel, 6, difficultyY + 1)
-      if curLevel >= 50 then
+      if curLevel >= 25 then
         gfx.drawText("Max", 6, difficultyY - 25)
       end
       gfx.setImageDrawMode(gfx.kDrawModeCopy)
