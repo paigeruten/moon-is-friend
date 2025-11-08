@@ -37,7 +37,7 @@ function Sidebar.drawStatic()
     gfx.setFont(assets.fonts.small)
     gfx.drawText("Score", 6, scoreY)
 
-    if gs.rampUpDifficulty and type(gs.difficulty) == 'table' then
+    if (gs.rampUpDifficulty and type(gs.difficulty) == 'table') or (gs.mission.mode == 'juggling' and not gs.zenMode) then
       gfx.setFont(assets.fonts.small)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       gfx.drawText("Level", 6, difficultyY - 12)
@@ -74,7 +74,9 @@ function Sidebar.invalidate()
 end
 
 function Sidebar.draw()
-  local curLevel = math.min(25, math.floor(24 * gs.frameCount / 15000) + 1)
+  local curLevel = gs.mission.mode == 'juggling'
+      and Asteroid.getJugglingLevel()
+      or math.min(25, math.floor(24 * gs.frameCount / 15000) + 1)
   local bossHealth = Target.totalHealth()
   local surviveSeconds = gs.surviveFrameCount // 50
 
@@ -121,11 +123,11 @@ function Sidebar.draw()
     gfx.drawText(gs.score, 6, scoreY + 13)
 
     -- Difficulty
-    if gs.rampUpDifficulty and type(gs.difficulty) == 'table' then
+    if (gs.rampUpDifficulty and type(gs.difficulty) == 'table') or (gs.mission.mode == 'juggling' and not gs.zenMode) then
       gfx.setFont(assets.fonts.small)
       gfx.setImageDrawMode(gfx.kDrawModeFillBlack)
       gfx.drawText(curLevel, 6, difficultyY + 1)
-      if curLevel >= 25 then
+      if curLevel >= 25 or (gs.mission.mode == 'juggling' and curLevel >= 5) then
         gfx.drawText("Max", 6, difficultyY - 25)
       end
       gfx.setImageDrawMode(gfx.kDrawModeCopy)

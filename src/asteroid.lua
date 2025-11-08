@@ -20,6 +20,20 @@ local function nextAsteroidId()
   return gs.curAsteroidId
 end
 
+function Asteroid.getJugglingLevel()
+  if gs.frameCount < 3750 or gs.zenMode then
+    return 1
+  elseif gs.frameCount < 7500 then
+    return 2
+  elseif gs.frameCount < 11250 then
+    return 3
+  elseif gs.frameCount < 15000 then
+    return 4
+  else
+    return 5
+  end
+end
+
 function Asteroid.spawn()
   if gs.mission.winType == "boss" and math.random(7) == 1 then
     local targets = {}
@@ -60,13 +74,14 @@ function Asteroid.spawn()
   local asteroidRadius
   if gs.mission.mode == 'juggling' then
     if gs.mission.winType == 'endless' and not gs.zenMode then
-      if gs.frameCount < 3000 then
+      local jugglingLevel = Asteroid.getJugglingLevel()
+      if jugglingLevel == 1 then
         asteroidRadius = math.random(5, 6)
-      elseif gs.frameCount < 9000 then
+      elseif jugglingLevel == 2 then
         asteroidRadius = math.random(4, 5)
-      elseif gs.frameCount < 15000 then
+      elseif jugglingLevel == 3 then
         asteroidRadius = math.random(3, 4)
-      elseif gs.frameCount < 21000 then
+      elseif jugglingLevel == 4 then
         asteroidRadius = math.random(2, 3)
       else
         asteroidRadius = 2

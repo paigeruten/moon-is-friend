@@ -117,7 +117,7 @@ achievements.initialize({
     {
       id = "max_level_endless",
       name = "Pure chaos",
-      description = "Reach the maximum level in Endless mode.",
+      description = "Reach the maximum level in Endless Standard mode.",
     },
     {
       id = "endless_expert_juggler",
