@@ -8,9 +8,13 @@ local sidebarWidth = SIDEBAR_WIDTH
 
 GameEnd = {}
 
-local bannerWidth, bannerHeight = assets.gfx.banner:getSize()
-local bannerCenterX = sidebarWidth + (screenWidth - sidebarWidth) // 2
-local bannerX = bannerCenterX - bannerWidth // 2
+local bannerWidth, bannerHeight, bannerCenterX, bannerX
+
+function GameEnd.init()
+  bannerWidth, bannerHeight = assets.gfx.banner:getSize()
+  bannerCenterX = sidebarWidth + (screenWidth - sidebarWidth) // 2
+  bannerX = bannerCenterX - bannerWidth // 2
+end
 
 function GameEnd.menuSelect(which)
   if which == 2 then

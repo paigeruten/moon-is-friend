@@ -11,56 +11,61 @@ local polarCoordinates = Util.polarCoordinates
 
 Rocket = {}
 
-local rocketDirectionInfo = {
-  north = {
-    image = assets.gfx.rocketNorth,
-    angle = 0,
-    anchor = { x = 0.5, y = 1 },
-    flip = gfx.kImageUnflipped,
-  },
-  northeast = {
-    image = assets.gfx.rocketNorthEast,
-    angle = 45,
-    anchor = { x = 0, y = 1 },
-    flip = gfx.kImageUnflipped,
-  },
-  east = {
-    image = assets.gfx.rocketEast,
-    angle = 90,
-    anchor = { x = 0, y = 0.5 },
-    flip = gfx.kImageUnflipped,
-  },
-  southeast = {
-    image = assets.gfx.rocketNorthEast,
-    angle = 135,
-    anchor = { x = 0, y = 0 },
-    flip = gfx.kImageFlippedY,
-  },
-  south = {
-    image = assets.gfx.rocketNorth,
-    angle = 180,
-    anchor = { x = 0.5, y = 0 },
-    flip = gfx.kImageFlippedY,
-  },
-  southwest = {
-    image = assets.gfx.rocketNorthEast,
-    angle = 225,
-    anchor = { x = 1, y = 0 },
-    flip = gfx.kImageFlippedXY,
-  },
-  west = {
-    image = assets.gfx.rocketEast,
-    angle = 270,
-    anchor = { x = 1, y = 0.5 },
-    flip = gfx.kImageFlippedX,
-  },
-  northwest = {
-    image = assets.gfx.rocketNorthEast,
-    angle = 315,
-    anchor = { x = 1, y = 1 },
-    flip = gfx.kImageFlippedX,
-  },
-}
+local rocketDirectionInfo = {}
+
+function Rocket.init()
+  rocketDirectionInfo = {
+    north = {
+      image = assets.gfx.rocketNorth,
+      angle = 0,
+      anchor = { x = 0.5, y = 1 },
+      flip = gfx.kImageUnflipped,
+    },
+    northeast = {
+      image = assets.gfx.rocketNorthEast,
+      angle = 45,
+      anchor = { x = 0, y = 1 },
+      flip = gfx.kImageUnflipped,
+    },
+    east = {
+      image = assets.gfx.rocketEast,
+      angle = 90,
+      anchor = { x = 0, y = 0.5 },
+      flip = gfx.kImageUnflipped,
+    },
+    southeast = {
+      image = assets.gfx.rocketNorthEast,
+      angle = 135,
+      anchor = { x = 0, y = 0 },
+      flip = gfx.kImageFlippedY,
+    },
+    south = {
+      image = assets.gfx.rocketNorth,
+      angle = 180,
+      anchor = { x = 0.5, y = 0 },
+      flip = gfx.kImageFlippedY,
+    },
+    southwest = {
+      image = assets.gfx.rocketNorthEast,
+      angle = 225,
+      anchor = { x = 1, y = 0 },
+      flip = gfx.kImageFlippedXY,
+    },
+    west = {
+      image = assets.gfx.rocketEast,
+      angle = 270,
+      anchor = { x = 1, y = 0.5 },
+      flip = gfx.kImageFlippedX,
+    },
+    northwest = {
+      image = assets.gfx.rocketNorthEast,
+      angle = 315,
+      anchor = { x = 1, y = 1 },
+      flip = gfx.kImageFlippedX,
+    },
+  }
+end
+
 local rocketDirections = {}
 for direction, _ in pairs(rocketDirectionInfo) do
   table.insert(rocketDirections, direction)

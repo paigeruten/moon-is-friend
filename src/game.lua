@@ -9,14 +9,10 @@ local scoreboardsEnabled = SCOREBOARDS_ENABLED
 Game = {}
 
 Game.state = {
-  scene = 'title',
+  scene = 'init',
   missionId = 'endless.s1',
 }
 local gs = Game.state
-
-function Game.init()
-  Title.switch()
-end
 
 function Game.stopSounds()
   assets.sfx.omen:stop()

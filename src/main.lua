@@ -41,9 +41,6 @@ local screenWidth = SCREEN_WIDTH
 local screenHeight = SCREEN_HEIGHT
 local showFps = SHOW_FPS
 
-Game.init()
-Game.reset()
-
 math.randomseed(pd.getSecondsSinceEpoch())
 pd.display.setRefreshRate(50)
 gfx.setBackgroundColor(gfx.kColorBlack)
@@ -51,7 +48,13 @@ gfx.setBackgroundColor(gfx.kColorBlack)
 function pd.update()
   pd.timer.updateTimers()
 
-  if gs.scene == 'title' then
+  if gs.scene == 'init' then
+    Assets.load()
+    Rocket.init()
+    GameEnd.init()
+    Game.reset()
+    Title.switch()
+  elseif gs.scene == 'title' then
     Title.update()
   elseif gs.scene == 'instructions' then
     Instructions.update()

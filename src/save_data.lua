@@ -123,12 +123,12 @@ end
 function SaveData.getStatsSummary()
   return {
     { 'meteors seen',                      SaveData.getStat('asteroids_spawned') },
-    { 'pairs of meteors collided',         SaveData.getStat('asteroid_collisions') },
-    { 'meteors blocked with a shield',     SaveData.getStat('asteroids_blocked') },
     { 'meteors hit Earth',                 SaveData.getStat('earth_damaged') },
-    { 'meteors hit a moon',                SaveData.getStat('moon_damaged') },
+    { 'meteors hit the Moon',              SaveData.getStat('moon_damaged') },
+    { 'meteors blocked with shields',      SaveData.getStat('asteroids_blocked') },
+    { 'pairs of meteors collided',         SaveData.getStat('asteroid_collisions') },
     { 'bombs detonated',                   SaveData.getStat('bombs_used') },
-    { 'rockets made it to the moon',       SaveData.getStat('rockets_caught') },
+    { 'rockets landed on the moon',        SaveData.getStat('rockets_caught') },
     { 'rockets hit by a meteor',           SaveData.getStat('rockets_exploded') },
     { 'rockets lost in space',             SaveData.getStat('rockets_lost') },
     { 'total points collected in Endless', SaveData.getStat('endless_points') },
