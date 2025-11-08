@@ -23,7 +23,7 @@ function Game.stopSounds()
   assets.sfx.suck:stop()
 end
 
-function Game.reset()
+function Game.reset(restarting)
   achievements.save()
 
   gs.frameCount = 0
@@ -138,7 +138,16 @@ function Game.reset()
     gs.bossMaxHealth = gs.mission.winGoal(gs.hardMode)
 
     local bossRadius = gs.mission.winGoal2 and 120 or 75
-    Target.spawn(screenWidth - 20 + 25 + bossRadius, screenHeight // 2, bossRadius, gs.mission.winGoal(gs.hardMode))
+    local bossTarget = Target.spawn(screenWidth - 20 + 25 + bossRadius, screenHeight // 2, bossRadius,
+      gs.mission.winGoal(gs.hardMode))
+
+    if restarting then
+      gs.bossPhase = 1
+      gs.bossPhaseFrame = 300
+      gs.earth.basePos.x -= 50
+      gs.starsOffset += 50
+      bossTarget.basePos.x -= 100
+    end
   end
 
   gs.particles = {}

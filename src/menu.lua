@@ -21,7 +21,7 @@ local inGameMenuItems = {}
 function Menu.addInGameMenuItems()
   Menu.reset()
   table.insert(inGameMenuItems, (menu:addMenuItem('restart level', function()
-    Game.reset()
+    Game.reset(true)
     gs.scene = 'game'
   end)))
   table.insert(inGameMenuItems, (menu:addMenuItem('back to title', function()

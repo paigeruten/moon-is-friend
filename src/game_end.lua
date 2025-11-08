@@ -20,6 +20,7 @@ function GameEnd.menuSelect(which)
       MissionTree.switch()
     end
     assets.sfx.boop:play()
+    Game.reset()
   else
     if gs.endState == "complete" then
       local lastMissionId = nil
@@ -48,9 +49,8 @@ function GameEnd.menuSelect(which)
       end
     end
     assets.sfx.boop:play(77)
+    Game.reset(true)
   end
-
-  Game.reset()
 end
 
 function GameEnd.update()
