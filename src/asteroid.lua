@@ -296,12 +296,12 @@ local function calculateAsteroidPath(steps, x, y, velX, velY, radius, anti, isOn
       if gs.mission.mode == 'juggling' then
         if (x < sidebarWidth + radius and velX < 0) or (x > screenWidth - radius and velX > 0) then
           velX = -velX
-          velX *= 0.65
-          velY *= 0.65
+          velX *= 0.8
+          velY *= 0.8
         elseif (y < radius and velY < 0) or (y > screenHeight - radius and velY > 0) then
           velY = -velY
-          velX *= 0.65
-          velY *= 0.65
+          velX *= 0.8
+          velY *= 0.8
         end
       end
 
