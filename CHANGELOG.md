@@ -26,7 +26,7 @@
 #### Difficulty
 
 * You now start with 0 bombs in missions on Hard / One Heart difficulty (you still start with 1 bomb in Normal difficulty)
-* In "Colonize" missions, collisions between meteors and rockets are no longer penalized in Normal difficulty (but still give you -1 rocket in Hard / One Heart difficuly)
+* In "Colonize" missions, collisions between meteors and rockets are no longer penalized (no more "Oops! -1 rocket")
 * In boss fights on Normal difficulty, meteors won't be headed directly towards Earth as often
 * Damage to bosses is now the same in all difficulty modes, but bosses have more HP in Hard / One Heart mode
 

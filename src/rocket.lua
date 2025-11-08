@@ -291,12 +291,7 @@ function Rocket.update()
           Asteroid.despawn(id)
           gs.rockets[rocketId] = nil
           gs.rocketsLost += 1
-          if gs.mission.winType == 'rocket' then
-            if gs.hardMode and gs.rocketsCaught > 0 then
-              gs.rocketsCaught -= 1
-              Game.flashMessage('Oops! -1 rocket')
-            end
-          else
+          if gs.mission.winType ~= 'rocket' then
             gs.lastRocketAt = gs.frameCount
           end
           if not gs.zenMode and achievements.grant("rocket_collision") then
