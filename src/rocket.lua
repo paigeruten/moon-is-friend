@@ -11,7 +11,7 @@ local polarCoordinates = Util.polarCoordinates
 
 Rocket = {}
 
-local rocketDirectionInfo = {}
+local rocketDirectionInfo, rocketDirections
 
 function Rocket.init()
   rocketDirectionInfo = {
@@ -64,18 +64,18 @@ function Rocket.init()
       flip = gfx.kImageFlippedX,
     },
   }
-end
 
-local rocketDirections = {}
-for direction, _ in pairs(rocketDirectionInfo) do
-  table.insert(rocketDirections, direction)
+  rocketDirections = {}
+  for direction, _ in pairs(rocketDirectionInfo) do
+    table.insert(rocketDirections, direction)
+  end
 end
 
 local nextRocketId = 1
 
 function Rocket.spawn()
   local direction
-  while not direction do
+  for _ = 1, 50 do
     direction = rocketDirections[math.random(#rocketDirections)]
     for _, rocket in pairs(gs.rockets) do
       if rocket.direction == direction then
@@ -83,6 +83,13 @@ function Rocket.spawn()
         break
       end
     end
+    if direction then
+      break
+    end
+  end
+
+  if not direction then
+    return
   end
 
   local directionInfo = rocketDirectionInfo[direction]
