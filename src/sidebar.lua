@@ -73,12 +73,31 @@ function Sidebar.invalidate()
   lastHealth = nil
 end
 
+function Sidebar.drawExtraSuction(heartsY)
+  if gs.earth.maxBombs == 0 then
+    local height = 43
+    local fuelHeight = math.floor(height * gs.extraSuctionFuel / gs.extraSuctionMaxFuel)
+    local isReady = gs.extraSuctionFuel == gs.extraSuctionMaxFuel or gs.extraSuction
+    gfx.setColor(gfx.kColorWhite)
+    gfx.fillRect(28, heartsY, 12, height)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.setLineWidth(isReady and 2 or 1)
+    gfx.setStrokeLocation(gfx.kStrokeInside)
+    gfx.drawRoundRect(28, heartsY, 12, height, 3)
+    gfx.setLineWidth(1)
+    gfx.setStrokeLocation(gfx.kStrokeCentered)
+    gfx.setDitherPattern(0.6, gfx.image.kDitherTypeBayer8x8)
+    gfx.fillRoundRect(28, heartsY + (height - fuelHeight), 12, fuelHeight, 3)
+  end
+end
+
 function Sidebar.draw()
   local curLevel = gs.mission.mode == 'juggling'
       and Asteroid.getJugglingLevel()
       or math.min(25, math.floor(24 * gs.frameCount / 15000) + 1)
   local bossHealth = Target.totalHealth()
   local surviveSeconds = gs.surviveFrameCount // 50
+  local heartsY = (gs.hardMode or gs.zenMode or gs.missionId == 'endless.rubdubdub') and 70 or 60
 
   local noChange = (gs.score == lastScore) and
       (curLevel == lastCurLevel) and
@@ -91,11 +110,14 @@ function Sidebar.draw()
       (surviveSeconds == lastSurviveSeconds) and
       (gs.earth.health == lastHealth) and
       (gs.earth.bombs == lastBombs) and
-      (gs.extraSuction == lastExtraSuction) and
-      (gs.extraSuctionFuel == lastExtraSuctionFuel) and
       gs.bombShockwave == 0 -- prevent bomb shockwave from being drawn over sidebar
 
   if noChange then
+    if gs.extraSuction ~= lastExtraSuction or gs.extraSuctionFuel ~= lastExtraSuctionFuel then
+      Sidebar.drawExtraSuction(heartsY)
+      lastExtraSuction = gs.extraSuction
+      lastExtraSuctionFuel = gs.extraSuctionFuel
+    end
     return
   end
 
@@ -114,8 +136,6 @@ function Sidebar.draw()
   lastExtraSuctionFuel = gs.extraSuctionFuel
 
   gs.sidebar:draw(0, 0)
-
-  local heartsY = (gs.hardMode or gs.zenMode or gs.missionId == 'endless.rubdubdub') and 70 or 60
 
   if gs.mission.winType == 'endless' then
     -- Score
@@ -204,17 +224,5 @@ function Sidebar.draw()
   gfx.setImageDrawMode(gfx.kDrawModeCopy)
 
   -- Extra suction fuel
-  if gs.earth.maxBombs == 0 then
-    local height = 43
-    local fuelHeight = math.floor(height * gs.extraSuctionFuel / gs.extraSuctionMaxFuel)
-    local isReady = gs.extraSuctionFuel == gs.extraSuctionMaxFuel or gs.extraSuction
-    gfx.setColor(gfx.kColorBlack)
-    gfx.setLineWidth(isReady and 2 or 1)
-    gfx.setStrokeLocation(gfx.kStrokeInside)
-    gfx.drawRoundRect(28, heartsY, 12, height, 3)
-    gfx.setLineWidth(1)
-    gfx.setStrokeLocation(gfx.kStrokeCentered)
-    gfx.setDitherPattern(0.6, gfx.image.kDitherTypeBayer8x8)
-    gfx.fillRoundRect(28, heartsY + (height - fuelHeight), 12, fuelHeight, 3)
-  end
+  Sidebar.drawExtraSuction(heartsY)
 end
