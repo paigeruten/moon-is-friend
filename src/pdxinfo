@@ -3,5 +3,5 @@ author=Paige Ruten
 description=Help the Moon protect its best friend from a barrage of meteors
 bundleID=com.paigeruten.themoonisourfriend
 version=1.1.0
-buildNumber=5
+buildNumber=6
 imagePath=images/launcher
