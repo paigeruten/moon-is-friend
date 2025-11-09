@@ -108,14 +108,14 @@ function Asteroid.spawn()
   end
   local speed
   if posX < 0 or posX >= screenWidth then
-    speed = math.random(5, 19) / 10
-  else
     speed = math.random(5, 14) / 10
+  else
+    speed = math.random(5, 9) / 10
   end
   if gs.mission.winType == "boss" then
     speed *= 0.7
   elseif gs.missionId == 'endless.rubdubdub' then
-    speed *= 1 + math.random(0, 10) / 10
+    speed *= 1 + math.random(0, 20) / 10
   end
   local velAngle = angle
   if gs.mission.winType == "boss" and not gs.hardMode then
