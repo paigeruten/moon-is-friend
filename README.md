@@ -1,12 +1,12 @@
 # The Moon is our Friend
 
+[<img src="screenshots/catalog/badge.png" width="200">](https://play.date/games/the-moon-is-our-friend/)
+
 An arcade game for [Playdate](https://play.date/).
 
 Originally made in one weekend, for [PlayJam 7](https://itch.io/jam/playjam-7). I've since updated it with many new features and polish!
 
-[<img src="screenshots/catalog/badge.png">](https://play.date/games/the-moon-is-our-friend/)
-
-<table align="center">
+<table>
     <tr>
         <td align="center"><img src="screenshots/catalog/title.png?raw=true" alt="title"></td>
         <td align="center"><img src="screenshots/catalog/video.gif?raw=true" alt="in-game"></td>
