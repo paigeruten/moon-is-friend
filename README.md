@@ -4,20 +4,20 @@ An arcade game for [Playdate](https://play.date/).
 
 Originally made in one weekend, for [PlayJam 7](https://itch.io/jam/playjam-7). I've since updated it with many new features and polish!
 
-Download the game here: https://paigeruten.itch.io/moon-is-friend
+[<img src="screenshots/catalog/badge.png">](https://play.date/games/the-moon-is-our-friend/)
 
 <table align="center">
     <tr>
-        <td align="center"><img src="screenshots/title.png?raw=true" alt="title"></td>
-        <td align="center"><img src="screenshots/in-game.png?raw=true" alt="in-game"></td>
+        <td align="center"><img src="screenshots/catalog/title.png?raw=true" alt="title"></td>
+        <td align="center"><img src="screenshots/catalog/video.gif?raw=true" alt="in-game"></td>
     </tr>
     <tr>
-        <td align="center"><img src="screenshots/mission-select.png?raw=true" alt="mission-select"></td>
-        <td align="center"><img src="screenshots/gameplay.gif?raw=true" alt="gameplay"></td>
+        <td align="center"><img src="screenshots/catalog/zen.gif?raw=true" alt="boss"></td>
+        <td align="center"><img src="screenshots/catalog/missions.gif?raw=true" alt="mission-select"></td>
     </tr>
     <tr>
-        <td align="center"><img src="screenshots/boss.png?raw=true" alt="boss"></td>
-        <td align="center"><img src="screenshots/achievements.png?raw=true" alt="achievements"></td>
+        <td align="center"><img src="screenshots/catalog/achievements.gif?raw=true" alt="achievements"></td>
+        <td align="center"><img src="screenshots/catalog/boss.png?raw=true" alt="gameplay"></td>
     </tr>
 </table>
 
