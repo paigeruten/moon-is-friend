@@ -1,6 +1,6 @@
 # Changelog
 
-## `v1.1.0` First Catalog release
+## [`v1.1.0`](https://github.com/paigeruten/moon-is-friend/releases/tag/v1.1.0) First Catalog release
 
 ### Major new features
 
@@ -56,17 +56,17 @@
 * Previously, a moon shield could only be given to the moon that caught the rocket. This resulted in a moon that already had a shield sometimes catching a rocket and nothing happening. Now when this happens, another random moon will get the shield.
 * Don't show "Use the Crank!" after game over, or during the final cutscene if the player happens to dock the crank at those times
 
-## `v1.0.1` Achievement bugfix
+## [`v1.0.1`](https://github.com/paigeruten/moon-is-friend/releases/tag/v1.0.1) Achievement bugfix
 
 * Bugfix to prevent "Endless hero" and "Endless addict" achievements from popping up endlessly after reaching them (your achievement progress is unaffected)
 
-## `v1.0` It's a real game!
+## [`v1.0.0`](https://github.com/paigeruten/moon-is-friend/releases/tag/v1.0.0) It's a real game!
 
 * Added Mission/Story mode
 * Added Endless mode
 * Added achievements
 * Many more changes (detailed changelog not available)
 
-## `v0` Game Jam release
+## [`v0.1.0`](https://github.com/paigeruten/moon-is-friend/releases/tag/v0.1.0) Game Jam release
 
 Initial game jam version.
